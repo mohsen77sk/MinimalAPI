@@ -1,7 +1,9 @@
+using Minimal.Api.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddApplicationServices(builder);
 
 var app = builder.Build();
-
-app.UseHttpsRedirection();
+app.ConfigureApplication();
 
 app.Run();

@@ -10,6 +10,7 @@ public static class DbContextOptionsExtensions
     {
         services.AddDbContext<ApplicationDbContext>(opt => opt
             .UseSqlServer(connectionString)
+            .AddInterceptors(new PersianYeKeCommandInterceptor())
         );
 
         return services;

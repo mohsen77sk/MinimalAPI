@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Minimal.DataAccess;
 using Minimal.Domain.Identity;
@@ -15,6 +16,8 @@ public static class ServiceCollectionExtensions
 
         builder.Services.AddIdentityOptions(builder.Configuration);
         builder.Services.AddPersistence(builder.Configuration);
+
+        builder.Services.AddMediatR(typeof(Program));
 
         return services;
     }

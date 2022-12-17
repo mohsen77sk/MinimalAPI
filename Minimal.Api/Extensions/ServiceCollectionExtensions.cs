@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
         builder.Services.AddIdentityOptions(builder.Configuration);
         builder.Services.AddPersistence(builder.Configuration);
 
+        builder.Services.AddAutoMapper(typeof(Program));
         builder.Services.AddMediatR(typeof(Program));
 
         return services;

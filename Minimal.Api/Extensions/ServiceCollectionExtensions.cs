@@ -13,9 +13,17 @@ public static class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
+        builder.Services.AddIdentityOptions(builder.Configuration);
         builder.Services.AddPersistence(builder.Configuration);
 
         return services;
+    }
+
+    private static void AddIdentityOptions(this IServiceCollection services, IConfiguration config)
+    {
+        services.AddDefaultIdentity<ApplicationUser>()
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
     }
 
     private static void AddPersistence(this IServiceCollection services, IConfiguration config)

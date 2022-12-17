@@ -1,3 +1,4 @@
+using System.Reflection;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
@@ -32,8 +33,11 @@ public static class ServiceCollectionExtensions
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "Minimal API", Version = "v1" });
             options.TagActionsBy(ta => new List<string> { ta.ActionDescriptor.DisplayName! });
-        });
 
+            // using System.Reflection;
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+        });
     }
 
     private static void AddIdentityOptions(this IServiceCollection services, IConfiguration config)

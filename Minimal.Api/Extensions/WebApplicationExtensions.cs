@@ -11,6 +11,16 @@ public static class WebApplicationExtensions
 
         app.UseHttpsRedirection();
 
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                // Hide schema
+                options.DefaultModelsExpandDepth(-1);
+            });
+        }
+
         return app;
     }
 }

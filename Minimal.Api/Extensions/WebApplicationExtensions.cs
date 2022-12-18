@@ -1,3 +1,5 @@
+using Minimal.Api.Contracts;
+
 namespace Minimal.Api.Extensions;
 
 public static class WebApplicationExtensions
@@ -9,8 +11,6 @@ public static class WebApplicationExtensions
             throw new ArgumentNullException(nameof(app));
         }
 
-        app.UseHttpsRedirection();
-
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -21,6 +21,24 @@ public static class WebApplicationExtensions
             });
         }
 
+        app.UseHttpsRedirection();
+
+        app.AddAllModules();
+
         return app;
+    }
+
+    private static void AddAllModules(this WebApplication app)
+    {
+        var modules = typeof(Program).Assembly
+            .GetTypes()
+            .Where(t => t.IsAssignableTo(typeof(IModule)) && !t.IsAbstract && !t.IsInterface)
+            .Select(Activator.CreateInstance)
+            .Cast<IModule>();
+
+        foreach (var module in modules)
+        {
+            module.RegisterEndpoints(app);
+        }
     }
 }

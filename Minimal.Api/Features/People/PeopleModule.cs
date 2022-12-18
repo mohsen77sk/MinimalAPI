@@ -3,6 +3,7 @@ using Minimal.Api.Contracts;
 using Minimal.Api.Features.People.Commands;
 using Minimal.Api.Features.People.Models;
 using Minimal.Api.Features.People.Queries;
+using Minimal.Api.Models;
 
 namespace Minimal.Api.Features.People;
 
@@ -13,7 +14,7 @@ public class PeopleModule : IModule
         var persons = endpoints.MapGroup("/api/person").WithDisplayName("Persons");
 
         persons.MapGet("/all", GetPersonsAsync)
-            .Produces<List<PeopleGetDto>>()
+            .Produces<PageList<PeopleGetDto>>()
             .Produces(500);
 
         persons.MapGet("/{id}", GetPersonByIdAsync)
@@ -35,9 +36,14 @@ public class PeopleModule : IModule
         return endpoints;
     }
 
-    private async Task<IResult> GetPersonsAsync(IMediator mediator, CancellationToken ct)
+    private async Task<IResult> GetPersonsAsync([AsParameters] PagingData request, IMediator mediator, CancellationToken ct)
     {
-        var query = new GetAllPerson();
+        var query = new GetAllPerson
+        {
+            Page = request.Page,
+            PageSize = request.PageSize,
+            SortBy = request.SortBy
+        };
         var persons = await mediator.Send(query, ct);
         return Results.Ok(persons);
     }

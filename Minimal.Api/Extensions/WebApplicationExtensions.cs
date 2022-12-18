@@ -1,4 +1,5 @@
 using Minimal.Api.Contracts;
+using Minimal.Api.Middleware;
 
 namespace Minimal.Api.Extensions;
 
@@ -24,6 +25,8 @@ public static class WebApplicationExtensions
         app.UseHttpsRedirection();
 
         app.AddAllModules();
+
+        app.UseMiddleware<ErrorHandlerMiddleware>();
 
         return app;
     }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Minimal.Api.Exceptions;
 using Minimal.Api.Features.People.Models;
 using Minimal.DataAccess;
 
@@ -27,7 +28,7 @@ public class GetPersonByIdHandler : IRequestHandler<GetPersonById, PersonGetDto>
         var person = await _context.People.AsNoTracking().FirstOrDefaultAsync(a => a.Id == request.PersonId, cancellationToken);
         if (person is null)
         {
-            throw new Exception();
+            throw new NotFoundException();
         }
 
         return _mapper.Map<PersonGetDto>(person);

@@ -24,6 +24,11 @@ public class ErrorHandlerMiddleware
 
             switch (error)
             {
+                case ValidationException e:
+                    // validation error
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    await response.WriteAsJsonAsync(new { message = e?.Message, errors = e?.Errors });
+                    break;
                 case NotFoundException e:
                     // not found error
                     response.StatusCode = StatusCodes.Status404NotFound;

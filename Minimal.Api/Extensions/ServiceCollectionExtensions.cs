@@ -1,7 +1,9 @@
 using System.Reflection;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using Minimal.Api.Behaviors;
 using Minimal.DataAccess;
 using Minimal.Domain.Identity;
 
@@ -21,7 +23,9 @@ public static class ServiceCollectionExtensions
         builder.Services.AddPersistence(builder.Configuration);
 
         builder.Services.AddAutoMapper(typeof(Program));
+        builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
         builder.Services.AddMediatR(typeof(Program));
+        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         return services;
     }

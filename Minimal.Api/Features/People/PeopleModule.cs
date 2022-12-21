@@ -24,12 +24,12 @@ public class PeopleModule : IModule
 
         persons.MapPost("/", CreatePersonAsync)
             .Produces<PersonGetDto>()
-            .Produces(400)
+            .Produces<ValidationError>(400)
             .Produces(500);
 
         persons.MapPut("/", UpdatePersonAsync)
             .Produces<PersonGetDto>()
-            .Produces(400)
+            .Produces<ValidationError>(400)
             .Produces(404)
             .Produces(500);
 

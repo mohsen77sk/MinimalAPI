@@ -12,6 +12,15 @@ public static class WebApplicationExtensions
             throw new ArgumentNullException(nameof(app));
         }
 
+        var supportedCultures = new[] { "en", "fa" };
+        var localizationOptions = new RequestLocalizationOptions()
+            .SetDefaultCulture(supportedCultures[0])
+            .AddSupportedCultures(supportedCultures)
+            .AddSupportedUICultures(supportedCultures);
+
+        localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
+        app.UseRequestLocalization(localizationOptions);
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

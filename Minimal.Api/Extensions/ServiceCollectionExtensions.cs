@@ -18,6 +18,8 @@ public static class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
+        builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
         builder.Services.AddSwagger();
         builder.Services.AddIdentityOptions(builder.Configuration);
         builder.Services.AddPersistence(builder.Configuration);

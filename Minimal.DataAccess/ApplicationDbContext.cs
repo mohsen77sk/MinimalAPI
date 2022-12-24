@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     #region BaseClass
+    public DbSet<Bank> Banks { set; get; } = default!;
     public DbSet<Person> People { set; get; } = default!;
     #endregion BaseClass
 

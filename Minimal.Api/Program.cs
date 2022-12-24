@@ -21,6 +21,7 @@ using (var scope = app.Services.CreateScope())
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+    await ApplicationDbContextSeed.SeedDataAsync(context);
     await ApplicationDbContextSeed.SeedDefaultRolesAndUserAsync(userManager, roleManager);
 }
 

@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
         builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
         builder.Services.AddMediatR(typeof(Program));
         builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
         return services;
     }

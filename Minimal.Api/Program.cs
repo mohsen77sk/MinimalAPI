@@ -1,28 +1,19 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Extensions;
-using Minimal.DataAccess;
-using Minimal.Domain.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddApplicationServices(builder);
+// Configure logging
+builder.Logging.ClearProviders();
+if (builder.Environment.IsDevelopment())
+{
+    builder.Logging.AddConsole();
+    builder.Logging.AddDebug();
+}
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+// Configure services
+builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 app.ConfigureApplication();
-
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    if (context.Database.IsSqlServer())
-    {
-        context.Database.Migrate();
-    }
-
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    await ApplicationDbContextSeed.SeedDataAsync(context);
-    await ApplicationDbContextSeed.SeedDefaultRolesAndUserAsync(userManager, roleManager);
-}
+app.ConfigureDatabase();
 
 app.Run();

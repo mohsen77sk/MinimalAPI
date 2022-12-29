@@ -11,24 +11,24 @@ namespace Minimal.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, WebApplicationBuilder builder)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
-        if (builder == null)
+        if (services == null)
         {
-            throw new ArgumentNullException(nameof(builder));
+            throw new ArgumentNullException(nameof(services));
         }
 
-        builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-        builder.Services.AddSwagger();
-        builder.Services.AddIdentityOptions(builder.Configuration);
-        builder.Services.AddPersistence(builder.Configuration);
+        services.AddSwagger();
+        services.AddIdentityOptions(config);
+        services.AddPersistence(config);
 
-        builder.Services.AddAutoMapper(typeof(Program));
-        builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
-        builder.Services.AddMediatR(typeof(Program));
-        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
+        services.AddAutoMapper(typeof(Program));
+        services.AddValidatorsFromAssemblyContaining(typeof(Program));
+        services.AddMediatR(typeof(Program));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
         return services;
     }
@@ -57,6 +57,9 @@ public static class ServiceCollectionExtensions
     private static void AddPersistence(this IServiceCollection services, IConfiguration config)
     {
         var connectionString = config.GetConnectionString("SqlServer");
-        services.AddConfiguredMsSqlDbContext(connectionString);
+        if (connectionString != null)
+        {
+            services.AddConfiguredMsSqlDbContext(connectionString);
+        }
     }
 }

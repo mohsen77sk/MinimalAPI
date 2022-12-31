@@ -121,4 +121,16 @@
     <value>Not found</value>
     <comment/>
   </data>
+  <data name="invalidUserNameOrPassword" xml:space="preserve">
+    <value>The username or password entered is not valid.</value>
+    <comment/>
+  </data>
+  <data name="isNotAllowed" xml:space="preserve">
+    <value>No access to login.</value>
+    <comment/>
+  </data>
+  <data name="isLockedOut" xml:space="preserve">
+    <value>This account has been temporarily locked due to multiple failed login attempts. Please try again in a few minutes.</value>
+    <comment/>
+  </data>
 </root>

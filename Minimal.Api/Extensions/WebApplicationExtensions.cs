@@ -39,6 +39,9 @@ public static class WebApplicationExtensions
 
         app.AddAllModules();
 
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         app.UseMiddleware<ErrorHandlerMiddleware>();
     }
 

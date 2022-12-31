@@ -11,7 +11,7 @@ public class PeopleModule : IModule
 {
     public IEndpointRouteBuilder RegisterEndpoints(IEndpointRouteBuilder endpoints)
     {
-        var persons = endpoints.MapGroup("/api/person").WithDisplayName("Persons");
+        var persons = endpoints.MapGroup("/api/person").WithDisplayName("Persons").RequireAuthorization();
 
         persons.MapGet("/all", GetPersonsAsync)
             .Produces<PageList<PeopleGetDto>>()

@@ -121,4 +121,16 @@
     <value>پیدا نشد</value>
     <comment/>
   </data>
+  <data name="invalidUserNameOrPassword" xml:space="preserve">
+    <value>نام کاربری و یا کلمه‌ی عبور وارد شده معتبر نیستند.</value>
+    <comment/>
+  </data>
+  <data name="isNotAllowed" xml:space="preserve">
+    <value>عدم دسترسی ورود.</value>
+    <comment/>
+  </data>
+  <data name="isLockedOut" xml:space="preserve">
+    <value>این اکانت به علت چندین بار عدم موفقیت در ورود، به صورت موقت، قفل شده‌است. لطفا دقایقی بعد مجددا سعی کنید.</value>
+    <comment/>
+  </data>
 </root>

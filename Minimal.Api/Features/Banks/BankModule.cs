@@ -10,7 +10,7 @@ public class BankModule : IModule
 {
     public IEndpointRouteBuilder RegisterEndpoints(IEndpointRouteBuilder endpoints)
     {
-        var banks = endpoints.MapGroup("/api/bank").WithDisplayName("Banks");
+        var banks = endpoints.MapGroup("/api/bank").WithDisplayName("Banks").RequireAuthorization();
 
         banks.MapGet("/all", GetAllBanksAsync)
             .Produces<List<BankGetDto>>()

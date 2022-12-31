@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Minimal.Api.Extension;
+using Minimal.Api.Extensions;
 using Minimal.Api.Features.People.Models;
 using Minimal.Api.Models;
 using Minimal.DataAccess;

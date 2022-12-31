@@ -2,9 +2,9 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Models;
 
-namespace Minimal.Api.Extension;
+namespace Minimal.Api.Extensions;
 
-public static class Linq
+public static class LinqExtensions
 {
     public static async Task<PageList<T>> ToPagedAsync<T>(this IQueryable<T> src, int page, int pageSize, string? orderBy) where T : class
     {

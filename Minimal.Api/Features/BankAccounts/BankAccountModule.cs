@@ -34,6 +34,12 @@ public class BankAccountModule : IModule
             .Produces(404)
             .Produces(500);
 
+        bankAccounts.MapDelete("/{id}", DeleteBankAccountAsync)
+            .Produces<bool>()
+            .Produces<ValidationError>(400)
+            .Produces(404)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -45,26 +51,33 @@ public class BankAccountModule : IModule
             PageSize = request.PageSize,
             SortBy = request.SortBy
         };
-        var persons = await mediator.Send(query, ct);
-        return Results.Ok(persons);
+        var bankAccounts = await mediator.Send(query, ct);
+        return Results.Ok(bankAccounts);
     }
 
     private async Task<IResult> GetBankAccountByIdAsync(int id, IMediator mediator, CancellationToken ct)
     {
         var query = new GetBankAccountById { BankAccountId = id };
-        var person = await mediator.Send(query, ct);
-        return Results.Ok(person);
+        var bankAccount = await mediator.Send(query, ct);
+        return Results.Ok(bankAccount);
     }
 
     private async Task<IResult> CreateBankAccountAsync(CreateBankAccount bankAccountDto, IMediator mediator, CancellationToken ct)
     {
-        var person = await mediator.Send(bankAccountDto, ct);
-        return Results.Ok(person);
+        var bankAccount = await mediator.Send(bankAccountDto, ct);
+        return Results.Ok(bankAccount);
     }
 
     private async Task<IResult> UpdateBankAccountAsync(UpdateBankAccount bankAccountDto, IMediator mediator, CancellationToken ct)
     {
-        var person = await mediator.Send(bankAccountDto, ct);
-        return Results.Ok(person);
+        var bankAccount = await mediator.Send(bankAccountDto, ct);
+        return Results.Ok(bankAccount);
+    }
+
+    private async Task<IResult> DeleteBankAccountAsync(int id, IMediator mediator, CancellationToken ct)
+    {
+        var query = new DeleteBankAccount { Id = id };
+        await mediator.Send(query, ct);
+        return Results.Ok(true);
     }
 }

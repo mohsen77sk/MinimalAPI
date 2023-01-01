@@ -8,7 +8,7 @@ using Minimal.DataAccess;
 
 namespace Minimal.Api.Features.People.Queries;
 
-public class GetAllPersonHandler : IRequestHandler<GetAllPerson, PageList<PeopleGetDto>>
+public class GetAllPersonHandler : IRequestHandler<GetAllPerson, PageList<PersonGetDto>>
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -19,9 +19,12 @@ public class GetAllPersonHandler : IRequestHandler<GetAllPerson, PageList<People
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<PageList<PeopleGetDto>> Handle(GetAllPerson request, CancellationToken cancellationToken)
+    public async Task<PageList<PersonGetDto>> Handle(GetAllPerson request, CancellationToken cancellationToken)
     {
-        var persons = await _context.People.AsNoTracking().ToPagedAsync(request.Page, request.PageSize, request.SortBy);
-        return _mapper.Map<PageList<PeopleGetDto>>(persons);
+        var persons = await _context.People
+            .AsNoTracking()
+            .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+
+        return _mapper.Map<PageList<PersonGetDto>>(persons);
     }
 }

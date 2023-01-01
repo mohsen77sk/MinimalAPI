@@ -4,6 +4,6 @@ using Minimal.Api.Models;
 
 namespace Minimal.Api.Features.People.Queries;
 
-public class GetAllPerson : PagingData, IRequest<PageList<PeopleGetDto>>
+public class GetAllPerson : PagingData, IRequest<PageList<PersonGetDto>>
 {
 }

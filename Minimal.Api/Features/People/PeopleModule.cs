@@ -14,7 +14,7 @@ public class PeopleModule : IModule
         var persons = endpoints.MapGroup("/api/person").WithDisplayName("Persons").RequireAuthorization();
 
         persons.MapGet("/all", GetPersonsAsync)
-            .Produces<PageList<PeopleGetDto>>()
+            .Produces<PageList<PersonGetDto>>()
             .Produces(500);
 
         persons.MapGet("/{id}", GetPersonByIdAsync)

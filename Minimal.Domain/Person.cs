@@ -7,6 +7,7 @@ public class Person
     public Person()
     {
         BankAccounts = new List<BankAccount>();
+        Accounts = new List<Account>();
     }
 
     public int Id { get; set; }
@@ -32,4 +33,6 @@ public class Person
     public ApplicationUser? User { get; set; }
 
     public ICollection<BankAccount> BankAccounts { get; set; }
+
+    public ICollection<Account> Accounts { get; set; }
 }

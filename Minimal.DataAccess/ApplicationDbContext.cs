@@ -17,6 +17,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Bank> Banks { set; get; } = default!;
     public DbSet<BankAccount> BankAccounts { set; get; } = default!;
     public DbSet<Person> People { set; get; } = default!;
+    public DbSet<Account> Accounts { set; get; } = default!;
+    public DbSet<AccountType> AccountTypes { set; get; } = default!;
     #endregion BaseClass
 
     public async Task BeginTransactionAsync()

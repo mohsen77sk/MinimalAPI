@@ -79,5 +79,17 @@ public static class ApplicationDbContextSeed
             });
             await context.SaveChangesAsync();
         }
+
+        if (!context.AccountTypes.Any())
+        {
+            context.AddRange(new List<AccountType>()
+            {
+                new AccountType { Code = "2101", Name = "قرض الحسنه پس انداز", IsActive = true },
+                new AccountType { Code = "2102", Name = "قرض الحسنه جاری", IsActive = true },
+                new AccountType { Code = "2201", Name = "سرمایه گذاری کوتاه مدت", IsActive = true },
+                new AccountType { Code = "2202", Name = "سرمایه گذاری بلند مدت", IsActive = true },
+            });
+            await context.SaveChangesAsync();
+        }
     }
 }

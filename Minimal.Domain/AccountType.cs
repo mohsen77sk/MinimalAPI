@@ -4,7 +4,7 @@ public class AccountType
 {
     public AccountType()
     {
-        Accounts = new HashSet<Account>();
+        Accounts = new List<Account>();
     }
 
     public int Id { get; set; }
@@ -15,5 +15,5 @@ public class AccountType
 
     public bool IsActive { get; set; }
 
-    public virtual ICollection<Account> Accounts { get; set; }
+    public ICollection<Account> Accounts { get; set; }
 }

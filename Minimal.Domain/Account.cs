@@ -22,5 +22,7 @@ public class Account
 
     public bool IsActive { get; set; }
 
+    public AccountDetail AccountDetail { get; set; }
+
     public ICollection<Person> People { get; set; }
 }

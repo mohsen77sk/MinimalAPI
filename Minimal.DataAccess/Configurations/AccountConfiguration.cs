@@ -10,5 +10,6 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
     {
         builder.ToTable("Accounts", Schema.App);
         builder.HasIndex(account => account.Code).IsUnique();
+        builder.Property(account => account.IsActive).HasDefaultValue(true);
     }
 }

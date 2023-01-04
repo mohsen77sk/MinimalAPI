@@ -10,5 +10,6 @@ public class DocumentConfiguration : IEntityTypeConfiguration<Document>
     {
         builder.ToTable("Documents", Schema.Accounting);
         builder.HasIndex(document => document.Code).IsUnique();
+        builder.Property(document => document.IsActive).HasDefaultValue(true);
     }
 }

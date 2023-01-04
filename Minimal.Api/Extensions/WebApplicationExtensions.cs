@@ -64,6 +64,7 @@ public static class WebApplicationExtensions
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
             await ApplicationDbContextSeed.SeedDataAsync(context);
+            await ApplicationDbContextSeed.SeedAccountingDataAsync(context);
             await ApplicationDbContextSeed.SeedDefaultRolesAndUserAsync(userManager, roleManager);
         }
     }

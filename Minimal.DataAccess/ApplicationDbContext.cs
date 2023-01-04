@@ -19,6 +19,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Person> People { set; get; } = default!;
     public DbSet<Account> Accounts { set; get; } = default!;
     public DbSet<AccountType> AccountTypes { set; get; } = default!;
+
+    public DbSet<FiscalYear> FiscalYears { set; get; } = default!;
+    public DbSet<AccountEssence> AccountEssences { set; get; } = default!;
+    public DbSet<AccountCategory> AccountCategories { set; get; } = default!;
+    public DbSet<AccountGroup> AccountGroups { set; get; } = default!;
+    public DbSet<AccountLedger> AccountLedgers { set; get; } = default!;
+    public DbSet<AccountSubsid> AccountSubsids { set; get; } = default!;
+    public DbSet<AccountDetail> AccountDetails { set; get; } = default!;
+    public DbSet<DocumentType> DocumentTypes { set; get; } = default!;
+    public DbSet<Document> Documents { set; get; } = default!;
+    public DbSet<DocumentArticle> DocumentArticles { set; get; } = default!;
     #endregion BaseClass
 
     public async Task BeginTransactionAsync()

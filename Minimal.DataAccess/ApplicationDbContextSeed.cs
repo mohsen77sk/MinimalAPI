@@ -38,6 +38,119 @@ public static class ApplicationDbContextSeed
         }
     }
 
+    public static async Task SeedAccountingDataAsync(ApplicationDbContext context)
+    {
+        if (!context.AccountCategories.Any())
+        {
+            context.AddRange(new List<AccountCategory>()
+            {
+                new AccountCategory { Code = "1", Title = "صندوق" },
+                new AccountCategory { Code = "2", Title = "حساب" },
+                new AccountCategory { Code = "3", Title = "تسهیلات" },
+            });
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.AccountEssences.Any())
+        {
+            context.AddRange(new List<AccountEssence>()
+            {
+                new AccountEssence { Code = "1", Title = "ماهیت بدهکار" },
+                new AccountEssence { Code = "2", Title = "ماهیت بستانکار" },
+                new AccountEssence { Code = "3", Title = "ماهیت دوگانه" },
+                new AccountEssence { Code = "4", Title = "فاقد ماهیت" },
+            });
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.AccountGroups.Any())
+        {
+            context.AddRange(new List<AccountGroup>()
+            {
+                new AccountGroup { Code = "1", Title = "دارایی ها", IsSystemic = true },
+                new AccountGroup { Code = "2", Title = "بدهی ها", IsSystemic = true },
+                new AccountGroup { Code = "3", Title = "درآمد ها", IsSystemic = true },
+                new AccountGroup { Code = "4", Title = "هزینه ها", IsSystemic = true },
+                new AccountGroup { Code = "5", Title = "سایر حساب ها", IsSystemic = true },
+            });
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.AccountLedgers.Any())
+        {
+            context.AddRange(new List<AccountLedger>()
+            {
+                new AccountLedger { Code = "11", AccountGroup = context.AccountGroups.Single(x => x.Code == "1"), Title = "موجودی نقد و بانک", IsSystemic = true },
+                new AccountLedger { Code = "12", AccountGroup = context.AccountGroups.Single(x => x.Code == "1"), Title = "تسهیلات اعطایی", IsSystemic = true },
+                new AccountLedger { Code = "21", AccountGroup = context.AccountGroups.Single(x => x.Code == "2"), Title = "حساب قرض الحسنه", IsSystemic = true },
+                new AccountLedger { Code = "22", AccountGroup = context.AccountGroups.Single(x => x.Code == "2"), Title = "حساب سرمایه گذاری", IsSystemic = true },
+                new AccountLedger { Code = "31", AccountGroup = context.AccountGroups.Single(x => x.Code == "3"), Title = "درآمد حاصل از اراعه خدمات", IsSystemic = true },
+                new AccountLedger { Code = "32", AccountGroup = context.AccountGroups.Single(x => x.Code == "3"), Title = "درآمد های متفرقه", IsSystemic = true },
+                new AccountLedger { Code = "41", AccountGroup = context.AccountGroups.Single(x => x.Code == "4"), Title = "هزینه های عملیاتی", IsSystemic = true },
+                new AccountLedger { Code = "42", AccountGroup = context.AccountGroups.Single(x => x.Code == "4"), Title = "هزینه های متفرقه", IsSystemic = true },
+            });
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.AccountSubsids.Any())
+        {
+            context.AddRange(new List<AccountSubsid>()
+            {
+                new AccountSubsid { Code = "1101", AccountLedger = context.AccountLedgers.Single(x => x.Code == "11"), Title = "صندوق", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
+                new AccountSubsid { Code = "1102", AccountLedger = context.AccountLedgers.Single(x => x.Code == "11"), Title = "بانک ها", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
+                new AccountSubsid { Code = "1103", AccountLedger = context.AccountLedgers.Single(x => x.Code == "11"), Title = "تنخواه گردان ها", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
+                new AccountSubsid { Code = "1201", AccountLedger = context.AccountLedgers.Single(x => x.Code == "12"), Title = "قرض الحسنه", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
+                new AccountSubsid { Code = "1202", AccountLedger = context.AccountLedgers.Single(x => x.Code == "12"), Title = "اضطراری", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
+                new AccountSubsid { Code = "2101", AccountLedger = context.AccountLedgers.Single(x => x.Code == "21"), Title = "قرض الحسنه پی انداز", AccountEssence = context.AccountEssences.Single(x => x.Code == "2"), IsSystemic = true },
+                new AccountSubsid { Code = "2102", AccountLedger = context.AccountLedgers.Single(x => x.Code == "21"), Title = "قرض الحسنه جاری", AccountEssence = context.AccountEssences.Single(x => x.Code == "2"), IsSystemic = true },
+                new AccountSubsid { Code = "2201", AccountLedger = context.AccountLedgers.Single(x => x.Code == "22"), Title = "سرمایه گذاری کوتاه مدت", AccountEssence = context.AccountEssences.Single(x => x.Code == "2"), IsSystemic = true },
+                new AccountSubsid { Code = "2202", AccountLedger = context.AccountLedgers.Single(x => x.Code == "22"), Title = "سرمایه گذاری بلند مدت", AccountEssence = context.AccountEssences.Single(x => x.Code == "2"), IsSystemic = true },
+                new AccountSubsid { Code = "3101", AccountLedger = context.AccountLedgers.Single(x => x.Code == "31"), Title = "سود دریافتی تسهیلات", AccountEssence = context.AccountEssences.Single(x => x.Code == "2"), IsSystemic = true },
+                new AccountSubsid { Code = "3102", AccountLedger = context.AccountLedgers.Single(x => x.Code == "31"), Title = "کارمزد دریافتی", AccountEssence = context.AccountEssences.Single(x => x.Code == "2"), IsSystemic = true },
+                new AccountSubsid { Code = "4101", AccountLedger = context.AccountLedgers.Single(x => x.Code == "41"), Title = "ملزومات", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
+            });
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.AccountDetails.Any())
+        {
+            context.AddRange(new List<AccountDetail>()
+            {
+                new AccountDetail { Code = "11010001", Title = "حساب صندوق", AccountCategory = context.AccountCategories.Single(x => x.Code == "1") }
+            });
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.DocumentTypes.Any())
+        {
+            context.AddRange(new List<DocumentType>()
+            {
+                new DocumentType { Code = "01", Title = "سند حسابداری" },
+                //
+                new DocumentType { Code = "10", Title = "سند افتتاحیه" },
+                new DocumentType { Code = "11", Title = "سند اختتامیه" },
+                new DocumentType { Code = "12", Title = "سند دریافت" },
+                new DocumentType { Code = "13", Title = "سند پرداخت" },
+                new DocumentType { Code = "14", Title = "سند انتقال" },
+                //
+                new DocumentType { Code = "20", Title = "سند پرداخت تسهیلات" },
+                new DocumentType { Code = "21", Title = "سند دریافت اقساط" },
+                //
+                new DocumentType { Code = "30", Title = "سند صورت هزینه" },
+            });
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.FiscalYears.Any())
+        {
+            context.AddRange(new List<FiscalYear>()
+            {
+                new FiscalYear { Title = "", BeginDate = DateTimeOffset.MinValue , EndDate = DateTimeOffset.MaxValue }
+            });
+            await context.SaveChangesAsync();
+        }
+    }
+
     public static async Task SeedDataAsync(ApplicationDbContext context)
     {
         if (!context.Banks.Any())

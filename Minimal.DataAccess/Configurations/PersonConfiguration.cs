@@ -10,7 +10,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
     {
         builder.ToTable("People", Schema.App);
         builder.HasIndex(person => person.Code).IsUnique();
-        builder.HasIndex(person => person.NationalCode).IsUnique();
+        builder.Property(person => person.Code).HasDefaultValueSql();
         builder.Property(person => person.IsActive).HasDefaultValue(true);
         builder.Ignore(person => person.FullName);
     }

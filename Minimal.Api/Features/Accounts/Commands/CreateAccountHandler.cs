@@ -47,7 +47,6 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
             accountToAdd.People.Add(person);
         }
 
-        accountToAdd.Code = GenerateCodeAsync();
         accountToAdd.AccountType = accountType;
         accountToAdd.IsActive = true;
 
@@ -55,14 +54,5 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<AccountGetDto>(accountToAdd);
-    }
-
-    /// <summary>
-    /// Generate an new code for the account.
-    /// </summary>
-    private string GenerateCodeAsync()
-    {
-        int lastCode = Int32.Parse(_context.Accounts.OrderByDescending(x => x.Code).FirstOrDefault()?.Code ?? "999");
-        return (lastCode + 1).ToString();
     }
 }

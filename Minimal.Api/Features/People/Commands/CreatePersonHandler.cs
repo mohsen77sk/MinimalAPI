@@ -25,21 +25,11 @@ public class CreatePersonHandler : IRequestHandler<CreatePerson, PersonGetDto>
         }
 
         var personToAdd = _mapper.Map<Person>(request);
-        personToAdd.Code = GenerateCodeAsync();
         personToAdd.IsActive = true;
 
         _context.People.Add(personToAdd);
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<PersonGetDto>(personToAdd);
-    }
-
-    /// <summary>
-    /// Generate an new code for the person.
-    /// </summary>
-    private string GenerateCodeAsync()
-    {
-        int lastCode = Int32.Parse(_context.People.OrderByDescending(x => x.Code).FirstOrDefault()?.Code ?? "99");
-        return (lastCode + 1).ToString();
     }
 }

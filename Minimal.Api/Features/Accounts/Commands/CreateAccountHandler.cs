@@ -49,8 +49,46 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
 
         accountToAdd.AccountType = accountType;
         accountToAdd.IsActive = true;
-
         _context.Accounts.Add(accountToAdd);
+
+        var accountDetailToAdd = new AccountDetail
+        {
+            Title = "حساب" + " " + accountToAdd.Code,
+            Account = accountToAdd,
+            AccountCategory = await _context.AccountCategories.SingleAsync(x => x.Code == "2", cancellationToken),
+            IsActive = true
+        };
+        _context.AccountDetails.Add(accountDetailToAdd);
+
+        var documentToAdd = new Document
+        {
+            Date = accountToAdd.CreateDate,
+            Note = "سند ایجاد حساب" + " " + accountToAdd.Code,
+            FiscalYear = await _context.FiscalYears.SingleAsync(x => x.Id == 1, cancellationToken),
+            DocumentType = await _context.DocumentTypes.SingleAsync(x => x.Code == "10", cancellationToken),
+            DocumentItems = new List<DocumentArticle>()
+            {
+                new DocumentArticle
+                {
+                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == accountType.Code, cancellationToken),
+                    AccountDetail = accountDetailToAdd,
+                    Credit = request.InitCredit,
+                    Debit = 0,
+                    Note = ""
+                },
+                new DocumentArticle
+                {
+                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
+                    AccountDetail = await _context.AccountDetails.SingleAsync(x => x.Code == "11010001", cancellationToken),
+                    Credit = 0,
+                    Debit = request.InitCredit,
+                    Note = ""
+                }
+            },
+            IsActive = true,
+        };
+        _context.Documents.Add(documentToAdd);
+
         await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<AccountGetDto>(accountToAdd);

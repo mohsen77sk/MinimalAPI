@@ -9,6 +9,5 @@ public class BankAccountConfiguration : IEntityTypeConfiguration<BankAccount>
     public void Configure(EntityTypeBuilder<BankAccount> builder)
     {
         builder.ToTable("BankAccounts", Schema.App);
-        builder.Property(bankAccount => bankAccount.IsActive).HasDefaultValue(true);
     }
 }

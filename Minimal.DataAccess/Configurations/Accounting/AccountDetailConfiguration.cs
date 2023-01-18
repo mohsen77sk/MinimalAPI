@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Minimal.DataAccess.ValueGenerations;
 using Minimal.Domain;
 
 namespace Minimal.DataAccess.Configurations;
@@ -10,7 +11,7 @@ public class AccountDetailConfiguration : IEntityTypeConfiguration<AccountDetail
     {
         builder.ToTable("AccountDetails", Schema.Accounting);
         builder.HasIndex(accountDetail => accountDetail.Code).IsUnique();
+        builder.Property(accountDetail => accountDetail.Code).ValueGeneratedOnAdd().HasValueGenerator<AccountDetailCodeGenerator>();
         builder.Property(accountDetail => accountDetail.Level).HasDefaultValue(0);
-        builder.Property(accountDetail => accountDetail.IsActive).HasDefaultValue(true);
     }
 }

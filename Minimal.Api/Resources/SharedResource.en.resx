@@ -137,6 +137,10 @@
     <value>The selected person is disabled.</value>
     <comment/>
   </data>
+  <data name="personHasActiveAccount" xml:space="preserve">
+    <value>This person has an active account.</value>
+    <comment/>
+  </data>
   <data name="openingAccountDateIsAfterTransaction" xml:space="preserve">
     <value>The account opening date cannot be available after transactions.</value>
     <comment/>

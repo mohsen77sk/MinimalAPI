@@ -33,6 +33,12 @@ public class PeopleModule : IModule
             .Produces(404)
             .Produces(500);
 
+        persons.MapPatch("/", UpdatePersonStatusAsync)
+            .Produces<PersonGetDto>()
+            .Produces<ValidationError>(400)
+            .Produces(404)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -62,6 +68,12 @@ public class PeopleModule : IModule
     }
 
     private async Task<IResult> UpdatePersonAsync(UpdatePerson personDto, IMediator mediator, CancellationToken ct)
+    {
+        var person = await mediator.Send(personDto, ct);
+        return Results.Ok(person);
+    }
+
+    private async Task<IResult> UpdatePersonStatusAsync(UpdateStatusPerson personDto, IMediator mediator, CancellationToken ct)
     {
         var person = await mediator.Send(personDto, ct);
         return Results.Ok(person);

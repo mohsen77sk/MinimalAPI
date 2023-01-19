@@ -137,6 +137,10 @@
     <value>شخص انتخاب شده غیر فعال است.</value>
     <comment/>
   </data>
+  <data name="personHasActiveAccount" xml:space="preserve">
+    <value>این شخص دارای حساب فعال میباشد.</value>
+    <comment/>
+  </data>
   <data name="openingAccountDateIsAfterTransaction" xml:space="preserve">
     <value>تاریخ افتتاح حساب نمی تواند بعد از تراکنشات موجود باشد.</value>
     <comment/>

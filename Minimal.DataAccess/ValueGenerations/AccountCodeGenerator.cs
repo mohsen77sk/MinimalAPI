@@ -33,10 +33,10 @@ public class AccountCodeGenerator : ValueGenerator<string>
                 .Where(x => x.AccountTypeId == _acc.AccountTypeId)
                 .OrderByDescending(x => x.Code)
                 .Select(x => x.Code)
-                .FirstOrDefault() ?? "0000";
+                .FirstOrDefault() ?? "00000000";
         }
 
-        _lastAccountCode = (_lastAccountCode ?? "00000000").Substring(4);
+        _lastAccountCode = (_lastAccountCode).Substring(4);
         _code = (int.Parse(_lastAccountCode) + 1).ToString().PadLeft(4, '0');
 
         return _typeCode + _code;

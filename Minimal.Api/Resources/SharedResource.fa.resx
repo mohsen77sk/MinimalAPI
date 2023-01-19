@@ -133,4 +133,12 @@
     <value>این اکانت به علت چندین بار عدم موفقیت در ورود، به صورت موقت، قفل شده‌است. لطفا دقایقی بعد مجددا سعی کنید.</value>
     <comment/>
   </data>
+  <data name="personIsNotActive" xml:space="preserve">
+    <value>شخص انتخاب شده غیر فعال است.</value>
+    <comment/>
+  </data>
+  <data name="openingAccountDateIsAfterTransaction" xml:space="preserve">
+    <value>تاریخ افتتاح حساب نمی تواند بعد از تراکنشات موجود باشد.</value>
+    <comment/>
+  </data>
 </root>

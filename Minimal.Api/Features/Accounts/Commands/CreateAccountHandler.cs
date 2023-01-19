@@ -44,6 +44,10 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
             {
                 throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFound").Value);
             }
+            if (person.IsActive is false)
+            {
+                throw new ValidationException(nameof(request.PersonId), _localizer.GetString("personIsNotActive").Value);
+            }
             accountToAdd.People.Add(person);
         }
 

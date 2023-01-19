@@ -133,4 +133,12 @@
     <value>This account has been temporarily locked due to multiple failed login attempts. Please try again in a few minutes.</value>
     <comment/>
   </data>
+  <data name="personIsNotActive" xml:space="preserve">
+    <value>The selected person is disabled.</value>
+    <comment/>
+  </data>
+  <data name="openingAccountDateIsAfterTransaction" xml:space="preserve">
+    <value>The account opening date cannot be available after transactions.</value>
+    <comment/>
+  </data>
 </root>

@@ -29,16 +29,54 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
             throw new ArgumentNullException(nameof(request));
         }
 
-        var account = await _context.Accounts.Include(x => x.People).FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+        var account = await _context.Accounts
+            .Include(x => x.People)
+            .Include(x => x.AccountDetail)
+            .ThenInclude(x => x.DocumentArticleList)
+            .ThenInclude(x => x.Document)
+            .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
         if (account is null)
         {
             throw new NotFoundException();
         }
 
-        var accountType = await _context.AccountTypes.FirstOrDefaultAsync(a => a.Id.Equals(request.AccountTypeId), cancellationToken);
-        if (accountType is null)
+        // Select the type of account opening document 
+        var openingDocumentType = await _context.DocumentTypes.SingleAsync(x => x.Code == "10", cancellationToken);
+        // Selecting the account opening document
+        var openingDocument = account.AccountDetail.DocumentArticleList.Single(x => x.Document.DocumentTypeId == openingDocumentType.Id).Document;
+
+        // If change account type
+        if (account.AccountTypeId != request.AccountTypeId)
         {
-            throw new ValidationException(nameof(request.AccountTypeId), _localizer.GetString("notFound").Value);
+            var accountType = await _context.AccountTypes.FirstOrDefaultAsync(a => a.Id.Equals(request.AccountTypeId), cancellationToken);
+            if (accountType is null)
+            {
+                throw new ValidationException(nameof(request.AccountTypeId), _localizer.GetString("notFound").Value);
+            }
+            account.AccountType = accountType;
+            account.AccountDetail.Code = accountType.Code + account.Code;
+            openingDocument.DocumentItems.Single(x => x.AccountDetailId == account.AccountDetail.Id).AccountSubsid
+                = await _context.AccountSubsids.SingleAsync(x => x.Code == accountType.Code, cancellationToken);
+        }
+
+        // If change create date
+        if (account.CreateDate != request.CreateDate)
+        {
+            if (account.AccountDetail.DocumentArticleList.Any(x =>
+                x.Document.IsActive == true && x.Document.DocumentTypeId != openingDocumentType.Id && x.Document.Date <= request.CreateDate))
+            {
+                throw new ValidationException(nameof(request.CreateDate), _localizer.GetString("openingAccountDateIsAfterTransaction").Value);
+            }
+
+            account.CreateDate = request.CreateDate;
+            openingDocument.Date = request.CreateDate;
+        }
+
+        // If change init credit
+        if (openingDocument.DocumentItems.Sum(x => x.Credit) != request.InitCredit)
+        {
+            openingDocument.DocumentItems.Single(x => x.AccountDetailId == account.AccountDetail.Id).Credit = request.InitCredit;
+            openingDocument.DocumentItems.Single(x => x.AccountDetailId != account.AccountDetail.Id).Debit = request.InitCredit;
         }
 
         // If change persons
@@ -54,12 +92,14 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
                 {
                     throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFound").Value);
                 }
+                if (person.IsActive is false)
+                {
+                    throw new ValidationException(nameof(request.PersonId), _localizer.GetString("personIsNotActive").Value);
+                }
                 account.People.Add(person);
             }
         }
 
-        account.AccountType = accountType;
-        account.CreateDate = request.CreateDate;
         account.Note = request.Note;
 
         await _context.SaveChangesAsync(cancellationToken);

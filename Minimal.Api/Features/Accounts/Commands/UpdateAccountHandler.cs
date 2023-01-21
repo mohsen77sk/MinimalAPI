@@ -30,10 +30,10 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
         }
 
         var account = await _context.Accounts
-            .Include(x => x.People)
-            .Include(x => x.AccountDetail)
-            .ThenInclude(x => x.DocumentArticleList)
-            .ThenInclude(x => x.Document)
+            .Include(a => a.People)
+            .Include(a => a.AccountDetail)
+            .ThenInclude(ad => ad.DocumentArticleList)
+            .ThenInclude(da => da.Document)
             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
         if (account is null)
         {
@@ -41,29 +41,29 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
         }
 
         // Select the type of account opening document 
-        var openingDocumentType = await _context.DocumentTypes.SingleAsync(x => x.Code == "10", cancellationToken);
+        var openingDocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "10", cancellationToken);
         // Selecting the account opening document
-        var openingDocument = account.AccountDetail.DocumentArticleList.Single(x => x.Document.DocumentTypeId == openingDocumentType.Id).Document;
+        var openingDocument = account.AccountDetail.DocumentArticleList.Single(da => da.Document.DocumentTypeId == openingDocumentType.Id).Document;
 
         // If change account type
         if (account.AccountTypeId != request.AccountTypeId)
         {
-            var accountType = await _context.AccountTypes.FirstOrDefaultAsync(a => a.Id.Equals(request.AccountTypeId), cancellationToken);
+            var accountType = await _context.AccountTypes.FirstOrDefaultAsync(at => at.Id.Equals(request.AccountTypeId), cancellationToken);
             if (accountType is null)
             {
                 throw new ValidationException(nameof(request.AccountTypeId), _localizer.GetString("notFound").Value);
             }
             account.AccountType = accountType;
             account.AccountDetail.Code = accountType.Code + account.Code;
-            openingDocument.DocumentItems.Single(x => x.AccountDetailId == account.AccountDetail.Id).AccountSubsid
+            openingDocument.DocumentItems.Single(dr => dr.AccountDetailId == account.AccountDetail.Id).AccountSubsid
                 = await _context.AccountSubsids.SingleAsync(x => x.Code == accountType.Code, cancellationToken);
         }
 
         // If change create date
         if (account.CreateDate != request.CreateDate)
         {
-            if (account.AccountDetail.DocumentArticleList.Any(x =>
-                x.Document.IsActive == true && x.Document.DocumentTypeId != openingDocumentType.Id && x.Document.Date <= request.CreateDate))
+            if (account.AccountDetail.DocumentArticleList.Any(dr =>
+                dr.Document.IsActive == true && dr.Document.DocumentTypeId != openingDocumentType.Id && dr.Document.Date <= request.CreateDate))
             {
                 throw new ValidationException(nameof(request.CreateDate), _localizer.GetString("openingAccountDateIsAfterTransaction").Value);
             }
@@ -73,21 +73,21 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
         }
 
         // If change init credit
-        if (openingDocument.DocumentItems.Sum(x => x.Credit) != request.InitCredit)
+        if (openingDocument.DocumentItems.Sum(dr => dr.Credit) != request.InitCredit)
         {
-            openingDocument.DocumentItems.Single(x => x.AccountDetailId == account.AccountDetail.Id).Credit = request.InitCredit;
-            openingDocument.DocumentItems.Single(x => x.AccountDetailId != account.AccountDetail.Id).Debit = request.InitCredit;
+            openingDocument.DocumentItems.Single(dr => dr.AccountDetailId == account.AccountDetail.Id).Credit = request.InitCredit;
+            openingDocument.DocumentItems.Single(dr => dr.AccountDetailId != account.AccountDetail.Id).Debit = request.InitCredit;
         }
 
         // If change persons
-        if (!account.People.Select(x => x.Id).ToList().SequenceEqual(request.PersonId))
+        if (!account.People.Select(p => p.Id).ToList().SequenceEqual(request.PersonId))
         {
             // Remove persons 
             account.People.Clear();
             // Add persons
             foreach (var personId in request.PersonId)
             {
-                var person = await _context.People.FirstOrDefaultAsync(a => a.Id.Equals(personId), cancellationToken);
+                var person = await _context.People.FirstOrDefaultAsync(p => p.Id.Equals(personId), cancellationToken);
                 if (person is null)
                 {
                     throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFound").Value);

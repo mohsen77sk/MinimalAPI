@@ -23,8 +23,8 @@ public class GetAllAccountHandler : IRequestHandler<GetAllAccount, PageList<Acco
     {
         var Accounts = await _context.Accounts
             .AsNoTracking()
-            .Include(ba => ba.AccountType)
-            .Include(ba => ba.People)
+            .Include(a => a.AccountType)
+            .Include(a => a.People)
             .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
         return _mapper.Map<PageList<AccountGetDto>>(Accounts);

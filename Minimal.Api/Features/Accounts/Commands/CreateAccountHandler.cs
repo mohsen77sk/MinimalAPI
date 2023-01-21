@@ -31,7 +31,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
 
         var accountToAdd = _mapper.Map<Account>(request);
 
-        var accountType = await _context.AccountTypes.FirstOrDefaultAsync(a => a.Id.Equals(request.AccountTypeId), cancellationToken);
+        var accountType = await _context.AccountTypes.FirstOrDefaultAsync(at => at.Id.Equals(request.AccountTypeId), cancellationToken);
         if (accountType is null)
         {
             throw new ValidationException(nameof(request.AccountTypeId), _localizer.GetString("notFound").Value);
@@ -39,7 +39,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
 
         foreach (var personId in request.PersonId)
         {
-            var person = await _context.People.FirstOrDefaultAsync(a => a.Id.Equals(personId), cancellationToken);
+            var person = await _context.People.FirstOrDefaultAsync(p => p.Id.Equals(personId), cancellationToken);
             if (person is null)
             {
                 throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFound").Value);
@@ -59,7 +59,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
         {
             Title = "حساب" + " " + accountToAdd.Code,
             Account = accountToAdd,
-            AccountCategory = await _context.AccountCategories.SingleAsync(x => x.Code == "2", cancellationToken),
+            AccountCategory = await _context.AccountCategories.SingleAsync(ac => ac.Code == "2", cancellationToken),
             IsActive = true
         };
         _context.AccountDetails.Add(accountDetailToAdd);
@@ -68,8 +68,8 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
         {
             Date = accountToAdd.CreateDate,
             Note = "سند ایجاد حساب" + " " + accountToAdd.Code,
-            FiscalYear = await _context.FiscalYears.SingleAsync(x => x.Id == 1, cancellationToken),
-            DocumentType = await _context.DocumentTypes.SingleAsync(x => x.Code == "10", cancellationToken),
+            FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
+            DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "10", cancellationToken),
             DocumentItems = new List<DocumentArticle>()
             {
                 new DocumentArticle

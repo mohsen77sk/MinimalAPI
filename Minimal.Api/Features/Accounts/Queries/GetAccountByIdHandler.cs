@@ -27,8 +27,8 @@ public class GetAccountByIdHandler : IRequestHandler<GetAccountById, AccountGetD
 
         var Account = await _context.Accounts
             .AsNoTracking()
-            .Include(ba => ba.AccountType)
-            .Include(ba => ba.People)
+            .Include(a => a.AccountType)
+            .Include(a => a.People)
             .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
 
         if (Account is null)

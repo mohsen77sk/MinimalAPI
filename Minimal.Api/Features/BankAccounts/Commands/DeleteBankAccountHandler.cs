@@ -22,7 +22,7 @@ public class DeleteBankAccountHandler : IRequestHandler<DeleteBankAccount>
             throw new ArgumentNullException(nameof(request));
         }
 
-        var bankAccount = await _context.BankAccounts.FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+        var bankAccount = await _context.BankAccounts.FirstOrDefaultAsync(ba => ba.Id == request.Id, cancellationToken);
         if (bankAccount is null)
         {
             throw new NotFoundException();

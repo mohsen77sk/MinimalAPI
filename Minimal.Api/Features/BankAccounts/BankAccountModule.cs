@@ -18,11 +18,6 @@ public class BankAccountModule : IModule
             .Produces<PageList<BankAccountGetDto>>()
             .Produces(500);
 
-        bankAccounts.MapGet("/{id}", GetBankAccountByIdAsync)
-            .Produces<BankAccountGetDto>()
-            .Produces(404)
-            .Produces(500);
-
         bankAccounts.MapPost("/", CreateBankAccountAsync)
             .Produces<BankAccountGetDto>()
             .Produces<ValidationError>(400)
@@ -40,6 +35,11 @@ public class BankAccountModule : IModule
             .Produces(404)
             .Produces(500);
 
+        bankAccounts.MapGet("/{id}", GetBankAccountByIdAsync)
+            .Produces<BankAccountGetDto>()
+            .Produces(404)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -53,13 +53,6 @@ public class BankAccountModule : IModule
         };
         var bankAccounts = await mediator.Send(query, ct);
         return Results.Ok(bankAccounts);
-    }
-
-    private async Task<IResult> GetBankAccountByIdAsync(int id, IMediator mediator, CancellationToken ct)
-    {
-        var query = new GetBankAccountById { BankAccountId = id };
-        var bankAccount = await mediator.Send(query, ct);
-        return Results.Ok(bankAccount);
     }
 
     private async Task<IResult> CreateBankAccountAsync(CreateBankAccount bankAccountDto, IMediator mediator, CancellationToken ct)
@@ -79,5 +72,12 @@ public class BankAccountModule : IModule
         var query = new DeleteBankAccount { Id = id };
         await mediator.Send(query, ct);
         return Results.Ok(true);
+    }
+
+    private async Task<IResult> GetBankAccountByIdAsync(int id, IMediator mediator, CancellationToken ct)
+    {
+        var query = new GetBankAccountById { BankAccountId = id };
+        var bankAccount = await mediator.Send(query, ct);
+        return Results.Ok(bankAccount);
     }
 }

@@ -31,13 +31,13 @@ public class CreateBankAccountHandler : IRequestHandler<CreateBankAccount, BankA
 
         var bankAccountToAdd = _mapper.Map<BankAccount>(request);
 
-        var person = await _context.People.FirstOrDefaultAsync(a => a.Id.Equals(request.PersonId), cancellationToken);
+        var person = await _context.People.FirstOrDefaultAsync(p => p.Id.Equals(request.PersonId), cancellationToken);
         if (person is null)
         {
             throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFound").Value);
         }
 
-        var bank = await _context.Banks.FirstOrDefaultAsync(a => a.Id.Equals(request.BankId), cancellationToken);
+        var bank = await _context.Banks.FirstOrDefaultAsync(b => b.Id.Equals(request.BankId), cancellationToken);
         if (bank is null)
         {
             throw new ValidationException(nameof(request.BankId), _localizer.GetString("notFound").Value);

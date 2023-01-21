@@ -29,7 +29,7 @@ public class GetBankAccountByIdHandler : IRequestHandler<GetBankAccountById, Ban
             .AsNoTracking()
             .Include(ba => ba.Bank)
             .Include(ba => ba.Person)
-            .FirstOrDefaultAsync(a => a.Id == request.BankAccountId, cancellationToken);
+            .FirstOrDefaultAsync(ba => ba.Id == request.BankAccountId, cancellationToken);
 
         if (BankAccount is null)
         {

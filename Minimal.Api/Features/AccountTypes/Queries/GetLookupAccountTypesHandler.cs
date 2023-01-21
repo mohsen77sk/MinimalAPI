@@ -21,7 +21,7 @@ public class GetLookupAccountTypeHandler : IRequestHandler<GetLookupAccountType,
     {
         var accountTypes = await _context.AccountTypes
             .AsNoTracking()
-            .Where(x => x.IsActive == true)
+            .Where(at => at.IsActive == true)
             .ToListAsync(cancellationToken);
 
         return _mapper.Map<List<LookupDto>>(accountTypes);

@@ -26,7 +26,7 @@ public class UpdatePersonHandler : IRequestHandler<UpdatePerson, PersonGetDto>
             throw new ArgumentNullException(nameof(request));
         }
 
-        var person = await _context.People.Include(a => a.User).FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+        var person = await _context.People.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
         if (person is null)
         {
             throw new NotFoundException();

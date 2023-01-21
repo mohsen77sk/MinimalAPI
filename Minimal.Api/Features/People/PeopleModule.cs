@@ -17,11 +17,6 @@ public class PeopleModule : IModule
             .Produces<PageList<PersonGetDto>>()
             .Produces(500);
 
-        persons.MapGet("/{id}", GetPersonByIdAsync)
-            .Produces<PersonGetDto>()
-            .Produces(404)
-            .Produces(500);
-
         persons.MapPost("/", CreatePersonAsync)
             .Produces<PersonGetDto>()
             .Produces<ValidationError>(400)
@@ -39,6 +34,11 @@ public class PeopleModule : IModule
             .Produces(404)
             .Produces(500);
 
+        persons.MapGet("/{id}", GetPersonByIdAsync)
+            .Produces<PersonGetDto>()
+            .Produces(404)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -52,13 +52,6 @@ public class PeopleModule : IModule
         };
         var persons = await mediator.Send(query, ct);
         return Results.Ok(persons);
-    }
-
-    private async Task<IResult> GetPersonByIdAsync(int id, IMediator mediator, CancellationToken ct)
-    {
-        var query = new GetPersonById { PersonId = id };
-        var person = await mediator.Send(query, ct);
-        return Results.Ok(person);
     }
 
     private async Task<IResult> CreatePersonAsync(CreatePerson personDto, IMediator mediator, CancellationToken ct)
@@ -79,4 +72,10 @@ public class PeopleModule : IModule
         return Results.Ok(person);
     }
 
+    private async Task<IResult> GetPersonByIdAsync(int id, IMediator mediator, CancellationToken ct)
+    {
+        var query = new GetPersonById { PersonId = id };
+        var person = await mediator.Send(query, ct);
+        return Results.Ok(person);
+    }
 }

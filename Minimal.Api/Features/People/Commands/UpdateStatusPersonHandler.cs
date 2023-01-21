@@ -30,15 +30,15 @@ public class UpdateStatusPersonHandler : IRequestHandler<UpdateStatusPerson, Per
         }
 
         var person = await _context.People
-            .Include(a => a.User)
-            .Include(a => a.Accounts)
-            .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+            .Include(p => p.User)
+            .Include(p => p.Accounts)
+            .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
         if (person is null)
         {
             throw new NotFoundException();
         }
 
-        if (request.IsActive is false && person.Accounts.Any(x => x.IsActive == true))
+        if (request.IsActive is false && person.Accounts.Any(a => a.IsActive == true))
         {
             throw new ValidationException(nameof(request.IsActive), _localizer.GetString("personHasActiveAccount").Value);
         }

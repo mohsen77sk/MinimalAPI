@@ -25,7 +25,7 @@ public class GetPersonByIdHandler : IRequestHandler<GetPersonById, PersonGetDto>
             throw new ArgumentNullException(nameof(request));
         }
 
-        var person = await _context.People.AsNoTracking().FirstOrDefaultAsync(a => a.Id == request.PersonId, cancellationToken);
+        var person = await _context.People.AsNoTracking().FirstOrDefaultAsync(p => p.Id == request.PersonId, cancellationToken);
         if (person is null)
         {
             throw new NotFoundException();

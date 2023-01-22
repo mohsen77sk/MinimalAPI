@@ -141,6 +141,10 @@
     <value>Not found account.</value>
     <comment/>
   </data>
+  <data name="notFoundBankAccount" xml:space="preserve">
+    <value>Not found bank account.</value>
+    <comment/>
+  </data>
   <data name="notFoundTransaction" xml:space="preserve">
     <value>Not found transaction.</value>
     <comment/>

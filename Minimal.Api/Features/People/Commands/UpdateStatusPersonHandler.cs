@@ -19,7 +19,7 @@ public class UpdateStatusPersonHandler : IRequestHandler<UpdateStatusPerson, Per
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _localizer = localizer ?? throw new ArgumentNullException(nameof(mapper));
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
 
     public async Task<PersonGetDto> Handle(UpdateStatusPerson request, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ public class UpdateStatusPersonHandler : IRequestHandler<UpdateStatusPerson, Per
             .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
         if (person is null)
         {
-            throw new NotFoundException();
+            throw new NotFoundException(_localizer.GetString("notFoundPerson").Value);
         }
 
         if (request.IsActive is false && person.Accounts.Any(a => a.IsActive == true))

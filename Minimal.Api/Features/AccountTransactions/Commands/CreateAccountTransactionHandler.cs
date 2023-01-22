@@ -19,7 +19,7 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _localizer = localizer ?? throw new ArgumentNullException(nameof(mapper));
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
 
     public async Task<AccountTransactionGetDto> Handle(CreateAccountTransaction request, CancellationToken cancellationToken)

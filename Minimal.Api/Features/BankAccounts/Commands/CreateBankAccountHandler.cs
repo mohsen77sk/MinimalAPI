@@ -19,7 +19,7 @@ public class CreateBankAccountHandler : IRequestHandler<CreateBankAccount, BankA
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _localizer = localizer ?? throw new ArgumentNullException(nameof(mapper));
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
 
     public async Task<BankAccountGetDto> Handle(CreateBankAccount request, CancellationToken cancellationToken)

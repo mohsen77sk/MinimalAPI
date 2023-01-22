@@ -19,7 +19,7 @@ public class UpdateBankAccountHandler : IRequestHandler<UpdateBankAccount, BankA
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _localizer = localizer ?? throw new ArgumentNullException(nameof(mapper));
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
 
     public async Task<BankAccountGetDto> Handle(UpdateBankAccount request, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ public class UpdateBankAccountHandler : IRequestHandler<UpdateBankAccount, BankA
         var bankAccount = await _context.BankAccounts.FirstOrDefaultAsync(ba => ba.Id == request.Id, cancellationToken);
         if (bankAccount is null)
         {
-            throw new NotFoundException();
+            throw new NotFoundException(_localizer.GetString("notFoundBankAccount").Value);
         }
 
         var person = await _context.People.FirstOrDefaultAsync(p => p.Id.Equals(request.PersonId), cancellationToken);

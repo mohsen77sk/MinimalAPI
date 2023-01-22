@@ -19,7 +19,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _localizer = localizer ?? throw new ArgumentNullException(nameof(mapper));
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
 
     public async Task<AccountGetDto> Handle(UpdateAccount request, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
         if (account is null)
         {
-            throw new NotFoundException();
+            throw new NotFoundException(_localizer.GetString("notFoundAccount").Value);
         }
 
         // Select the type of account opening document 
@@ -90,7 +90,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
                 var person = await _context.People.FirstOrDefaultAsync(p => p.Id.Equals(personId), cancellationToken);
                 if (person is null)
                 {
-                    throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFound").Value);
+                    throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFoundPerson").Value);
                 }
                 if (person.IsActive is false)
                 {

@@ -141,6 +141,10 @@
     <value>حساب پیدا نشد.</value>
     <comment/>
   </data>
+  <data name="notFoundBankAccount" xml:space="preserve">
+    <value>حساب بانکی پیدا نشد.</value>
+    <comment/>
+  </data>
   <data name="notFoundTransaction" xml:space="preserve">
     <value>تراکنشی پیدا نشد.</value>
     <comment/>

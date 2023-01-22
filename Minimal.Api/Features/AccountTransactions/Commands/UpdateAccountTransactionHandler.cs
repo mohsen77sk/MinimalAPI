@@ -19,7 +19,7 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _localizer = localizer ?? throw new ArgumentNullException(nameof(mapper));
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
 
     public async Task<AccountTransactionGetDto> Handle(UpdateAccountTransaction request, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
             .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
         if (account is null)
         {
-            throw new NotFoundException();
+            throw new NotFoundException(_localizer.GetString("notFoundAccount").Value);
         }
 
         if (account.IsActive is false)
@@ -53,7 +53,7 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
             .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
         if (document is null)
         {
-            throw new NotFoundException();
+            throw new NotFoundException(_localizer.GetString("notFoundTransaction").Value);
         }
 
         if (!new[] { "12", "13" }.Contains(document.DocumentType.Code))

@@ -19,7 +19,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _localizer = localizer ?? throw new ArgumentNullException(nameof(mapper));
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
 
     public async Task<AccountGetDto> Handle(CreateAccount request, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
             var person = await _context.People.FirstOrDefaultAsync(p => p.Id.Equals(personId), cancellationToken);
             if (person is null)
             {
-                throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFound").Value);
+                throw new ValidationException(nameof(request.PersonId), _localizer.GetString("notFoundPerson").Value);
             }
             if (person.IsActive is false)
             {

@@ -38,6 +38,16 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
             throw new NotFoundException();
         }
 
+        if (account.IsActive is false)
+        {
+            throw new ValidationException(nameof(request.AccountId), _localizer.GetString("accountIsNotActive").Value);
+        }
+
+        if (account.CreateDate > request.Date)
+        {
+            throw new ValidationException(nameof(request.Date), _localizer.GetString("transactionDateIsEarlierOpeningDate").Value);
+        }
+
         var documentToAdd = new Document
         {
             Date = request.Date,

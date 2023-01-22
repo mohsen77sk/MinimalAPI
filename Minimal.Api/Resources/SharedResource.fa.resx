@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="notFound" xml:space="preserve">
-    <value>پیدا نشد</value>
-    <comment/>
-  </data>
   <data name="invalidUserNameOrPassword" xml:space="preserve">
     <value>نام کاربری و یا کلمه‌ی عبور وارد شده معتبر نیستند.</value>
     <comment/>
@@ -133,8 +129,32 @@
     <value>این اکانت به علت چندین بار عدم موفقیت در ورود، به صورت موقت، قفل شده‌است. لطفا دقایقی بعد مجددا سعی کنید.</value>
     <comment/>
   </data>
+  <data name="notFound" xml:space="preserve">
+    <value>پیدا نشد</value>
+    <comment/>
+  </data>
+  <data name="notFoundPerson" xml:space="preserve">
+    <value>شخص پیدا نشد.</value>
+    <comment/>
+  </data>
+  <data name="notFoundAccount" xml:space="preserve">
+    <value>حساب پیدا نشد.</value>
+    <comment/>
+  </data>
+  <data name="notFoundTransaction" xml:space="preserve">
+    <value>تراکنشی پیدا نشد.</value>
+    <comment/>
+  </data>
   <data name="personIsNotActive" xml:space="preserve">
     <value>شخص انتخاب شده غیر فعال است.</value>
+    <comment/>
+  </data>
+  <data name="accountIsNotActive" xml:space="preserve">
+    <value>حساب انتخاب شده غیر فعال است.</value>
+    <comment/>
+  </data>
+  <data name="transactionIsNotActive" xml:space="preserve">
+    <value>تراکنش انتخاب شده غیر فعال است.</value>
     <comment/>
   </data>
   <data name="personHasActiveAccount" xml:space="preserve">
@@ -143,6 +163,14 @@
   </data>
   <data name="openingAccountDateIsAfterTransaction" xml:space="preserve">
     <value>تاریخ افتتاح حساب نمی تواند بعد از تراکنشات موجود باشد.</value>
+    <comment/>
+  </data>
+  <data name="transactionDateIsEarlierOpeningDate" xml:space="preserve">
+    <value>تاریخ تراکنش نمی تواند بعد از تاریخ افتتاح حساب باشد.</value>
+    <comment/>
+  </data>
+  <data name="transactionCannotBeEdited" xml:space="preserve">
+    <value>این تراکنش قابل ویرایش نیست.</value>
     <comment/>
   </data>
 </root>

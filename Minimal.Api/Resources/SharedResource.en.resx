@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="notFound" xml:space="preserve">
-    <value>Not found</value>
-    <comment/>
-  </data>
   <data name="invalidUserNameOrPassword" xml:space="preserve">
     <value>The username or password entered is not valid.</value>
     <comment/>
@@ -133,8 +129,32 @@
     <value>This account has been temporarily locked due to multiple failed login attempts. Please try again in a few minutes.</value>
     <comment/>
   </data>
+  <data name="notFound" xml:space="preserve">
+    <value>Not found</value>
+    <comment/>
+  </data>
+  <data name="notFoundPerson" xml:space="preserve">
+    <value>Not found person.</value>
+    <comment/>
+  </data>
+  <data name="notFoundAccount" xml:space="preserve">
+    <value>Not found account.</value>
+    <comment/>
+  </data>
+  <data name="notFoundTransaction" xml:space="preserve">
+    <value>Not found transaction.</value>
+    <comment/>
+  </data>
   <data name="personIsNotActive" xml:space="preserve">
     <value>The selected person is disabled.</value>
+    <comment/>
+  </data>
+  <data name="accountIsNotActive" xml:space="preserve">
+    <value>The selected account is disabled.</value>
+    <comment/>
+  </data>
+  <data name="transactionIsNotActive" xml:space="preserve">
+    <value>The selected transaction is disabled.</value>
     <comment/>
   </data>
   <data name="personHasActiveAccount" xml:space="preserve">
@@ -143,6 +163,14 @@
   </data>
   <data name="openingAccountDateIsAfterTransaction" xml:space="preserve">
     <value>The account opening date cannot be available after transactions.</value>
+    <comment/>
+  </data>
+  <data name="transactionDateIsEarlierOpeningDate" xml:space="preserve">
+    <value>The transaction date cannot be earlier than the account opening date.</value>
+    <comment/>
+  </data>
+  <data name="transactionCannotBeedited" xml:space="preserve">
+    <value>This transaction cannot be edited.</value>
     <comment/>
   </data>
 </root>

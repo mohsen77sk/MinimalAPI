@@ -22,6 +22,11 @@ public class AccountTransactionModule : IModule
             .Produces<ValidationError>(400)
             .Produces(500);
 
+        transactions.MapPut("/", UpdateTransactionAccountAsync)
+            .Produces<AccountTransactionGetDto>()
+            .Produces<ValidationError>(400)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -32,6 +37,12 @@ public class AccountTransactionModule : IModule
     }
 
     private async Task<IResult> CreateTransactionAccountAsync(CreateAccountTransaction accountTransactionDto, IMediator mediator, CancellationToken ct)
+    {
+        var account = await mediator.Send(accountTransactionDto, ct);
+        return Results.Ok(account);
+    }
+
+    private async Task<IResult> UpdateTransactionAccountAsync(UpdateAccountTransaction accountTransactionDto, IMediator mediator, CancellationToken ct)
     {
         var account = await mediator.Send(accountTransactionDto, ct);
         return Results.Ok(account);

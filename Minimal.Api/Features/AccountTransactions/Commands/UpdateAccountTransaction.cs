@@ -3,8 +3,9 @@ using Minimal.Api.Features.AccountTransactions.Models;
 
 namespace Minimal.Api.Features.AccountTransactions.Commands;
 
-public class CreateAccountTransaction : IRequest<AccountTransactionGetDto>
+public class UpdateAccountTransaction : IRequest<AccountTransactionGetDto>
 {
+    public int Id { get; set; }
     public int AccountId { get; set; }
     public decimal Amount { get; set; }
     public TransactionTypeEnum TransactionType { get; set; }

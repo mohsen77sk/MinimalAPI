@@ -173,8 +173,12 @@
     <value>The transaction date cannot be earlier than the account opening date.</value>
     <comment/>
   </data>
-  <data name="transactionCannotBeedited" xml:space="preserve">
+  <data name="transactionCanNotBeEdited" xml:space="preserve">
     <value>This transaction cannot be edited.</value>
+    <comment/>
+  </data>
+  <data name="transactionCanNotBeDeleted" xml:space="preserve">
+    <value>This transaction cannot be deleted.</value>
     <comment/>
   </data>
 </root>

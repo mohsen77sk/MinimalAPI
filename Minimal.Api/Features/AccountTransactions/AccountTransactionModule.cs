@@ -27,6 +27,12 @@ public class AccountTransactionModule : IModule
             .Produces<ValidationError>(400)
             .Produces(500);
 
+        transactions.MapDelete("/{id}", DeleteTransactionAccountAsync)
+            .Produces<bool>()
+            .Produces<ValidationError>(400)
+            .Produces(404)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -46,5 +52,12 @@ public class AccountTransactionModule : IModule
     {
         var account = await mediator.Send(accountTransactionDto, ct);
         return Results.Ok(account);
+    }
+
+    private async Task<IResult> DeleteTransactionAccountAsync(int id, IMediator mediator, CancellationToken ct)
+    {
+        var query = new DeleteAccountTransaction { Id = id };
+        await mediator.Send(query, ct);
+        return Results.Ok(true);
     }
 }

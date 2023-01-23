@@ -50,15 +50,22 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
 
         var document = await _context.Documents
             .Include(d => d.DocumentType)
-            .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
+            .Include(d => d.DocumentItems)
+            .ThenInclude(d => d.AccountDetail)
+            .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
         if (document is null)
         {
             throw new NotFoundException(_localizer.GetString("notFoundTransaction").Value);
         }
 
-        if (!new[] { "12", "13" }.Contains(document.DocumentType.Code))
+        if (document.IsActive is false)
         {
-            throw new ValidationException(nameof(request.Date), _localizer.GetString("transactionCannotBeChanged").Value);
+            throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionIsNotActive").Value);
+        }
+
+        if (new[] { "12", "13" }.Contains(document.DocumentType.Code) is false)
+        {
+            throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeEdited").Value);
         }
 
         document.Date = request.Date;

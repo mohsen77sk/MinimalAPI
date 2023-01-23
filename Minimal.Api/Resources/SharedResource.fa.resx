@@ -173,8 +173,12 @@
     <value>تاریخ تراکنش نمی تواند بعد از تاریخ افتتاح حساب باشد.</value>
     <comment/>
   </data>
-  <data name="transactionCannotBeEdited" xml:space="preserve">
+  <data name="transactionCanNotBeEdited" xml:space="preserve">
     <value>این تراکنش قابل ویرایش نیست.</value>
+    <comment/>
+  </data>
+  <data name="transactionCanNotBeDeleted" xml:space="preserve">
+    <value>این تراکنش قابل حذف نیست.</value>
     <comment/>
   </data>
 </root>

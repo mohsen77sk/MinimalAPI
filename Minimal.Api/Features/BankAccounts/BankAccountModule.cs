@@ -29,6 +29,12 @@ public class BankAccountModule : IModule
             .Produces(404)
             .Produces(500);
 
+        bankAccounts.MapPatch("/", UpdateBankAccountStatusAsync)
+            .Produces<BankAccountGetDto>()
+            .Produces<ValidationError>(400)
+            .Produces(404)
+            .Produces(500);
+
         bankAccounts.MapDelete("/{id}", DeleteBankAccountAsync)
             .Produces<bool>()
             .Produces<ValidationError>(400)
@@ -62,6 +68,12 @@ public class BankAccountModule : IModule
     }
 
     private async Task<IResult> UpdateBankAccountAsync(UpdateBankAccount bankAccountDto, IMediator mediator, CancellationToken ct)
+    {
+        var bankAccount = await mediator.Send(bankAccountDto, ct);
+        return Results.Ok(bankAccount);
+    }
+
+    private async Task<IResult> UpdateBankAccountStatusAsync(UpdateStatusBankAccount bankAccountDto, IMediator mediator, CancellationToken ct)
     {
         var bankAccount = await mediator.Send(bankAccountDto, ct);
         return Results.Ok(bankAccount);

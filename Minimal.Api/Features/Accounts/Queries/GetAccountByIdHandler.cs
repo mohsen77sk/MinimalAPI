@@ -28,17 +28,17 @@ public class GetAccountByIdHandler : IRequestHandler<GetAccountById, AccountGetD
             throw new ArgumentNullException(nameof(request));
         }
 
-        var Account = await _context.Accounts
+        var account = await _context.Accounts
             .AsNoTracking()
             .Include(a => a.AccountType)
             .Include(a => a.People)
             .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
 
-        if (Account is null)
+        if (account is null)
         {
             throw new NotFoundException(_localizer.GetString("notFoundAccount").Value);
         }
 
-        return _mapper.Map<AccountGetDto>(Account);
+        return _mapper.Map<AccountGetDto>(account);
     }
 }

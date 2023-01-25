@@ -28,7 +28,7 @@ public class GetAccountBalanceHandler : IRequestHandler<GetAccountBalance, Accou
             throw new ArgumentNullException(nameof(request));
         }
 
-        var AccountBalance = await _context.Accounts
+        var accountBalance = await _context.Accounts
             .AsNoTracking()
             .Include(a => a.AccountDetail)
             .ThenInclude(ad => ad.DocumentArticleList)
@@ -42,11 +42,11 @@ public class GetAccountBalanceHandler : IRequestHandler<GetAccountBalance, Accou
             })
             .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
 
-        if (AccountBalance is null)
+        if (accountBalance is null)
         {
             throw new NotFoundException(_localizer.GetString("notFoundAccount").Value);
         }
 
-        return AccountBalance;
+        return accountBalance;
     }
 }

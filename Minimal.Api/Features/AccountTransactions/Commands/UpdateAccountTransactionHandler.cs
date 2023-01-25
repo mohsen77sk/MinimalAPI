@@ -52,7 +52,7 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
             .Include(d => d.DocumentType)
             .Include(d => d.DocumentItems)
             .ThenInclude(d => d.AccountDetail)
-            .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
         if (document is null)
         {
             throw new NotFoundException(_localizer.GetString("notFoundTransaction").Value);

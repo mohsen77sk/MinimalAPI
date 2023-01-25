@@ -31,14 +31,11 @@ public class GetAccountBalanceHandler : IRequestHandler<GetAccountBalance, Accou
         var accountBalance = await _context.Accounts
             .AsNoTracking()
             .Include(a => a.AccountDetail)
-            .ThenInclude(ad => ad.DocumentArticleList)
-            .ThenInclude(da => da.Document)
+            .ThenInclude(ad => ad.DocumentArticleList.Where(dr => dr.Document.IsActive == true))
             .Select(a => new AccountBalanceGetDto
             {
                 Id = a.Id,
-                Balance = a.AccountDetail.DocumentArticleList
-                    .Where(da => da.Document.IsActive == true && da.AccountDetailId == a.AccountDetail.Id)
-                    .Sum(da => da.Credit - da.Debit)
+                Balance = a.AccountDetail.DocumentArticleList.Sum(da => da.Credit - da.Debit)
             })
             .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
 

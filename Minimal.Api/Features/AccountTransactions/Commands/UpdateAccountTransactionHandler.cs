@@ -73,9 +73,11 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
         document.DocumentType = request.TransactionType == TransactionTypeEnum.Credit ?
             await _context.DocumentTypes.SingleAsync(at => at.Code == "12", cancellationToken) :
             await _context.DocumentTypes.SingleAsync(at => at.Code == "13", cancellationToken);
+
         var da1 = document.DocumentItems.Single(da => da.AccountDetailId == account.AccountDetail.Id);
         da1.Credit = request.TransactionType == TransactionTypeEnum.Credit ? request.Amount : 0;
         da1.Debit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0;
+
         var da2 = document.DocumentItems.Single(da => da.AccountDetailId != account.AccountDetail.Id);
         da2.Credit = request.TransactionType == TransactionTypeEnum.Credit ? request.Amount : 0;
         da2.Debit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0;

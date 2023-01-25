@@ -32,12 +32,17 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
         var account = await _context.Accounts
             .Include(a => a.People)
             .Include(a => a.AccountDetail)
-            .ThenInclude(ad => ad.DocumentArticleList)
+            .ThenInclude(ad => ad.DocumentArticleList.Where(dr => dr.Document.IsActive == true))
             .ThenInclude(da => da.Document)
             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
         if (account is null)
         {
             throw new NotFoundException(_localizer.GetString("notFoundAccount").Value);
+        }
+
+        if (account.IsActive is false)
+        {
+            throw new ValidationException(nameof(request.Id), _localizer.GetString("accountIsNotActive").Value);
         }
 
         // Select the type of account opening document 
@@ -62,8 +67,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
         // If change create date
         if (account.CreateDate != request.CreateDate)
         {
-            if (account.AccountDetail.DocumentArticleList.Any(dr =>
-                dr.Document.IsActive == true && dr.Document.DocumentTypeId != openingDocumentType.Id && dr.Document.Date <= request.CreateDate))
+            if (account.AccountDetail.DocumentArticleList.Any(dr => dr.Document.DocumentTypeId != openingDocumentType.Id && dr.Document.Date <= request.CreateDate))
             {
                 throw new ValidationException(nameof(request.CreateDate), _localizer.GetString("openingAccountDateIsAfterTransaction").Value);
             }

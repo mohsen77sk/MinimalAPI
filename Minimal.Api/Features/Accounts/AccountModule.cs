@@ -38,6 +38,11 @@ public class AccountModule : IModule
             .Produces(404)
             .Produces(500);
 
+        accounts.MapPost("/close", CloseAccountAsync)
+            .Produces<AccountGetDto>()
+            .Produces<ValidationError>(400)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -76,6 +81,12 @@ public class AccountModule : IModule
     {
         var query = new GetAccountBalance { AccountId = id };
         var account = await mediator.Send(query, ct);
+        return Results.Ok(account);
+    }
+
+    private async Task<IResult> CloseAccountAsync(CloseAccount accountDto, IMediator mediator, CancellationToken ct)
+    {
+        var account = await mediator.Send(accountDto, ct);
         return Results.Ok(account);
     }
 }

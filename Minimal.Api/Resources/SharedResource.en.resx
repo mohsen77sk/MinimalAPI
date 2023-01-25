@@ -166,7 +166,11 @@
     <comment/>
   </data>
   <data name="openingAccountDateIsAfterTransaction" xml:space="preserve">
-    <value>The account opening date cannot be available after transactions.</value>
+    <value>The account opening date cannot be after transactions.</value>
+    <comment/>
+  </data>
+  <data name="closingAccountDateIsBeforeTransaction" xml:space="preserve">
+    <value>The account closing date cannot be before transactions.</value>
     <comment/>
   </data>
   <data name="transactionDateIsEarlierOpeningDate" xml:space="preserve">

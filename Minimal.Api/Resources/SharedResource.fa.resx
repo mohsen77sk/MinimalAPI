@@ -173,6 +173,10 @@
     <value>تاریخ تراکنش نمی تواند بعد از تاریخ افتتاح حساب باشد.</value>
     <comment/>
   </data>
+  <data name="closingAccountDateIsBeforeTransaction" xml:space="preserve">
+    <value>تاریخ بسته شدن حساب نمی تواند قبل از تراکنشات موجود باشد.</value>
+    <comment/>
+  </data>
   <data name="transactionCanNotBeEdited" xml:space="preserve">
     <value>این تراکنش قابل ویرایش نیست.</value>
     <comment/>

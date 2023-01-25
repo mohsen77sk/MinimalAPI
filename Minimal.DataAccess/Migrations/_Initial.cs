@@ -130,6 +130,22 @@ namespace Minimal.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LoanTypes",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoanTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "People",
                 schema: "app",
                 columns: table => new
@@ -373,38 +389,6 @@ namespace Minimal.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountDetails",
-                schema: "accounting",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    AccountCategoryId = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    AccountId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccountDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AccountDetails_AccountCategories_AccountCategoryId",
-                        column: x => x.AccountCategoryId,
-                        principalSchema: "accounting",
-                        principalTable: "AccountCategories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AccountDetails_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalSchema: "app",
-                        principalTable: "Accounts",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AccountPerson",
                 schema: "app",
                 columns: table => new
@@ -427,6 +411,46 @@ namespace Minimal.DataAccess.Migrations
                         column: x => x.PeopleId,
                         principalSchema: "app",
                         principalTable: "People",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Loans",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoanTypeId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CloseDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    Amount = table.Column<decimal>(type: "Money", nullable: false),
+                    InstallmentAmount = table.Column<decimal>(type: "Money", nullable: false),
+                    StartInstallmentPayment = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    InstallmentCount = table.Column<int>(type: "int", nullable: false),
+                    InstallmentInterval = table.Column<int>(type: "int", nullable: false),
+                    InterestRates = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Loans", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Loans_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalSchema: "app",
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Loans_LoanTypes_LoanTypeId",
+                        column: x => x.LoanTypeId,
+                        principalSchema: "app",
+                        principalTable: "LoanTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -553,6 +577,45 @@ namespace Minimal.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AccountDetails",
+                schema: "accounting",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    AccountCategoryId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: true),
+                    LoanId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountDetails_AccountCategories_AccountCategoryId",
+                        column: x => x.AccountCategoryId,
+                        principalSchema: "accounting",
+                        principalTable: "AccountCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountDetails_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalSchema: "app",
+                        principalTable: "Accounts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AccountDetails_Loans_LoanId",
+                        column: x => x.LoanId,
+                        principalSchema: "app",
+                        principalTable: "Loans",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DocumentArticles",
                 schema: "accounting",
                 columns: table => new
@@ -625,6 +688,14 @@ namespace Minimal.DataAccess.Migrations
                 table: "AccountDetails",
                 column: "Code",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountDetails_LoanId",
+                schema: "accounting",
+                table: "AccountDetails",
+                column: "LoanId",
+                unique: true,
+                filter: "[LoanId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountEssences_Code",
@@ -751,6 +822,32 @@ namespace Minimal.DataAccess.Migrations
                 name: "IX_DocumentTypes_Code",
                 schema: "accounting",
                 table: "DocumentTypes",
+                column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Loans_AccountId",
+                schema: "app",
+                table: "Loans",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Loans_Code",
+                schema: "app",
+                table: "Loans",
+                column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Loans_LoanTypeId",
+                schema: "app",
+                table: "Loans",
+                column: "LoanTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoanTypes_Code",
+                schema: "app",
+                table: "LoanTypes",
                 column: "Code",
                 unique: true);
 
@@ -884,7 +981,7 @@ namespace Minimal.DataAccess.Migrations
                 schema: "accounting");
 
             migrationBuilder.DropTable(
-                name: "Accounts",
+                name: "Loans",
                 schema: "app");
 
             migrationBuilder.DropTable(
@@ -908,12 +1005,20 @@ namespace Minimal.DataAccess.Migrations
                 schema: "app");
 
             migrationBuilder.DropTable(
-                name: "AccountTypes",
+                name: "Accounts",
+                schema: "app");
+
+            migrationBuilder.DropTable(
+                name: "LoanTypes",
                 schema: "app");
 
             migrationBuilder.DropTable(
                 name: "AccountGroups",
                 schema: "accounting");
+
+            migrationBuilder.DropTable(
+                name: "AccountTypes",
+                schema: "app");
         }
     }
 }

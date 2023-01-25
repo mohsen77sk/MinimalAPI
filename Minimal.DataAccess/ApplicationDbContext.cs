@@ -19,6 +19,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Person> People { set; get; } = default!;
     public DbSet<Account> Accounts { set; get; } = default!;
     public DbSet<AccountType> AccountTypes { set; get; } = default!;
+    public DbSet<Loan> Loans { set; get; } = default!;
+    public DbSet<LoanType> LoanTypes { set; get; } = default!;
 
     public DbSet<FiscalYear> FiscalYears { set; get; } = default!;
     public DbSet<AccountEssence> AccountEssences { set; get; } = default!;

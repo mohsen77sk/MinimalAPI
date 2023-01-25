@@ -23,5 +23,8 @@ public class AccountDetail
     public int? AccountId { get; set; }
     public Account? Account { get; set; }
 
+    public int? LoanId { get; set; }
+    public Loan? Loan { get; set; }
+
     public ICollection<DocumentArticle> DocumentArticleList { get; set; }
 }

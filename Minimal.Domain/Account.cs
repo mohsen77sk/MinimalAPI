@@ -5,6 +5,7 @@ public class Account
     public Account()
     {
         People = new List<Person>();
+        Loans = new List<Loan>();
     }
 
     public int Id { get; set; }
@@ -22,7 +23,9 @@ public class Account
 
     public bool IsActive { get; set; }
 
-    public AccountDetail AccountDetail { get; set; }
+    public AccountDetail AccountDetail { get; set; } = default!;
 
     public ICollection<Person> People { get; set; }
+
+    public ICollection<Loan> Loans { get; set; }
 }

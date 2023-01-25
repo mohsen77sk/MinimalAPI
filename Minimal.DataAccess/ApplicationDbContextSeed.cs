@@ -204,5 +204,15 @@ public static class ApplicationDbContextSeed
             });
             await context.SaveChangesAsync();
         }
+
+        if (!context.LoanTypes.Any())
+        {
+            context.AddRange(new List<LoanType>()
+            {
+                new LoanType { Code = "1201", Name = "قرض الحسنه", IsActive = true },
+                new LoanType { Code = "1202", Name = "اضطراری", IsActive = true },
+            });
+            await context.SaveChangesAsync();
+        }
     }
 }

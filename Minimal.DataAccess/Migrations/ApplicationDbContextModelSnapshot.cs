@@ -279,6 +279,9 @@ namespace Minimal.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<int?>("LoanId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -293,6 +296,10 @@ namespace Minimal.DataAccess.Migrations
 
                     b.HasIndex("Code")
                         .IsUnique();
+
+                    b.HasIndex("LoanId")
+                        .IsUnique()
+                        .HasFilter("[LoanId] IS NOT NULL");
 
                     b.ToTable("AccountDetails", "accounting");
                 });
@@ -715,6 +722,95 @@ namespace Minimal.DataAccess.Migrations
                     b.ToTable("Users", "auth");
                 });
 
+            modelBuilder.Entity("Minimal.Domain.Loan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("Money");
+
+                    b.Property<DateTimeOffset?>("CloseDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("CreateDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<decimal>("InstallmentAmount")
+                        .HasColumnType("Money");
+
+                    b.Property<int>("InstallmentCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InstallmentInterval")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InterestRates")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LoanTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("StartInstallmentPayment")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("LoanTypeId");
+
+                    b.ToTable("Loans", "app");
+                });
+
+            modelBuilder.Entity("Minimal.Domain.LoanType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("LoanTypes", "app");
+                });
+
             modelBuilder.Entity("Minimal.Domain.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -864,9 +960,15 @@ namespace Minimal.DataAccess.Migrations
                         .WithOne("AccountDetail")
                         .HasForeignKey("Minimal.Domain.AccountDetail", "AccountId");
 
+                    b.HasOne("Minimal.Domain.Loan", "Loan")
+                        .WithOne("AccountDetail")
+                        .HasForeignKey("Minimal.Domain.AccountDetail", "LoanId");
+
                     b.Navigation("Account");
 
                     b.Navigation("AccountCategory");
+
+                    b.Navigation("Loan");
                 });
 
             modelBuilder.Entity("Minimal.Domain.AccountLedger", b =>
@@ -973,10 +1075,31 @@ namespace Minimal.DataAccess.Migrations
                     b.Navigation("Person");
                 });
 
+            modelBuilder.Entity("Minimal.Domain.Loan", b =>
+                {
+                    b.HasOne("Minimal.Domain.Account", "Account")
+                        .WithMany("Loans")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Minimal.Domain.LoanType", "LoanType")
+                        .WithMany("Loans")
+                        .HasForeignKey("LoanTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("LoanType");
+                });
+
             modelBuilder.Entity("Minimal.Domain.Account", b =>
                 {
                     b.Navigation("AccountDetail")
                         .IsRequired();
+
+                    b.Navigation("Loans");
                 });
 
             modelBuilder.Entity("Minimal.Domain.AccountCategory", b =>
@@ -1032,6 +1155,17 @@ namespace Minimal.DataAccess.Migrations
             modelBuilder.Entity("Minimal.Domain.FiscalYear", b =>
                 {
                     b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("Minimal.Domain.Loan", b =>
+                {
+                    b.Navigation("AccountDetail")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Minimal.Domain.LoanType", b =>
+                {
+                    b.Navigation("Loans");
                 });
 
             modelBuilder.Entity("Minimal.Domain.Person", b =>

@@ -12,10 +12,10 @@ public class AccountTransactionsProfile : Profile
     {
         CreateMap<Document, AccountTransactionGetDto>()
             .ForMember(dto => dto.Credit, opt => opt.MapFrom(src => src.DocumentItems
-                .Where(x => x.AccountDetail.Code.Equals("11010001")).Select(x => x.Credit).SingleOrDefault()
+                .Where(x => x.AccountDetail.Code != "11010001").Sum(x => x.Credit)
             ))
             .ForMember(dto => dto.Debit, opt => opt.MapFrom(src => src.DocumentItems
-                .Where(x => x.AccountDetail.Code.Equals("11010001")).Select(x => x.Debit).SingleOrDefault()
+                .Where(x => x.AccountDetail.Code != "11010001").Sum(x => x.Debit)
             ))
             .ForMember(dto => dto.Editable, opt => opt.MapFrom(src =>
                 new[] { "12", "13" }.Contains(src.DocumentType.Code) ? true : false

@@ -34,7 +34,7 @@ public static class ApplicationDbContextSeed
         if (userManager.Users.All(u => u.UserName != administrator.UserName))
         {
             await userManager.CreateAsync(administrator, "123456@Pass");
-            await userManager.AddToRolesAsync(administrator, new string[] { administratorRole.Name });
+            await userManager.AddToRolesAsync(administrator, new string[] { administratorRole.Name ?? "" });
         }
     }
 

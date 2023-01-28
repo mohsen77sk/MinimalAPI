@@ -51,11 +51,13 @@ public class AuthModule : IModule
         if (result.Succeeded)
         {
             var user = await userManager.FindByNameAsync(model.Username);
+            if (user is null) return Results.Problem();
+
             var roles = await userManager.GetRolesAsync(user);
 
-            var jwtIssuer = config.GetValue<string>("Jwt:Issuer");
-            var jwtAudience = config.GetValue<string>("Jwt:Audience");
-            var jwtKey = config.GetValue<string>("Jwt:Key");
+            string jwtIssuer = config.GetValue<string>("Jwt:Issuer") ?? "";
+            string jwtAudience = config.GetValue<string>("Jwt:Audience") ?? "";
+            string jwtKey = config.GetValue<string>("Jwt:Key") ?? "";
 
             var claims = new List<Claim> {
                     // Unique Id for Jwt
@@ -114,7 +116,7 @@ public class AuthModule : IModule
         var userIdentity = httpContextAccessor.HttpContext?.User.Identity;
         if (userIdentity != null && userIdentity.IsAuthenticated)
         {
-            var user = await userManager.FindByNameAsync(userIdentity.Name);
+            var user = await userManager.FindByNameAsync(userIdentity.Name ?? "");
             if (user != null) await userManager.UpdateSecurityStampAsync(user);
         }
         await signInManager.SignOutAsync();

@@ -94,9 +94,9 @@ public static class ServiceCollectionExtensions
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = config.GetValue<string>("Jwt:Issuer"),
-                    ValidAudience = config.GetValue<string>("Jwt:Audience"),
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("Jwt:Key")))
+                    ValidIssuer = config.GetValue<string>("Jwt:Issuer") ?? "",
+                    ValidAudience = config.GetValue<string>("Jwt:Audience") ?? "",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("Jwt:Key") ?? ""))
                 };
             });
     }

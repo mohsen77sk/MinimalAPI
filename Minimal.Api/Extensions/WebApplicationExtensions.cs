@@ -39,6 +39,8 @@ public static class WebApplicationExtensions
 
         app.AddAllModules();
 
+        app.UseCors("CorsPolicy");
+
         app.UseAuthentication();
         app.UseAuthorization();
 

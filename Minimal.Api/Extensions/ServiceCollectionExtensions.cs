@@ -25,11 +25,10 @@ public static class ServiceCollectionExtensions
         services.AddLocalization(options => options.ResourcesPath = "Resources");
 
         services.AddSwagger();
-        services.AddIdentityOptions(config);
-        services.AddPersistence(config);
-
-        services.AddHttpContextAccessor();
         services.AddCustomServices();
+        services.AddPersistence(config);
+        services.AddIdentityOptions(config);
+        services.AddCustomCors();
 
         services.AddAutoMapper(typeof(Program));
         services.AddValidatorsFromAssemblyContaining(typeof(Program));
@@ -110,8 +109,20 @@ public static class ServiceCollectionExtensions
         }
     }
 
-    public static void AddCustomServices(this IServiceCollection services)
+    private static void AddCustomCors(this IServiceCollection services)
     {
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: "CorsPolicy", builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            });
+        });
+    }
+
+    private static void AddCustomServices(this IServiceCollection services)
+    {
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<ISecurityService, SecurityService>();
     }
 }

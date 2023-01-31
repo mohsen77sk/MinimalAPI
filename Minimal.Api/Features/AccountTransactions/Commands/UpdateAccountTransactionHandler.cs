@@ -49,7 +49,6 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
         }
 
         var document = await _context.Documents
-            .Include(d => d.DocumentType)
             .Include(d => d.DocumentItems)
             .ThenInclude(d => d.AccountDetail)
             .FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
@@ -63,7 +62,7 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionIsNotActive").Value);
         }
 
-        if (new[] { "12", "13" }.Contains(document.DocumentType.Code) is false)
+        if (document.DocumentItems.Any(x => x.AccountDetail.IsActive == false))
         {
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeEdited").Value);
         }

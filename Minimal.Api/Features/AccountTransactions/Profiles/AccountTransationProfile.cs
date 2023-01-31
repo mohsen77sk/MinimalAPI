@@ -17,8 +17,8 @@ public class AccountTransactionsProfile : Profile
             .ForMember(dto => dto.Debit, opt => opt.MapFrom(src => src.DocumentItems
                 .Where(x => x.AccountDetail.Code != "11010001").Sum(x => x.Debit)
             ))
-            .ForMember(dto => dto.Editable, opt => opt.MapFrom(src =>
-                new[] { "12", "13" }.Contains(src.DocumentType.Code) ? true : false
+            .ForMember(dto => dto.Editable, opt => opt.MapFrom(src => src.DocumentItems
+                .Any(x => x.AccountDetail.IsActive == false) ? false : true
             ));
         CreateMap<PageList<Document>, PageList<AccountTransactionGetDto>>();
     }

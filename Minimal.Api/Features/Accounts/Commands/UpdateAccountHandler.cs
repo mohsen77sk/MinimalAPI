@@ -31,9 +31,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
 
         var account = await _context.Accounts
             .Include(a => a.People)
-            .Include(a => a.AccountDetail)
-            .ThenInclude(ad => ad.DocumentArticleList.Where(dr => dr.Document.IsActive == true))
-            .ThenInclude(da => da.Document)
+            .Include(a => a.AccountType)
             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
         if (account is null)
         {
@@ -43,44 +41,6 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
         if (account.IsActive is false)
         {
             throw new ValidationException(nameof(request.Id), _localizer.GetString("accountIsNotActive").Value);
-        }
-
-        // Select the type of account opening document 
-        var openingDocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "10", cancellationToken);
-        // Selecting the account opening document
-        var openingDocument = account.AccountDetail.DocumentArticleList.Single(da => da.Document.DocumentTypeId == openingDocumentType.Id).Document;
-
-        // If change account type
-        if (account.AccountTypeId != request.AccountTypeId)
-        {
-            var accountType = await _context.AccountTypes.FirstOrDefaultAsync(at => at.Id.Equals(request.AccountTypeId), cancellationToken);
-            if (accountType is null)
-            {
-                throw new ValidationException(nameof(request.AccountTypeId), _localizer.GetString("notFound").Value);
-            }
-            account.AccountType = accountType;
-            account.AccountDetail.Code = accountType.Code + account.Code;
-            openingDocument.DocumentItems.Single(dr => dr.AccountDetailId == account.AccountDetail.Id).AccountSubsid
-                = await _context.AccountSubsids.SingleAsync(x => x.Code == accountType.Code, cancellationToken);
-        }
-
-        // If change create date
-        if (account.CreateDate != request.CreateDate)
-        {
-            if (account.AccountDetail.DocumentArticleList.Any(dr => dr.Document.DocumentTypeId != openingDocumentType.Id && dr.Document.Date <= request.CreateDate))
-            {
-                throw new ValidationException(nameof(request.CreateDate), _localizer.GetString("openingAccountDateIsAfterTransaction").Value);
-            }
-
-            account.CreateDate = request.CreateDate;
-            openingDocument.Date = request.CreateDate;
-        }
-
-        // If change init credit
-        if (openingDocument.DocumentItems.Sum(dr => dr.Credit) != request.InitCredit)
-        {
-            openingDocument.DocumentItems.Single(dr => dr.AccountDetailId == account.AccountDetail.Id).Credit = request.InitCredit;
-            openingDocument.DocumentItems.Single(dr => dr.AccountDetailId != account.AccountDetail.Id).Debit = request.InitCredit;
         }
 
         // If change persons

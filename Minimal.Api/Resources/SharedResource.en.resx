@@ -165,8 +165,8 @@
     <value>This person has an active account.</value>
     <comment/>
   </data>
-  <data name="openingAccountDateIsAfterTransaction" xml:space="preserve">
-    <value>The account opening date cannot be after transactions.</value>
+  <data name="closingAccountDateIsBeforeOpeningDate" xml:space="preserve">
+    <value>The account closing date cannot be before the account opening date.</value>
     <comment/>
   </data>
   <data name="closingAccountDateIsBeforeTransaction" xml:space="preserve">

@@ -26,7 +26,8 @@ public class DeleteAccountTransactionHandler : IRequestHandler<DeleteAccountTran
         }
 
         var document = await _context.Documents
-            .Include(d => d.DocumentType)
+            .Include(d => d.DocumentItems)
+            .ThenInclude(d => d.AccountDetail)
             .FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
         if (document is null)
         {
@@ -38,7 +39,7 @@ public class DeleteAccountTransactionHandler : IRequestHandler<DeleteAccountTran
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionIsNotActive").Value);
         }
 
-        if (new[] { "12", "13" }.Contains(document.DocumentType.Code) is false)
+        if (document.DocumentItems.Any(x => x.AccountDetail.IsActive == false))
         {
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeDeleted").Value);
         }

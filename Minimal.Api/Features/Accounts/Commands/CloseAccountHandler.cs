@@ -33,8 +33,6 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
             .Include(a => a.People)
             .Include(a => a.AccountType)
             .Include(a => a.AccountDetail)
-            .ThenInclude(ad => ad.DocumentArticleList.Where(dr => dr.Document.IsActive == true))
-            .ThenInclude(da => da.Document)
             .FirstOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
         if (account is null)
         {
@@ -46,17 +44,27 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
             throw new ValidationException(nameof(request.Id), _localizer.GetString("accountIsNotActive").Value);
         }
 
-        if (account.AccountDetail.DocumentArticleList.Any(dr => dr.Document.Date >= request.CloseDate))
+        if (account.CreateDate >= request.CloseDate)
+        {
+            throw new ValidationException(nameof(request.CloseDate), _localizer.GetString("closingAccountDateIsBeforeOpeningDate").Value);
+        }
+
+        if (await _context.DocumentArticles.AnyAsync(dr =>
+            dr.Document.IsActive == true &&
+            dr.AccountDetailId == account.AccountDetail.Id &&
+            dr.Document.Date >= request.CloseDate, cancellationToken))
         {
             throw new ValidationException(nameof(request.CloseDate), _localizer.GetString("closingAccountDateIsBeforeTransaction").Value);
         }
 
-        var accountBalance = account.AccountDetail.DocumentArticleList.Sum(da => da.Credit - da.Debit);
+        var accountBalance = await _context.DocumentArticles
+            .Where(da => da.AccountDetailId == account.AccountDetail.Id && da.Document.IsActive == true)
+            .SumAsync(da => da.Credit - da.Debit, cancellationToken);
 
         var documentToAdd = new Document
         {
             Date = request.CloseDate,
-            Note = "سند بستن حساب" + " " + account.Code,
+            Note = "سند اختتامیه ی حساب" + " " + account.Code,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
             DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "11", cancellationToken),
             DocumentItems = new List<DocumentArticle>()
@@ -84,6 +92,7 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
 
         account.CloseDate = request.CloseDate;
         account.IsActive = false;
+        account.AccountDetail.IsActive = false;
 
         await _context.SaveChangesAsync(cancellationToken);
 

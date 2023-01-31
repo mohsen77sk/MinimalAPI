@@ -116,7 +116,7 @@ public static class ApplicationDbContextSeed
         {
             context.AddRange(new List<AccountDetail>()
             {
-                new AccountDetail { Code = "11010001", Title = "حساب صندوق", AccountCategory = context.AccountCategories.Single(x => x.Code == "1") }
+                new AccountDetail { Code = "11010001", Title = "حساب صندوق", AccountCategory = context.AccountCategories.Single(x => x.Code == "1"), IsActive = true }
             });
             await context.SaveChangesAsync();
         }

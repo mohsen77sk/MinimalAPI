@@ -46,7 +46,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             throw new ValidationException(nameof(request.LoanTypeId), _localizer.GetString("notFound").Value);
         }
 
-        var wage = (loanToAdd.Amount * (loanToAdd.InterestRates / 100));
+        var wage = ((loanToAdd.Amount * loanToAdd.InterestRates) / 100);
         var installmentAmount = (loanToAdd.Amount / loanToAdd.InstallmentCount);
 
         if (installmentAmount - (long)installmentAmount > 0)
@@ -58,6 +58,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
         loanToAdd.LoanType = loanType;
         loanToAdd.InstallmentAmount = installmentAmount;
         loanToAdd.StartInstallmentPayment = loanToAdd.CreateDate.AddMonths(loanToAdd.InstallmentInterval);
+        loanToAdd.IsActive = true;
         _context.Loans.Add(loanToAdd);
 
         var accountDetailToAdd = new AccountDetail

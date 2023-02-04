@@ -22,6 +22,11 @@ public class AccountDetailCodeGenerator : ValueGenerator<string>
             code = _accDetail.Account.Code;
         }
 
+        if (_accDetail.Loan is not null)
+        {
+            code = _accDetail.Loan.Code;
+        }
+
         return code;
     }
 }

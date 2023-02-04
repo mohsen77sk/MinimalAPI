@@ -42,15 +42,9 @@ public class PeopleModule : IModule
         return endpoints;
     }
 
-    private async Task<IResult> GetPersonsAsync([AsParameters] PagingData request, IMediator mediator, CancellationToken ct)
+    private async Task<IResult> GetPersonsAsync([AsParameters] GetAllPerson request, IMediator mediator, CancellationToken ct)
     {
-        var query = new GetAllPerson
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            SortBy = request.SortBy
-        };
-        var persons = await mediator.Send(query, ct);
+        var persons = await mediator.Send(request, ct);
         return Results.Ok(persons);
     }
 

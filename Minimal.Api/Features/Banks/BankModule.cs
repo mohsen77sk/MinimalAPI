@@ -24,15 +24,9 @@ public class BankModule : IModule
         return endpoints;
     }
 
-    private async Task<IResult> GetAllBanksAsync([AsParameters] PagingData request, IMediator mediator, CancellationToken ct)
+    private async Task<IResult> GetAllBanksAsync([AsParameters] GetAllBank request, IMediator mediator, CancellationToken ct)
     {
-        var query = new GetAllBank
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            SortBy = request.SortBy
-        };
-        var banks = await mediator.Send(query, ct);
+        var banks = await mediator.Send(request, ct);
         return Results.Ok(banks);
     }
 

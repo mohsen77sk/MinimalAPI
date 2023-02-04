@@ -23,15 +23,9 @@ public class LoanTypeModule : IModule
         return endpoints;
     }
 
-    private async Task<IResult> GetAllLoanTypesAsync([AsParameters] PagingData request, IMediator mediator, CancellationToken ct)
+    private async Task<IResult> GetAllLoanTypesAsync([AsParameters] GetAllLoanType request, IMediator mediator, CancellationToken ct)
     {
-        var query = new GetAllLoanType
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            SortBy = request.SortBy
-        };
-        var loanTypes = await mediator.Send(query, ct);
+        var loanTypes = await mediator.Send(request, ct);
         return Results.Ok(loanTypes);
     }
 

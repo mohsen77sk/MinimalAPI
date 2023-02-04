@@ -49,15 +49,9 @@ public class BankAccountModule : IModule
         return endpoints;
     }
 
-    private async Task<IResult> GetBankAccountsAsync([AsParameters] PagingData request, IMediator mediator, CancellationToken ct)
+    private async Task<IResult> GetBankAccountsAsync([AsParameters] GetAllBankAccount request, IMediator mediator, CancellationToken ct)
     {
-        var query = new GetAllBankAccount
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            SortBy = request.SortBy
-        };
-        var bankAccounts = await mediator.Send(query, ct);
+        var bankAccounts = await mediator.Send(request, ct);
         return Results.Ok(bankAccounts);
     }
 

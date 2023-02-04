@@ -23,15 +23,9 @@ public class AccountTypeModule : IModule
         return endpoints;
     }
 
-    private async Task<IResult> GetAllAccountTypesAsync([AsParameters] PagingData request, IMediator mediator, CancellationToken ct)
+    private async Task<IResult> GetAllAccountTypesAsync([AsParameters] GetAllAccountType request, IMediator mediator, CancellationToken ct)
     {
-        var query = new GetAllAccountType
-        {
-            Page = request.Page,
-            PageSize = request.PageSize,
-            SortBy = request.SortBy
-        };
-        var accountTypes = await mediator.Send(query, ct);
+        var accountTypes = await mediator.Send(request, ct);
         return Results.Ok(accountTypes);
     }
 

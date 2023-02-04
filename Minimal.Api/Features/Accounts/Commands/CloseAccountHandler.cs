@@ -58,6 +58,7 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
         }
 
         var accountBalance = await _context.DocumentArticles
+            .AsNoTracking()
             .Where(da => da.AccountDetailId == account.AccountDetail.Id && da.Document.IsActive == true)
             .SumAsync(da => da.Credit - da.Debit, cancellationToken);
 

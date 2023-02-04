@@ -182,7 +182,7 @@
     <comment/>
   </data>
   <data name="transactionDateIsEarlierOpeningDate" xml:space="preserve">
-    <value>تاریخ تراکنش نمی تواند بعد از تاریخ افتتاح حساب باشد.</value>
+    <value>تاریخ تراکنش نمی تواند بعد از تاریخ افتتاح باشد.</value>
     <comment/>
   </data>
   <data name="transactionCanNotBeEdited" xml:space="preserve">
@@ -191,6 +191,10 @@
   </data>
   <data name="transactionCanNotBeDeleted" xml:space="preserve">
     <value>این تراکنش قابل حذف نیست.</value>
+    <comment/>
+  </data>
+  <data name="transactionAmountBiggerThanRemaining" xml:space="preserve">
+    <value>مبلغ معامله بزرگتر از باقیمانده وام است.</value>
     <comment/>
   </data>
   <data name="installmentIsDecimal" xml:space="preserve">

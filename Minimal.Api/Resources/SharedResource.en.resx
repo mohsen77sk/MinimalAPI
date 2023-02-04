@@ -182,7 +182,7 @@
     <comment/>
   </data>
   <data name="transactionDateIsEarlierOpeningDate" xml:space="preserve">
-    <value>The transaction date cannot be earlier than the account opening date.</value>
+    <value>The transaction date cannot be earlier than the opening date.</value>
     <comment/>
   </data>
   <data name="transactionCanNotBeEdited" xml:space="preserve">
@@ -191,6 +191,10 @@
   </data>
   <data name="transactionCanNotBeDeleted" xml:space="preserve">
     <value>This transaction cannot be deleted.</value>
+    <comment/>
+  </data>
+  <data name="transactionAmountBiggerThanRemaining" xml:space="preserve">
+    <value>Transaction amount bigger than loan remaining.</value>
     <comment/>
   </data>
   <data name="installmentIsDecimal" xml:space="preserve">

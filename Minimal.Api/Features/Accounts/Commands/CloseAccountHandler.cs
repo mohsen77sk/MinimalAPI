@@ -64,7 +64,7 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
         var documentToAdd = new Document
         {
             Date = request.CloseDate,
-            Note = "سند اختتامیه ی حساب" + " " + account.Code,
+            Note = "سند اختتام حساب" + " " + account.Code,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
             DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "11", cancellationToken),
             DocumentItems = new List<DocumentArticle>()

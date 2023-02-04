@@ -149,6 +149,10 @@
     <value>Not found transaction.</value>
     <comment/>
   </data>
+  <data name="notFoundLoan" xml:space="preserve">
+    <value>Not found loan.</value>
+    <comment/>
+  </data>
   <data name="personIsNotActive" xml:space="preserve">
     <value>The selected person is disabled.</value>
     <comment/>
@@ -159,6 +163,10 @@
   </data>
   <data name="transactionIsNotActive" xml:space="preserve">
     <value>The selected transaction is disabled.</value>
+    <comment/>
+  </data>
+  <data name="loanIsNotActive" xml:space="preserve">
+    <value>The selected loan is disabled.</value>
     <comment/>
   </data>
   <data name="personHasActiveAccount" xml:space="preserve">
@@ -183,6 +191,10 @@
   </data>
   <data name="transactionCanNotBeDeleted" xml:space="preserve">
     <value>This transaction cannot be deleted.</value>
+    <comment/>
+  </data>
+  <data name="installmentIsDecimal" xml:space="preserve">
+    <value>The installment amount cannot be a decimal number.</value>
     <comment/>
   </data>
 </root>

@@ -67,7 +67,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
         var documentToAdd = new Document
         {
             Date = accountToAdd.CreateDate,
-            Note = "سند افتتاحیه ی حساب" + " " + accountToAdd.Code,
+            Note = "سند افتتاح حساب" + " " + accountToAdd.Code,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
             DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "10", cancellationToken),
             DocumentItems = new List<DocumentArticle>()

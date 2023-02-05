@@ -22,6 +22,11 @@ public class LoanTransactionModule : IModule
             .Produces<ValidationError>(400)
             .Produces(500);
 
+        transactions.MapPut("/", UpdateTransactionLoanAsync)
+            .Produces<LoanTransactionGetDto>()
+            .Produces<ValidationError>(400)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -34,6 +39,12 @@ public class LoanTransactionModule : IModule
     private async Task<IResult> CreateTransactionLoanAsync(CreateLoanTransaction LoanTransactionDto, IMediator mediator, CancellationToken ct)
     {
         var loan = await mediator.Send(LoanTransactionDto, ct);
+        return Results.Ok(loan);
+    }
+
+    private async Task<IResult> UpdateTransactionLoanAsync(UpdateLoanTransaction loanTransactionDto, IMediator mediator, CancellationToken ct)
+    {
+        var loan = await mediator.Send(loanTransactionDto, ct);
         return Results.Ok(loan);
     }
 }

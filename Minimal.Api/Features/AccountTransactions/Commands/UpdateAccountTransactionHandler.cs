@@ -67,6 +67,11 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeEdited").Value);
         }
 
+        if (!document.DocumentItems.Any(da => da.AccountDetailId == account.AccountDetail.Id))
+        {
+            throw new Exception("Error");
+        }
+
         document.Date = request.Date;
         document.Note = request.Note;
         document.DocumentType = request.TransactionType == TransactionTypeEnum.Credit ?

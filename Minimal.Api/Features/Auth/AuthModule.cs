@@ -53,39 +53,31 @@ public class AuthModule : IModule
             var user = await userManager.FindByNameAsync(model.Username);
             if (user is null) return Results.Problem();
 
-            var roles = await userManager.GetRolesAsync(user);
-
-            string jwtIssuer = config.GetValue<string>("Jwt:Issuer") ?? "";
-            string jwtAudience = config.GetValue<string>("Jwt:Audience") ?? "";
-            string jwtKey = config.GetValue<string>("Jwt:Key") ?? "";
-
             var claims = new List<Claim> {
-                    // Unique Id for Jwt
-                    new (JwtRegisteredClaimNames.Jti, securityService.CreateCryptographicallySecureGuid().ToString(), ClaimValueTypes.String, jwtIssuer),
-                    // User Id
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString(), ClaimValueTypes.String, jwtIssuer),
-                    new Claim(ClaimTypes.Name, user.UserName ?? "", ClaimValueTypes.String, jwtIssuer)
-                };
-            // Add roles
-            foreach (var role in roles)
+                // Unique Id for Jwt
+                new Claim(JwtRegisteredClaimNames.Jti, securityService.CreateCryptographicallySecureGuid().ToString(), ClaimValueTypes.String),
+                new Claim(ClaimTypes.NameIdentifier, user.UserName ?? "", ClaimValueTypes.String)
+            };
+
+            foreach (var role in await userManager.GetRolesAsync(user))
             {
-                claims.Add(new Claim(ClaimTypes.Role, role, ClaimValueTypes.String, jwtIssuer));
+                claims.Add(new Claim(ClaimTypes.Role, role, ClaimValueTypes.String));
             }
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-            var accessToken = new JwtSecurityToken(
-                jwtIssuer,
-                jwtAudience,
-                claims,
-                DateTime.UtcNow,
-                model.RememberMe ? DateTime.UtcNow.AddMonths(1) : DateTime.UtcNow.AddHours(4),
-                credentials
+            var token = new JwtSecurityToken
+            (
+                issuer: config.GetValue<string>("Jwt:Issuer") ?? "",
+                audience: config.GetValue<string>("Jwt:Audience") ?? "",
+                claims: claims,
+                expires: model.RememberMe ? DateTime.UtcNow.AddMonths(1) : DateTime.UtcNow.AddHours(4),
+                notBefore: DateTime.UtcNow,
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("Jwt:Key") ?? "")),
+                    SecurityAlgorithms.HmacSha256
+                )
             );
 
-            return Results.Ok(new AuthenticationDto { AccessToken = jwtTokenHandler.WriteToken(accessToken) });
+            return Results.Ok(new AuthenticationDto { AccessToken = new JwtSecurityTokenHandler().WriteToken(token) });
         }
 
         if (result.RequiresTwoFactor)

@@ -5,7 +5,7 @@ namespace Minimal.Api.Extensions;
 
 public static class IdentityExtensions
 {
-    public static string? GetUserId(this IIdentity identity)
+    public static string? GetUserName(this IIdentity identity)
     {
         var claimsIdentity = identity as ClaimsIdentity;
         return claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;

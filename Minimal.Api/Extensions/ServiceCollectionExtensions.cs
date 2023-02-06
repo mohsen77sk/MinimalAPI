@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddCustomServices();
         services.AddPersistence(config);
         services.AddIdentityOptions(config);
+        services.AddCustomAuthentication(config);
         services.AddCustomCors();
 
         services.AddAutoMapper(typeof(Program));
@@ -47,27 +48,44 @@ public static class ServiceCollectionExtensions
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "Minimal API", Version = "v1" });
             options.TagActionsBy(ta => new List<string> { ta.ActionDescriptor.DisplayName! });
 
-            var securityScheme = new OpenApiSecurityScheme
+            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {
-                Name = "JWT Authentication",
-                Description = "Enter JWT Bearer token",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer", // must be lower case
+                Scheme = "Bearer",
                 BearerFormat = "JWT",
-                Reference = new OpenApiReference
+                In = ParameterLocation.Header,
+                Name = "Authorization",
+                Description = "Bearer Authentication with JWT Token",
+                Type = SecuritySchemeType.Http
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Id = JwtBearerDefaults.AuthenticationScheme,
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    },
+                    new List<string>()
                 }
-            };
-            options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement { { securityScheme, new string[] { } } });
+            });
 
             // using System.Reflection;
             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
+    }
+
+    private static void AddPersistence(this IServiceCollection services, IConfiguration config)
+    {
+        var connectionString = config.GetConnectionString("SqlServer");
+        if (connectionString != null)
+        {
+            services.AddConfiguredMsSqlDbContext(connectionString);
+        }
     }
 
     private static void AddIdentityOptions(this IServiceCollection services, IConfiguration config)
@@ -82,11 +100,14 @@ public static class ServiceCollectionExtensions
         })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+    }
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    private static void AddCustomAuthentication(this IServiceCollection services, IConfiguration config)
+    {
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -97,16 +118,8 @@ public static class ServiceCollectionExtensions
                     ValidAudience = config.GetValue<string>("Jwt:Audience") ?? "",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("Jwt:Key") ?? ""))
                 };
+                options.SaveToken = true;
             });
-    }
-
-    private static void AddPersistence(this IServiceCollection services, IConfiguration config)
-    {
-        var connectionString = config.GetConnectionString("SqlServer");
-        if (connectionString != null)
-        {
-            services.AddConfiguredMsSqlDbContext(connectionString);
-        }
     }
 
     private static void AddCustomCors(this IServiceCollection services)

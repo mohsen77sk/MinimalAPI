@@ -576,10 +576,10 @@ namespace Minimal.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AccountDetailId")
+                    b.Property<int?>("AccountDetailId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AccountSubsidId")
+                    b.Property<int?>("AccountSubsidId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Credit")
@@ -1046,15 +1046,11 @@ namespace Minimal.DataAccess.Migrations
                 {
                     b.HasOne("Minimal.Domain.AccountDetail", "AccountDetail")
                         .WithMany("DocumentArticleList")
-                        .HasForeignKey("AccountDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountDetailId");
 
                     b.HasOne("Minimal.Domain.AccountSubsid", "AccountSubsid")
                         .WithMany("DocumentArticleList")
-                        .HasForeignKey("AccountSubsidId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountSubsidId");
 
                     b.HasOne("Minimal.Domain.Document", "Document")
                         .WithMany("DocumentItems")

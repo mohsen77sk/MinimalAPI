@@ -7,10 +7,10 @@ public class DocumentArticle
     public int DocumentId { get; set; }
     public Document Document { get; set; } = default!;
 
-    public int AccountSubsidId { get; set; }
+    public int? AccountSubsidId { get; set; }
     public AccountSubsid AccountSubsid { get; set; } = default!;
 
-    public int AccountDetailId { get; set; }
+    public int? AccountDetailId { get; set; }
     public AccountDetail AccountDetail { get; set; } = default!;
 
     public decimal Credit { get; set; }

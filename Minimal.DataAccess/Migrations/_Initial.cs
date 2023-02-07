@@ -623,8 +623,8 @@ namespace Minimal.DataAccess.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DocumentId = table.Column<int>(type: "int", nullable: false),
-                    AccountSubsidId = table.Column<int>(type: "int", nullable: false),
-                    AccountDetailId = table.Column<int>(type: "int", nullable: false),
+                    AccountSubsidId = table.Column<int>(type: "int", nullable: true),
+                    AccountDetailId = table.Column<int>(type: "int", nullable: true),
                     Credit = table.Column<decimal>(type: "Money", nullable: false),
                     Debit = table.Column<decimal>(type: "Money", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -637,15 +637,13 @@ namespace Minimal.DataAccess.Migrations
                         column: x => x.AccountDetailId,
                         principalSchema: "accounting",
                         principalTable: "AccountDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_DocumentArticles_AccountSubsids_AccountSubsidId",
                         column: x => x.AccountSubsidId,
                         principalSchema: "accounting",
                         principalTable: "AccountSubsids",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_DocumentArticles_Documents_DocumentId",
                         column: x => x.DocumentId,

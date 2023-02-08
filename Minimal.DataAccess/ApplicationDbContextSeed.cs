@@ -112,15 +112,6 @@ public static class ApplicationDbContextSeed
             await context.SaveChangesAsync();
         }
 
-        if (!context.AccountDetails.Any())
-        {
-            context.AddRange(new List<AccountDetail>()
-            {
-                new AccountDetail { Code = "11010001", Title = "حساب صندوق", AccountCategory = context.AccountCategories.Single(x => x.Code == "1"), IsActive = true }
-            });
-            await context.SaveChangesAsync();
-        }
-
         if (!context.DocumentTypes.Any())
         {
             context.AddRange(new List<DocumentType>()
@@ -134,7 +125,8 @@ public static class ApplicationDbContextSeed
                 new DocumentType { Code = "14", Title = "سند انتقال" },
                 //
                 new DocumentType { Code = "20", Title = "سند پرداخت تسهیلات" },
-                new DocumentType { Code = "21", Title = "سند دریافت اقساط" },
+                new DocumentType { Code = "21", Title = "سند دریافت سود تسهیلات" },
+                new DocumentType { Code = "22", Title = "سند دریافت اقساط تسهیلات" },
                 //
                 new DocumentType { Code = "30", Title = "سند صورت هزینه" },
             });

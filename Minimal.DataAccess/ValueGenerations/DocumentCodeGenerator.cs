@@ -14,12 +14,10 @@ public class DocumentCodeGenerator : ValueGenerator<string>
     {
         var _context = (ApplicationDbContext)entry.Context;
 
-        var lastDocumentCode = int.Parse(
-            _context.Documents.AsNoTracking().OrderByDescending(x => x.Code).Select(x => x.Code).FirstOrDefault() ?? "0"
-        );
+        var lastDocumentCode =
+            _context.Documents.Local.OrderByDescending(x => x.Code).Select(x => x.Code).FirstOrDefault() ??
+            (_context.Documents.AsNoTracking().OrderByDescending(x => x.Code).Select(x => x.Code).FirstOrDefault() ?? "0");
 
-        lastDocumentCode++;
-
-        return lastDocumentCode.ToString().PadLeft(10, '0');
+        return (int.Parse(lastDocumentCode ?? "0") + 1).ToString().PadLeft(10, '0');
     }
 }

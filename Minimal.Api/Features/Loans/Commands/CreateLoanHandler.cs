@@ -70,42 +70,62 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
         };
         _context.AccountDetails.Add(accountDetailToAdd);
 
-        var documentToAdd = new Document
+        var documentToAdd = new List<Document>
         {
-            Date = loanToAdd.CreateDate,
-            Note = "سند افتتاح تسهیلات" + " " + loanToAdd.Code,
-            FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-            DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "20", cancellationToken),
-            DocumentItems = new List<DocumentArticle>()
+            new Document
             {
-                new DocumentArticle
+                Date = loanToAdd.CreateDate,
+                FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
+                DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "20", cancellationToken),
+                DocumentItems = new List<DocumentArticle>()
                 {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == loanType.Code, cancellationToken),
-                    AccountDetail = accountDetailToAdd,
-                    Credit = 0,
-                    Debit = request.Amount + wage,
-                    Note = ""
+                    new DocumentArticle
+                    {
+                        AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == loanType.Code, cancellationToken),
+                        AccountDetail = accountDetailToAdd,
+                        Credit = 0,
+                        Debit = request.Amount,
+                        Note = ""
+                    },
+                    new DocumentArticle
+                    {
+                        AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
+                        Credit = request.Amount,
+                        Debit = 0,
+                        Note = ""
+                    }
                 },
-                new DocumentArticle
-                {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "3101", cancellationToken),
-                    AccountDetail = accountDetailToAdd,
-                    Credit = wage,
-                    Debit = 0,
-                    Note = ""
-                },
-                new DocumentArticle
-                {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
-                    AccountDetail = await _context.AccountDetails.SingleAsync(x => x.Code == "11010001", cancellationToken),
-                    Credit = request.Amount,
-                    Debit = 0,
-                    Note = ""
-                }
+                Note = string.Empty,
+                IsActive = true
             },
-            IsActive = true,
+            new Document
+            {
+                Date = loanToAdd.CreateDate,
+                FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
+                DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "21", cancellationToken),
+                DocumentItems = new List<DocumentArticle>()
+                {
+                    new DocumentArticle
+                    {
+                        AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == loanType.Code, cancellationToken),
+                        AccountDetail = accountDetailToAdd,
+                        Credit = 0,
+                        Debit = wage,
+                        Note = ""
+                    },
+                    new DocumentArticle
+                    {
+                        AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "3101", cancellationToken),
+                        Credit = wage,
+                        Debit = 0,
+                        Note = ""
+                    },
+                },
+                Note = string.Empty,
+                IsActive = true
+            }
         };
-        _context.Documents.Add(documentToAdd);
+        _context.Documents.AddRange(documentToAdd);
 
         await _context.SaveChangesAsync(cancellationToken);
 

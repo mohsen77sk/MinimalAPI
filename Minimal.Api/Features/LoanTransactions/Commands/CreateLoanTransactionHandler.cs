@@ -63,7 +63,7 @@ public class CreateLoanTransactionHandler : IRequestHandler<CreateLoanTransactio
             Date = request.Date,
             Note = request.Note,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-            DocumentType = await _context.DocumentTypes.SingleAsync(at => at.Code == "21", cancellationToken),
+            DocumentType = await _context.DocumentTypes.SingleAsync(at => at.Code == "22", cancellationToken),
             DocumentItems = new List<DocumentArticle>()
             {
                 new DocumentArticle
@@ -77,7 +77,6 @@ public class CreateLoanTransactionHandler : IRequestHandler<CreateLoanTransactio
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
-                    AccountDetail = await _context.AccountDetails.SingleAsync(x => x.Code == "11010001", cancellationToken),
                     Credit = 0,
                     Debit = request.Amount,
                     Note = ""

@@ -67,7 +67,6 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
         var documentToAdd = new Document
         {
             Date = accountToAdd.CreateDate,
-            Note = "سند افتتاح حساب" + " " + accountToAdd.Code,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
             DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "10", cancellationToken),
             DocumentItems = new List<DocumentArticle>()
@@ -83,12 +82,12 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
-                    AccountDetail = await _context.AccountDetails.SingleAsync(x => x.Code == "11010001", cancellationToken),
                     Credit = 0,
                     Debit = request.InitCredit,
                     Note = ""
                 }
             },
+            Note = string.Empty,
             IsActive = true,
         };
         _context.Documents.Add(documentToAdd);

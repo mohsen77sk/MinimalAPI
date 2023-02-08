@@ -41,7 +41,7 @@ public class GetAllLoanTransactionHandler : IRequestHandler<GetAllLoanTransactio
             .Include(d => d.DocumentType)
             .Include(d => d.DocumentItems)
             .ThenInclude(di => di.AccountDetail)
-            .Where(d => d.IsActive == true && d.DocumentItems.Any(x => x.AccountDetailId == Loan.AccountDetailId))
+            .Where(d => d.IsActive == true && d.DocumentType.Code != "20" && d.DocumentItems.Any(x => x.AccountDetailId == Loan.AccountDetailId))
             .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
         return _mapper.Map<PageList<LoanTransactionGetDto>>(documents);

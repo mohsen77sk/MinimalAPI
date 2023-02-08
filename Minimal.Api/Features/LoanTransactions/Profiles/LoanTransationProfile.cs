@@ -1,5 +1,4 @@
 using AutoMapper;
-using Minimal.Api.Features.LoanTransactions.Commands;
 using Minimal.Api.Features.LoanTransactions.Models;
 using Minimal.Api.Models;
 using Minimal.Domain;
@@ -12,7 +11,7 @@ public class LoanTransactionsProfile : Profile
     {
         CreateMap<Document, LoanTransactionGetDto>()
             .ForMember(dto => dto.Amount, opt => opt.MapFrom(src => src.DocumentItems
-                .Where(x => x.AccountDetail.Code != "11010001").Sum(x => x.Credit)
+                .Where(x => x.AccountDetailId != null).Sum(x => x.Credit + x.Debit)
             ))
             .ForMember(dto => dto.Editable, opt => opt.MapFrom(src =>
                 (src.DocumentType.Code != "21" || src.DocumentItems.Any(x => x.AccountDetail.IsActive == false)) ? false : true

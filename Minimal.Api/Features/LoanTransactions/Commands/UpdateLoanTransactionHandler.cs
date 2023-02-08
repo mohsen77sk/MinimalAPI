@@ -57,6 +57,7 @@ public class UpdateLoanTransactionHandler : IRequestHandler<UpdateLoanTransactio
         }
 
         var document = await _context.Documents
+            .Include(d => d.DocumentType)
             .Include(d => d.DocumentItems)
             .ThenInclude(d => d.AccountDetail)
             .FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
@@ -68,6 +69,11 @@ public class UpdateLoanTransactionHandler : IRequestHandler<UpdateLoanTransactio
         if (document.IsActive is false)
         {
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionIsNotActive").Value);
+        }
+
+        if (document.DocumentType.Code != "22")
+        {
+            throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeEdited").Value);
         }
 
         if (document.DocumentItems.Any(x => x.AccountDetail.IsActive == false))

@@ -65,7 +65,6 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
         var documentToAdd = new Document
         {
             Date = request.CloseDate,
-            Note = "سند اختتام حساب" + " " + account.Code,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
             DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "11", cancellationToken),
             DocumentItems = new List<DocumentArticle>()
@@ -81,12 +80,12 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
-                    AccountDetail = await _context.AccountDetails.SingleAsync(x => x.Code == "11010001", cancellationToken),
                     Credit = accountBalance,
                     Debit = 0,
                     Note = ""
                 }
             },
+            Note = string.Empty,
             IsActive = true,
         };
         _context.Documents.Add(documentToAdd);

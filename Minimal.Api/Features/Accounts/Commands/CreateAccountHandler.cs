@@ -37,6 +37,11 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
             throw new ValidationException(nameof(request.AccountTypeId), _localizer.GetString("notFound").Value);
         }
 
+        if (accountType.IsActive is false)
+        {
+            throw new ValidationException(nameof(request.AccountTypeId), _localizer.GetString("accountTypeIsNotActive").Value);
+        }
+
         foreach (var personId in request.PersonId)
         {
             var person = await _context.People.FirstOrDefaultAsync(p => p.Id.Equals(personId), cancellationToken);

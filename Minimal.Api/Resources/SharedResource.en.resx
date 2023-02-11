@@ -161,12 +161,20 @@
     <value>The selected account is disabled.</value>
     <comment/>
   </data>
-  <data name="transactionIsNotActive" xml:space="preserve">
-    <value>The selected transaction is disabled.</value>
-    <comment/>
-  </data>
   <data name="loanIsNotActive" xml:space="preserve">
     <value>The selected loan is disabled.</value>
+    <comment/>
+  </data>
+  <data name="accountTypeIsNotActive" xml:space="preserve">
+    <value>The selected account type is disabled.</value>
+    <comment/>
+  </data>
+  <data name="loanTypeIsNotActive" xml:space="preserve">
+    <value>The selected loan type is disabled.</value>
+    <comment/>
+  </data>
+  <data name="transactionIsNotActive" xml:space="preserve">
+    <value>The selected transaction is disabled.</value>
     <comment/>
   </data>
   <data name="personHasActiveAccount" xml:space="preserve">

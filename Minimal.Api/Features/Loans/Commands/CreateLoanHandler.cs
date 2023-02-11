@@ -40,10 +40,20 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             throw new ValidationException(nameof(request.AccountId), _localizer.GetString("notFound").Value);
         }
 
+        if (account.IsActive is false)
+        {
+            throw new ValidationException(nameof(request.LoanTypeId), _localizer.GetString("accountIsNotActive").Value);
+        }
+
         var loanType = await _context.LoanTypes.FirstOrDefaultAsync(lt => lt.Id.Equals(request.LoanTypeId), cancellationToken);
         if (loanType is null)
         {
             throw new ValidationException(nameof(request.LoanTypeId), _localizer.GetString("notFound").Value);
+        }
+
+        if (loanType.IsActive is false)
+        {
+            throw new ValidationException(nameof(request.LoanTypeId), _localizer.GetString("loanTypeIsNotActive").Value);
         }
 
         var wage = ((loanToAdd.Amount * loanToAdd.InterestRates) / 100);

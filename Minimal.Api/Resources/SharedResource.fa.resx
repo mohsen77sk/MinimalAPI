@@ -161,12 +161,20 @@
     <value>حساب انتخاب شده غیر فعال است.</value>
     <comment/>
   </data>
-  <data name="transactionIsNotActive" xml:space="preserve">
-    <value>تراکنش انتخاب شده غیر فعال است.</value>
-    <comment/>
-  </data>
   <data name="loanIsNotActive" xml:space="preserve">
     <value>تسهیلات انتخاب شده غیر فعال است.</value>
+    <comment/>
+  </data>
+  <data name="accountTypeIsNotActive" xml:space="preserve">
+    <value>نوع حساب انتخاب شده غیر فعال است.</value>
+    <comment/>
+  </data>
+  <data name="loanTypeIsNotActive" xml:space="preserve">
+    <value>نوع تسهیلات انتخاب شده غیر فعال است.</value>
+    <comment/>
+  </data>
+  <data name="transactionIsNotActive" xml:space="preserve">
+    <value>تراکنش انتخاب شده غیر فعال است.</value>
     <comment/>
   </data>
   <data name="personHasActiveAccount" xml:space="preserve">

@@ -32,6 +32,7 @@ public static class WebApplicationExtensions
             {
                 // Hide schema
                 options.DefaultModelsExpandDepth(-1);
+                options.EnableDeepLinking();
             });
         }
 

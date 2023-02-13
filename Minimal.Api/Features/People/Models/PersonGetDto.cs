@@ -14,7 +14,7 @@ public class PersonGetDto
 
     public DateTime? DateOfBirth { get; init; }
 
-    public byte Gender { get; init; }
+    public GenderEnum Gender { get; init; }
 
     public string? Note { get; init; }
 

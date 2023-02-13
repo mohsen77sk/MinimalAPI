@@ -21,10 +21,15 @@ public class GetAllAccountTypeHandler : IRequestHandler<GetAllAccountType, PageL
 
     public async Task<PageList<AccountTypeGetDto>> Handle(GetAllAccountType request, CancellationToken cancellationToken)
     {
-        var accountTypes = await _context.AccountTypes
-            .AsNoTracking()
-            .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+        var accountTypes = _context.AccountTypes.AsNoTracking();
 
-        return _mapper.Map<PageList<AccountTypeGetDto>>(accountTypes);
+        if (request.IsActive is not null)
+        {
+            accountTypes = accountTypes.Where(p => p.IsActive == request.IsActive);
+        }
+
+        return _mapper.Map<PageList<AccountTypeGetDto>>(
+            await accountTypes.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
+        );
     }
 }

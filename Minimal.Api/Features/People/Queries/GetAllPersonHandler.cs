@@ -21,10 +21,15 @@ public class GetAllPersonHandler : IRequestHandler<GetAllPerson, PageList<Person
 
     public async Task<PageList<PersonGetDto>> Handle(GetAllPerson request, CancellationToken cancellationToken)
     {
-        var persons = await _context.People
-            .AsNoTracking()
-            .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+        var persons = _context.People.AsNoTracking();
 
-        return _mapper.Map<PageList<PersonGetDto>>(persons);
+        if (request.IsActive is not null)
+        {
+            persons = persons.Where(p => p.IsActive == request.IsActive);
+        }
+
+        return _mapper.Map<PageList<PersonGetDto>>(
+            await persons.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
+        );
     }
 }

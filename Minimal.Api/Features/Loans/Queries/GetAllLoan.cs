@@ -6,4 +6,5 @@ namespace Minimal.Api.Features.Loans.Queries;
 
 public class GetAllLoan : PagingData, IRequest<PageList<LoanGetDto>>
 {
+    public bool? IsActive { get; set; }
 }

@@ -21,12 +21,15 @@ public class GetAllAccountHandler : IRequestHandler<GetAllAccount, PageList<Acco
 
     public async Task<PageList<AccountGetDto>> Handle(GetAllAccount request, CancellationToken cancellationToken)
     {
-        var accounts = await _context.Accounts
-            .AsNoTracking()
-            .Include(a => a.AccountType)
-            .Include(a => a.People)
-            .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+        var accounts = _context.Accounts.Include(a => a.AccountType).Include(a => a.People).AsNoTracking();
 
-        return _mapper.Map<PageList<AccountGetDto>>(accounts);
+        if (request.IsActive is not null)
+        {
+            accounts = accounts.Where(a => a.IsActive == request.IsActive);
+        }
+
+        return _mapper.Map<PageList<AccountGetDto>>(
+            await accounts.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
+        );
     }
 }

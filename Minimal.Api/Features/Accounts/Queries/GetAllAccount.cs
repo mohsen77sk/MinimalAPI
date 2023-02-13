@@ -6,4 +6,5 @@ namespace Minimal.Api.Features.Accounts.Queries;
 
 public class GetAllAccount : PagingData, IRequest<PageList<AccountGetDto>>
 {
+    public bool? IsActive { get; set; }
 }

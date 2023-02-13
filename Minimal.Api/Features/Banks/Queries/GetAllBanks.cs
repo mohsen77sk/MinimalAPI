@@ -6,4 +6,5 @@ namespace Minimal.Api.Features.Banks.Queries;
 
 public class GetAllBank : PagingData, IRequest<PageList<BankGetDto>>
 {
+    public bool? IsActive { get; set; }
 }

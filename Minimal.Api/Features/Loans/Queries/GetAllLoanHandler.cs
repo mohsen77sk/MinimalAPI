@@ -21,12 +21,15 @@ public class GetAllLoanHandler : IRequestHandler<GetAllLoan, PageList<LoanGetDto
 
     public async Task<PageList<LoanGetDto>> Handle(GetAllLoan request, CancellationToken cancellationToken)
     {
-        var loans = await _context.Loans
-            .AsNoTracking()
-            .Include(l => l.Account)
-            .Include(l => l.LoanType)
-            .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+        var loans = _context.Loans.Include(l => l.Account).Include(l => l.LoanType).AsNoTracking();
 
-        return _mapper.Map<PageList<LoanGetDto>>(loans);
+        if (request.IsActive is not null)
+        {
+            loans = loans.Where(p => p.IsActive == request.IsActive);
+        }
+
+        return _mapper.Map<PageList<LoanGetDto>>(
+            await loans.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
+        );
     }
 }

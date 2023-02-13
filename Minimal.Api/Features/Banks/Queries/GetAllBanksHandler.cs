@@ -21,10 +21,15 @@ public class GetAllBankHandler : IRequestHandler<GetAllBank, PageList<BankGetDto
 
     public async Task<PageList<BankGetDto>> Handle(GetAllBank request, CancellationToken cancellationToken)
     {
-        var banks = await _context.Banks
-            .AsNoTracking()
-            .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+        var banks = _context.Banks.AsNoTracking();
 
-        return _mapper.Map<PageList<BankGetDto>>(banks);
+        if (request.IsActive is not null)
+        {
+            banks = banks.Where(p => p.IsActive == request.IsActive);
+        }
+
+        return _mapper.Map<PageList<BankGetDto>>(
+            await banks.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
+        );
     }
 }

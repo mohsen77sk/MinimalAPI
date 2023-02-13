@@ -29,6 +29,9 @@ public class LoanTypeModule : IModule
         return Results.Ok(loanTypes);
     }
 
+    /// <remarks>
+    /// ### * Get active loan types
+    /// </remarks>
     private async Task<IResult> GetLookupLoanTypesAsync(IMediator mediator, CancellationToken ct)
     {
         var query = new GetLookupLoanType();

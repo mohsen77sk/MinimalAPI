@@ -30,6 +30,9 @@ public class BankModule : IModule
         return Results.Ok(banks);
     }
 
+    /// <remarks>
+    /// ### * Get active banks
+    /// </remarks>
     private async Task<IResult> GetLookupBanksAsync(IMediator mediator, CancellationToken ct)
     {
         var query = new GetLookupBank();

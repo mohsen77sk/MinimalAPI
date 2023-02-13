@@ -29,6 +29,9 @@ public class AccountTypeModule : IModule
         return Results.Ok(accountTypes);
     }
 
+    /// <remarks>
+    /// ### * Get active account types
+    /// </remarks>
     private async Task<IResult> GetLookupAccountTypesAsync(IMediator mediator, CancellationToken ct)
     {
         var query = new GetLookupAccountType();

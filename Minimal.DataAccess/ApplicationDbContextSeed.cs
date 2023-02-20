@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Minimal.DataAccess.Models;
 using Minimal.Domain;
 using Minimal.Domain.Identity;
 
@@ -8,33 +9,33 @@ public static class ApplicationDbContextSeed
 {
     public static async Task SeedDefaultRolesAndUserAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
     {
-        var administratorRole = new IdentityRole("Administrator");
+        var administratorRole = new IdentityRole(nameof(RoleEnum.Administrator));
 
         if (roleManager.Roles.All(r => r.Name != administratorRole.Name))
         {
             await roleManager.CreateAsync(administratorRole);
         }
 
-        var managerRole = new IdentityRole("Manager");
+        var managerRole = new IdentityRole(nameof(RoleEnum.Manager));
 
         if (roleManager.Roles.All(r => r.Name != managerRole.Name))
         {
             await roleManager.CreateAsync(managerRole);
         }
 
-        var memberRole = new IdentityRole("Member");
+        var memberRole = new IdentityRole(nameof(RoleEnum.Member));
 
         if (roleManager.Roles.All(r => r.Name != memberRole.Name))
         {
             await roleManager.CreateAsync(memberRole);
         }
 
-        var administrator = new ApplicationUser { UserName = "administrator", Email = "administrator@minimal-api.ir" };
+        var administratorUser = new ApplicationUser { UserName = "administrator" };
 
-        if (userManager.Users.All(u => u.UserName != administrator.UserName))
+        if (userManager.Users.All(u => u.UserName != administratorUser.UserName))
         {
-            await userManager.CreateAsync(administrator, "123456@Pass");
-            await userManager.AddToRolesAsync(administrator, new string[] { administratorRole.Name ?? "" });
+            await userManager.CreateAsync(administratorUser, "123456@Pass");
+            await userManager.AddToRoleAsync(administratorUser, nameof(RoleEnum.Administrator));
         }
     }
 

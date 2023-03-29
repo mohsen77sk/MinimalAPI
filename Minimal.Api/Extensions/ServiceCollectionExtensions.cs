@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Minimal.Api.Behaviors;
+using Minimal.Api.Common.DeviceDetectionService;
 using Minimal.Api.Common.IdentityServices;
+using Minimal.Api.Common.TokenService;
 using Minimal.DataAccess;
 using Minimal.Domain.Identity;
 
@@ -118,6 +120,16 @@ public static class ServiceCollectionExtensions
                     ValidAudience = config.GetValue<string>("Jwt:Audience") ?? "",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("Jwt:Key") ?? ""))
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var tokenValidatorService = context.HttpContext.RequestServices.GetRequiredService<ITokenValidatorService>();
+                        return tokenValidatorService.ValidateAsync(context);
+                    },
+                };
+
                 options.SaveToken = true;
             });
     }
@@ -136,6 +148,9 @@ public static class ServiceCollectionExtensions
     private static void AddCustomServices(this IServiceCollection services)
     {
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        services.AddScoped<ISecurityService, SecurityService>();
+        services.AddScoped<IDeviceDetectionService, DeviceDetectionService>();
+        services.AddSingleton<ISecurityService, SecurityService>();
+        services.AddScoped<ITokenFactoryService, TokenFactoryService>();
+        services.AddScoped<ITokenValidatorService, TokenValidatorService>();
     }
 }

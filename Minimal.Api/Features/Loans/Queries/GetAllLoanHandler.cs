@@ -23,13 +23,13 @@ public class GetAllLoanHandler : IRequestHandler<GetAllLoan, PageList<LoanGetDto
     {
         var loans = _context.Loans.Include(l => l.Account).Include(l => l.LoanType).AsNoTracking();
 
-        if (request.IsActive is not null)
+        if (request.IsActive.HasValue)
         {
-            loans = loans.Where(p => p.IsActive == request.IsActive);
+            loans = loans.Where(p => p.IsActive == request.IsActive.Value);
         }
 
-        return _mapper.Map<PageList<LoanGetDto>>(
-            await loans.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
-        );
+        var pagedLoans = await loans.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+
+        return _mapper.Map<PageList<LoanGetDto>>(pagedLoans);
     }
 }

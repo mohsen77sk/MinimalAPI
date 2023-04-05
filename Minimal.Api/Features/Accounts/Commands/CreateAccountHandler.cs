@@ -62,7 +62,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
 
         var accountDetailToAdd = new AccountDetail
         {
-            Title = "حساب" + " " + accountToAdd.Code,
+            Title = $"حساب {accountToAdd.Code}",
             Account = accountToAdd,
             AccountCategory = await _context.AccountCategories.SingleAsync(ac => ac.Code == "2", cancellationToken),
             IsActive = true

@@ -73,7 +73,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
 
         var accountDetailToAdd = new AccountDetail
         {
-            Title = "تسهیلات" + " " + loanToAdd.Code,
+            Title = $"تسهیلات {loanToAdd.Code}",
             Loan = loanToAdd,
             AccountCategory = await _context.AccountCategories.SingleAsync(ac => ac.Code == "3", cancellationToken),
             IsActive = true

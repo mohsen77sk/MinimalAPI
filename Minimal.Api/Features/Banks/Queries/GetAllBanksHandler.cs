@@ -23,13 +23,13 @@ public class GetAllBankHandler : IRequestHandler<GetAllBank, PageList<BankGetDto
     {
         var banks = _context.Banks.AsNoTracking();
 
-        if (request.IsActive is not null)
+        if (request.IsActive.HasValue)
         {
-            banks = banks.Where(p => p.IsActive == request.IsActive);
+            banks = banks.Where(p => p.IsActive == request.IsActive.Value);
         }
 
-        return _mapper.Map<PageList<BankGetDto>>(
-            await banks.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
-        );
+        var pagedBanks = await banks.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+
+        return _mapper.Map<PageList<BankGetDto>>(pagedBanks);
     }
 }

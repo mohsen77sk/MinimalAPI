@@ -23,13 +23,13 @@ public class GetAllAccountHandler : IRequestHandler<GetAllAccount, PageList<Acco
     {
         var accounts = _context.Accounts.Include(a => a.AccountType).Include(a => a.People).AsNoTracking();
 
-        if (request.IsActive is not null)
+        if (request.IsActive.HasValue)
         {
-            accounts = accounts.Where(a => a.IsActive == request.IsActive);
+            accounts = accounts.Where(a => a.IsActive == request.IsActive.Value);
         }
 
-        return _mapper.Map<PageList<AccountGetDto>>(
-            await accounts.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
-        );
+        var pagedAccounts = await accounts.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+
+        return _mapper.Map<PageList<AccountGetDto>>(pagedAccounts);
     }
 }

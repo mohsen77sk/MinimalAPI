@@ -23,13 +23,13 @@ public class GetAllPersonHandler : IRequestHandler<GetAllPerson, PageList<Person
     {
         var persons = _context.People.AsNoTracking();
 
-        if (request.IsActive is not null)
+        if (request.IsActive.HasValue)
         {
-            persons = persons.Where(p => p.IsActive == request.IsActive);
+            persons = persons.Where(p => p.IsActive == request.IsActive.Value);
         }
 
-        return _mapper.Map<PageList<PersonGetDto>>(
-            await persons.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
-        );
+        var pagedPersons = await persons.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+
+        return _mapper.Map<PageList<PersonGetDto>>(pagedPersons);
     }
 }

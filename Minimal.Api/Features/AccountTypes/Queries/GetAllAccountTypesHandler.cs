@@ -23,13 +23,13 @@ public class GetAllAccountTypeHandler : IRequestHandler<GetAllAccountType, PageL
     {
         var accountTypes = _context.AccountTypes.AsNoTracking();
 
-        if (request.IsActive is not null)
+        if (request.IsActive.HasValue)
         {
-            accountTypes = accountTypes.Where(p => p.IsActive == request.IsActive);
+            accountTypes = accountTypes.Where(p => p.IsActive == request.IsActive.Value);
         }
 
-        return _mapper.Map<PageList<AccountTypeGetDto>>(
-            await accountTypes.ToPagedAsync(request.Page, request.PageSize, request.SortBy)
-        );
+        var pagedAccountTypes = await accountTypes.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
+
+        return _mapper.Map<PageList<AccountTypeGetDto>>(pagedAccountTypes);
     }
 }

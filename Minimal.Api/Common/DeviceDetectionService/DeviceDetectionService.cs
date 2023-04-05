@@ -27,8 +27,8 @@ public class DeviceDetectionService : IDeviceDetectionService
         var deviceInfo = client.Device.Family;
         var browserInfo = $"{client.UA.Family}, {client.UA.Major}.{client.UA.Minor}.{client.UA.Patch}";
         var osInfo = $"{client.OS.Family}, {client.OS.Major}.{client.OS.Minor}.{client.OS.Patch}";
-        // TODO: Add the user's IP address here.
-        return $"{deviceInfo}, {browserInfo}, {osInfo}";
+        var ipAddress = GetClientIpAddress(context);
+        return $"{deviceInfo}, {browserInfo}, {osInfo} - {ipAddress}";
     }
 
     public string GetCurrentRequestDeviceDetails() => GetDeviceDetails(_httpContextAccessor.HttpContext);
@@ -48,5 +48,22 @@ public class DeviceDetectionService : IDeviceDetectionService
         return context.Request.Headers.TryGetValue(HeaderNames.UserAgent, out var userAgent)
             ? userAgent.ToString()
             : null;
+    }
+
+    private static string? GetClientIpAddress(HttpContext? context)
+    {
+        if (context is null)
+        {
+            return null;
+        }
+
+        var ipAddress = context.Connection.RemoteIpAddress?.ToString();
+
+        if (string.IsNullOrEmpty(ipAddress))
+        {
+            ipAddress = context?.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+        }
+
+        return ipAddress;
     }
 }

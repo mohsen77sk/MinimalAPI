@@ -84,10 +84,11 @@ public static class ServiceCollectionExtensions
     private static void AddPersistence(this IServiceCollection services, IConfiguration config)
     {
         var connectionString = config.GetConnectionString("SqlServer");
-        if (connectionString != null)
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
-            services.AddConfiguredMsSqlDbContext(connectionString);
+            throw new InvalidOperationException("connection string is null");
         }
+        services.AddConfiguredMsSqlDbContext(connectionString);
     }
 
     private static void AddIdentityOptions(this IServiceCollection services, IConfiguration config)

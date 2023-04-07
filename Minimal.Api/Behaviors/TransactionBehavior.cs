@@ -18,6 +18,8 @@ public class TransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
     {
         try
         {
+            _logger.LogInformation("Request: {request}", request);
+
             await _context.BeginTransactionAsync();
             var response = await next();
             await _context.CommitTransactionAsync();

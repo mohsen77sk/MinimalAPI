@@ -80,14 +80,13 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
         };
         _context.AccountDetails.Add(accountDetailToAdd);
 
-        var documentToAdd = new List<Document>
+        var documentsToAdd = new List<Document>();
+        documentsToAdd.Add(new Document
         {
-            new Document
-            {
-                Date = loanToAdd.CreateDate,
-                FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-                DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "20", cancellationToken),
-                DocumentItems = new List<DocumentArticle>()
+            Date = loanToAdd.CreateDate,
+            FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
+            DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "20", cancellationToken),
+            DocumentItems = new List<DocumentArticle>()
                 {
                     new DocumentArticle
                     {
@@ -105,10 +104,13 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                         Note = ""
                     }
                 },
-                Note = string.Empty,
-                IsActive = true
-            },
-            new Document
+            Note = string.Empty,
+            IsActive = true
+        });
+
+        if (wage > 0)
+        {
+            documentsToAdd.Add(new Document
             {
                 Date = loanToAdd.CreateDate,
                 FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
@@ -133,9 +135,9 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                 },
                 Note = string.Empty,
                 IsActive = true
-            }
-        };
-        _context.Documents.AddRange(documentToAdd);
+            });
+        }
+        _context.Documents.AddRange(documentsToAdd);
 
         await _context.SaveChangesAsync(cancellationToken);
 

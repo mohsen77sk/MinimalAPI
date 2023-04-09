@@ -12,6 +12,6 @@ public class CreateLoanValidator : AbstractValidator<CreateLoan>
         RuleFor(r => r.Amount).GreaterThan(0);
         RuleFor(r => r.InstallmentCount).InclusiveBetween(1, 50);
         RuleFor(r => r.InstallmentInterval).InclusiveBetween(1, 12);
-        RuleFor(r => r.InterestRates).InclusiveBetween(1, 100);
+        RuleFor(r => r.InterestRates).InclusiveBetween(0, 100);
     }
 }

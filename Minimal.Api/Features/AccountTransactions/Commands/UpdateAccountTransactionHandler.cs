@@ -62,7 +62,7 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionIsNotActive").Value);
         }
 
-        if (document.DocumentItems.Any(x => x.AccountDetail.IsActive == false))
+        if (document.DocumentItems.Any(x => x.AccountDetail?.IsActive == false))
         {
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeEdited").Value);
         }
@@ -83,8 +83,8 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
         da1.Debit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0;
 
         var da2 = document.DocumentItems.Single(da => da.AccountDetailId != account.AccountDetail.Id);
-        da2.Credit = request.TransactionType == TransactionTypeEnum.Credit ? request.Amount : 0;
-        da2.Debit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0;
+        da2.Debit = request.TransactionType == TransactionTypeEnum.Credit ? request.Amount : 0;
+        da2.Credit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0;
 
         await _context.SaveChangesAsync(cancellationToken);
 

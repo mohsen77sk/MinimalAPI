@@ -69,8 +69,8 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
-                    Credit = request.TransactionType == TransactionTypeEnum.Credit ? request.Amount : 0,
-                    Debit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0,
+                    Debit = request.TransactionType == TransactionTypeEnum.Credit ? request.Amount : 0,
+                    Credit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0,
                     Note = ""
                 }
             },

@@ -76,7 +76,7 @@ public class UpdateLoanTransactionHandler : IRequestHandler<UpdateLoanTransactio
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeEdited").Value);
         }
 
-        if (document.DocumentItems.Any(x => x.AccountDetail.IsActive == false))
+        if (document.DocumentItems.Any(x => x.AccountDetail?.IsActive == false))
         {
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeEdited").Value);
         }

@@ -39,7 +39,7 @@ public class DeleteAccountTransactionHandler : IRequestHandler<DeleteAccountTran
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionIsNotActive").Value);
         }
 
-        if (document.DocumentItems.Any(x => x.AccountDetail.IsActive == false))
+        if (document.DocumentItems.Any(x => x.AccountDetail?.IsActive == false))
         {
             throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeDeleted").Value);
         }

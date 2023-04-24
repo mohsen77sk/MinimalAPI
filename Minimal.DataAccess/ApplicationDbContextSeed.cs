@@ -98,8 +98,6 @@ public static class ApplicationDbContextSeed
             context.AddRange(new List<AccountSubsid>()
             {
                 new AccountSubsid { Code = "1101", AccountLedger = context.AccountLedgers.Single(x => x.Code == "11"), Title = "صندوق", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
-                new AccountSubsid { Code = "1102", AccountLedger = context.AccountLedgers.Single(x => x.Code == "11"), Title = "بانک ها", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
-                new AccountSubsid { Code = "1103", AccountLedger = context.AccountLedgers.Single(x => x.Code == "11"), Title = "تنخواه گردان ها", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
                 new AccountSubsid { Code = "1201", AccountLedger = context.AccountLedgers.Single(x => x.Code == "12"), Title = "قرض الحسنه", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
                 new AccountSubsid { Code = "1202", AccountLedger = context.AccountLedgers.Single(x => x.Code == "12"), Title = "اضطراری", AccountEssence = context.AccountEssences.Single(x => x.Code == "1"), IsSystemic = true },
                 new AccountSubsid { Code = "2101", AccountLedger = context.AccountLedgers.Single(x => x.Code == "21"), Title = "قرض الحسنه پس انداز", AccountEssence = context.AccountEssences.Single(x => x.Code == "2"), IsSystemic = true },

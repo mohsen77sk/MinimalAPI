@@ -1,4 +1,4 @@
-namespace Minimal.Api.Features.Auth.Models;
+namespace Minimal.Api.Models;
 
 public class AuthenticationDto
 {

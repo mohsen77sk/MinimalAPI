@@ -1,4 +1,5 @@
 {
+    "dotnet-test-explorer.testProjectPath": "**/*Test.@(csproj|vbproj|fsproj)",
     "cSpell.words": [
         "Iban",
         "Mediat",

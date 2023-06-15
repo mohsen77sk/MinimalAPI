@@ -9,3 +9,6 @@ app.ConfigureApplication();
 app.ConfigureDatabase();
 
 app.Run();
+
+public partial class Program
+{ }

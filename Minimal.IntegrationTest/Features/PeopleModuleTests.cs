@@ -1,8 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using Microsoft.Extensions.DependencyInjection;
 using Minimal.Domain;
-using Minimal.DataAccess;
 using Minimal.Api.Models;
 using Minimal.IntegrationTest.Helpers;
 using Minimal.Api.Features.People.Commands;
@@ -16,22 +14,48 @@ public class PeopleModuleTests : BaseModuleTests
     {
     }
 
-    public static IEnumerable<object[]> InvalidPeople => new List<object[]>
+    public static IEnumerable<object[]> InvalidPeopleForCreate => new List<object[]>
     {
-        new object[] { new Person { FirstName = "", LastName = "" }, "'First Name' must not be empty." },
-        new object[] { new Person { FirstName = "", LastName = "" }, "'Last Name' must not be empty." },
-        new object[] { new Person { FirstName = "a", LastName = "" }, "'First Name' must be between 2 and 25 characters. You entered 1 characters." },
-        new object[] { new Person { FirstName = "", LastName = "b" }, "'Last Name' must be between 2 and 25 characters. You entered 1 characters." },
-        new object[] { new Person { FirstName = "aaa", LastName = "bbb" }, "'Gender' has a range of values which does not include '0'." },
-        new object[] { new Person { FirstName = "aaa", LastName = "bbb", Gender = 0 }, "'Gender' has a range of values which does not include '0'." },
-        new object[] { new Person { FirstName = "aaa", LastName = "bbb", Gender = 1, NationalCode = "1" }, "'National Code' must be 10 characters in length. You entered 1 characters." },
+        new object[] { new CreatePerson { FirstName = "", LastName = "" }, "'First Name' must not be empty." },
+        new object[] { new CreatePerson { FirstName = "", LastName = "" }, "'Last Name' must not be empty." },
+        new object[] { new CreatePerson { FirstName = "a", LastName = "" }, "'First Name' must be between 2 and 25 characters. You entered 1 characters." },
+        new object[] { new CreatePerson { FirstName = "", LastName = "b" }, "'Last Name' must be between 2 and 25 characters. You entered 1 characters." },
+        new object[] { new CreatePerson { FirstName = "aaa", LastName = "bbb" }, "'Gender' has a range of values which does not include '0'." },
+        new object[] { new CreatePerson { FirstName = "aaa", LastName = "bbb", Gender = 0 }, "'Gender' has a range of values which does not include '0'." },
+        new object[] { new CreatePerson { FirstName = "aaa", LastName = "bbb", NationalCode = "1" }, "'National Code' must be 10 characters in length. You entered 1 characters." },
+    };
+
+    public static IEnumerable<object[]> InvalidPeopleForUpdate => new List<object[]>
+    {
+        new object[] { new UpdatePerson { Id = 0 }, "'Id' must not be empty." },
+        new object[] { new UpdatePerson { FirstName = "", LastName = "" }, "'First Name' must not be empty." },
+        new object[] { new UpdatePerson { FirstName = "", LastName = "" }, "'Last Name' must not be empty." },
+        new object[] { new UpdatePerson { FirstName = "a", LastName = "" }, "'First Name' must be between 2 and 25 characters. You entered 1 characters." },
+        new object[] { new UpdatePerson { FirstName = "", LastName = "b" }, "'Last Name' must be between 2 and 25 characters. You entered 1 characters." },
+        new object[] { new UpdatePerson { FirstName = "aaa", LastName = "bbb" }, "'Gender' has a range of values which does not include '0'." },
+        new object[] { new UpdatePerson { FirstName = "aaa", LastName = "bbb", Gender = 0 }, "'Gender' has a range of values which does not include '0'." },
+        new object[] { new UpdatePerson { FirstName = "aaa", LastName = "bbb", NationalCode = "1" }, "'National Code' must be 10 characters in length. You entered 1 characters." },
     };
 
     [Theory]
-    [MemberData(nameof(InvalidPeople))]
-    public async Task PostPersonWithValidationProblems(Person person, string errorMessage)
+    [MemberData(nameof(InvalidPeopleForCreate))]
+    public async Task CreatePersonWithValidationProblems(Person person, string errorMessage)
     {
         var response = await _httpClient.PostAsJsonAsync("/api/person", person);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problemResult = await response.Content.ReadFromJsonAsync<ValidationError>();
+
+        Assert.NotNull(problemResult?.Errors);
+        Assert.True(problemResult?.Errors.Any(x => x.Value.Any(x => x == errorMessage)));
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidPeopleForUpdate))]
+    public async Task UpdatePersonWithValidationProblems(Person person, string errorMessage)
+    {
+        var response = await _httpClient.PutAsJsonAsync("/api/person", person);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -134,6 +158,36 @@ public class PeopleModuleTests : BaseModuleTests
 
         Assert.Equal(updatePerson.Id, responseResult?.Id);
         Assert.Equal(updatePerson.IsActive, responseResult?.IsActive);
+
+        await deleteRowFromDb<Person>(person.Id);
+    }
+
+    [Fact]
+    public async Task GetPerson()
+    {
+        var person = await addRowToDb<Person>(new Person
+        {
+            FirstName = "First name",
+            LastName = "Last name",
+            NationalCode = "1234512345",
+            Gender = 1,
+            DateOfBirth = new DateTime(1993, 12, 23),
+            Note = "Test note"
+        });
+        var response = await _httpClient.GetAsync("/api/person/" + person.Id);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseResult = await response.Content.ReadFromJsonAsync<PersonGetDto>();
+
+        Assert.Equal(person.Id, responseResult?.Id);
+        Assert.Equal(person.Code, responseResult?.Code);
+        Assert.Equal(person.FirstName, responseResult?.FirstName);
+        Assert.Equal(person.LastName, responseResult?.LastName);
+        Assert.Equal(person.Gender, (Byte)(responseResult?.Gender ?? 0));
+        Assert.Equal(person.NationalCode, responseResult?.NationalCode);
+        Assert.Equal(person.DateOfBirth, responseResult?.DateOfBirth);
+        Assert.Equal(person.Note, responseResult?.Note);
+        Assert.Equal(person.IsActive, responseResult?.IsActive);
 
         await deleteRowFromDb<Person>(person.Id);
     }

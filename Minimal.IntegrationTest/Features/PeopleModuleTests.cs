@@ -39,7 +39,7 @@ public class PeopleModuleTests : BaseModuleTests
 
     [Theory]
     [MemberData(nameof(InvalidPeopleForCreate))]
-    public async Task CreatePersonWithValidationProblems(Person person, string errorMessage)
+    public async Task CreatePersonWithValidationProblems(CreatePerson person, string errorMessage)
     {
         var response = await _httpClient.PostAsJsonAsync("/api/person", person);
 
@@ -53,7 +53,7 @@ public class PeopleModuleTests : BaseModuleTests
 
     [Theory]
     [MemberData(nameof(InvalidPeopleForUpdate))]
-    public async Task UpdatePersonWithValidationProblems(Person person, string errorMessage)
+    public async Task UpdatePersonWithValidationProblems(UpdatePerson person, string errorMessage)
     {
         var response = await _httpClient.PutAsJsonAsync("/api/person", person);
 

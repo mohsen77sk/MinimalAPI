@@ -91,13 +91,13 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(newPerson.DateOfBirth, responseResult?.DateOfBirth);
         Assert.Equal(newPerson.Note, responseResult?.Note);
 
-        await deleteRowFromDb<Person>(responseResult?.Id ?? 0);
+        await deleteRowFromDbAsync<Person>(responseResult?.Id ?? 0);
     }
 
     [Fact]
     public async Task UpdatePerson()
     {
-        var person = await addRowToDb<Person>(new Person
+        var person = await addRowToDbAsync<Person>(new Person
         {
             FirstName = "First name",
             LastName = "Last name",
@@ -130,13 +130,13 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(updatePerson.DateOfBirth, responseResult?.DateOfBirth);
         Assert.Equal(updatePerson.Note, responseResult?.Note);
 
-        await deleteRowFromDb<Person>(person.Id);
+        await deleteRowFromDbAsync<Person>(person.Id);
     }
 
     [Fact]
     public async Task UpdateStatusPerson()
     {
-        var person = await addRowToDb<Person>(new Person
+        var person = await addRowToDbAsync<Person>(new Person
         {
             FirstName = "First name",
             LastName = "Last name",
@@ -159,13 +159,13 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(updatePerson.Id, responseResult?.Id);
         Assert.Equal(updatePerson.IsActive, responseResult?.IsActive);
 
-        await deleteRowFromDb<Person>(person.Id);
+        await deleteRowFromDbAsync<Person>(person.Id);
     }
 
     [Fact]
     public async Task GetPerson()
     {
-        var person = await addRowToDb<Person>(new Person
+        var person = await addRowToDbAsync<Person>(new Person
         {
             FirstName = "First name",
             LastName = "Last name",
@@ -189,6 +189,6 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(person.Note, responseResult?.Note);
         Assert.Equal(person.IsActive, responseResult?.IsActive);
 
-        await deleteRowFromDb<Person>(person.Id);
+        await deleteRowFromDbAsync<Person>(person.Id);
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +32,25 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
         }
     }
 
-    protected async Task<T> addRowToDb<T>(T entity) where T : class
+    protected async Task<T> getRowFromDbAsync<T>(Expression<Func<T, bool>> where) where T : class
+    {
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            if (db != null)
+            {
+                DbSet<T> dbSet = db.Set<T>();
+                if (dbSet != null)
+                {
+                    var result = await dbSet.AsNoTracking().SingleAsync(where);
+                    return result;
+                }
+            }
+            throw new Exception();
+        }
+    }
+
+    protected async Task<T> addRowToDbAsync<T>(T entity) where T : class
     {
         using (var scope = _factory.Services.CreateScope())
         {
@@ -50,7 +69,28 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
         }
     }
 
-    protected async Task clearEntityFromDb<T>() where T : class
+    protected async Task deleteRowFromDbAsync<T>(int id) where T : class
+    {
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            if (db != null)
+            {
+                DbSet<T> dbSet = db.Set<T>();
+                if (dbSet != null)
+                {
+                    var row = dbSet.Find(id);
+                    if (row != null)
+                    {
+                        dbSet.Remove(row);
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+        }
+    }
+
+    protected async Task clearEntityFromDbAsync<T>() where T : class
     {
         using (var scope = _factory.Services.CreateScope())
         {
@@ -67,7 +107,7 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
         }
     }
 
-    protected async Task deleteRowFromDb<T>(int id) where T : class
+    protected void clearEntityFromDb<T>() where T : class
     {
         using (var scope = _factory.Services.CreateScope())
         {
@@ -75,14 +115,10 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
             if (db != null)
             {
                 DbSet<T> dbSet = db.Set<T>();
-                if (dbSet != null)
+                if (dbSet != null && dbSet.Any())
                 {
-                    var row = dbSet.Find(id);
-                    if (row != null)
-                    {
-                        dbSet.Remove(row);
-                        await db.SaveChangesAsync();
-                    }
+                    dbSet.RemoveRange(dbSet);
+                    db.SaveChanges();
                 }
             }
         }

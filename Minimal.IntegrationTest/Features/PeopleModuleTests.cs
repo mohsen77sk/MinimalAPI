@@ -68,6 +68,8 @@ public class PeopleModuleTests : BaseModuleTests
     [Fact]
     public async Task CreatePerson()
     {
+        await ClearDbForPeopleTest();
+
         var newPerson = new CreatePerson
         {
             FirstName = "First name",
@@ -91,13 +93,15 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(newPerson.DateOfBirth, responseResult?.DateOfBirth);
         Assert.Equal(newPerson.Note, responseResult?.Note);
 
-        await deleteRowFromDbAsync<Person>(responseResult?.Id ?? 0);
+        await ClearDbForPeopleTest();
     }
 
     [Fact]
     public async Task UpdatePerson()
     {
-        var person = await addRowToDbAsync<Person>(new Person
+        await ClearDbForPeopleTest();
+
+        var person = await AddRowToDbAsync<Person>(new Person
         {
             FirstName = "First name",
             LastName = "Last name",
@@ -130,13 +134,15 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(updatePerson.DateOfBirth, responseResult?.DateOfBirth);
         Assert.Equal(updatePerson.Note, responseResult?.Note);
 
-        await deleteRowFromDbAsync<Person>(person.Id);
+        await ClearDbForPeopleTest();
     }
 
     [Fact]
     public async Task UpdateStatusPerson()
     {
-        var person = await addRowToDbAsync<Person>(new Person
+        await ClearDbForPeopleTest();
+
+        var person = await AddRowToDbAsync<Person>(new Person
         {
             FirstName = "First name",
             LastName = "Last name",
@@ -159,13 +165,15 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(updatePerson.Id, responseResult?.Id);
         Assert.Equal(updatePerson.IsActive, responseResult?.IsActive);
 
-        await deleteRowFromDbAsync<Person>(person.Id);
+        await ClearDbForPeopleTest();
     }
 
     [Fact]
     public async Task GetPerson()
     {
-        var person = await addRowToDbAsync<Person>(new Person
+        await ClearDbForPeopleTest();
+
+        var person = await AddRowToDbAsync<Person>(new Person
         {
             FirstName = "First name",
             LastName = "Last name",
@@ -189,6 +197,11 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(person.Note, responseResult?.Note);
         Assert.Equal(person.IsActive, responseResult?.IsActive);
 
-        await deleteRowFromDbAsync<Person>(person.Id);
+        await ClearDbForPeopleTest();
+    }
+
+    private async Task ClearDbForPeopleTest()
+    {
+        await ClearEntityFromDbAsync<Person>();
     }
 }

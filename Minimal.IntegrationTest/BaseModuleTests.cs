@@ -32,7 +32,7 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
         }
     }
 
-    protected async Task<T> getRowFromDbAsync<T>(Expression<Func<T, bool>> where) where T : class
+    protected async Task<T> GetRowFromDbAsync<T>(Expression<Func<T, bool>> where) where T : class
     {
         using (var scope = _factory.Services.CreateScope())
         {
@@ -50,7 +50,7 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
         }
     }
 
-    protected async Task<T> addRowToDbAsync<T>(T entity) where T : class
+    protected async Task<T> AddRowToDbAsync<T>(T entity) where T : class
     {
         using (var scope = _factory.Services.CreateScope())
         {
@@ -69,7 +69,7 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
         }
     }
 
-    protected async Task deleteRowFromDbAsync<T>(int id) where T : class
+    protected async Task DeleteRowFromDbAsync<T>(int id) where T : class
     {
         using (var scope = _factory.Services.CreateScope())
         {
@@ -90,7 +90,7 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
         }
     }
 
-    protected async Task clearEntityFromDbAsync<T>() where T : class
+    protected async Task ClearEntityFromDbAsync<T>() where T : class
     {
         using (var scope = _factory.Services.CreateScope())
         {
@@ -102,23 +102,6 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
                 {
                     dbSet.RemoveRange(dbSet);
                     await db.SaveChangesAsync();
-                }
-            }
-        }
-    }
-
-    protected void clearEntityFromDb<T>() where T : class
-    {
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            if (db != null)
-            {
-                DbSet<T> dbSet = db.Set<T>();
-                if (dbSet != null && dbSet.Any())
-                {
-                    dbSet.RemoveRange(dbSet);
-                    db.SaveChanges();
                 }
             }
         }

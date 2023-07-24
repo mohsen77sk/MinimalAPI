@@ -54,4 +54,60 @@ public class AccountModuleTests : BaseModuleTests
         Assert.NotNull(problemResult?.Errors);
         Assert.True(problemResult?.Errors.Any(x => x.Value.Any(x => x == errorMessage)));
     }
+
+    [Fact]
+    public async Task CreateAccount()
+    {
+        await ClearDbForAccountTest();
+
+        var person = await AddRowToDbAsync<Person>(new Person
+        {
+            FirstName = "First name",
+            LastName = "Last name",
+            NationalCode = "1234512345",
+            Gender = 1,
+            DateOfBirth = new DateTime(1993, 12, 23),
+            Note = "Test note",
+            IsActive = true
+        });
+        var accountType = await GetRowFromDbAsync<AccountType>(x => x.Code == "2101");
+
+        var newAccount = new CreateAccount
+        {
+            PersonId = new List<int>(new int[] { person.Id }),
+            AccountTypeId = accountType.Id,
+            CreateDate = DateTimeOffset.Now,
+            InitCredit = 1000,
+            Note = "Test note"
+        };
+        var response = await _httpClient.PostAsJsonAsync("/api/account", newAccount);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseResult = await response.Content.ReadFromJsonAsync<AccountGetDto>();
+
+        Assert.NotNull(responseResult?.Id);
+        Assert.NotNull(responseResult?.Code);
+        Assert.True(responseResult?.Persons.Any(x => x.Id == person.Id));
+        Assert.Equal(accountType.Id, responseResult?.AccountTypeId);
+        Assert.Equal(accountType.Name, responseResult?.AccountTypeName);
+        Assert.Equal(newAccount.CreateDate, responseResult?.CreateDate);
+        Assert.Equal(newAccount.Note, responseResult?.Note);
+
+        var responseBalance = await _httpClient.GetAsync("/api/account/" + responseResult?.Id + "/balance");
+
+        Assert.Equal(HttpStatusCode.OK, responseBalance.StatusCode);
+        var responseBalanceResult = await responseBalance.Content.ReadFromJsonAsync<AccountBalanceGetDto>();
+
+        Assert.Equal(newAccount.InitCredit, responseBalanceResult?.Balance);
+
+        await ClearDbForAccountTest();
+    }
+
+    private async Task ClearDbForAccountTest()
+    {
+        await ClearEntityFromDbAsync<Document>();
+        await ClearEntityFromDbAsync<AccountDetail>();
+        await ClearEntityFromDbAsync<Account>();
+        await ClearEntityFromDbAsync<Person>();
+    }
 }

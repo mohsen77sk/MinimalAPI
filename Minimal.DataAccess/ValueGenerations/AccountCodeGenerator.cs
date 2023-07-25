@@ -20,7 +20,7 @@ public class AccountCodeGenerator : ValueGenerator<string>
         var _context = (ApplicationDbContext)entry.Context;
         var _acc = (Account)entry.Entity;
 
-        if (_acc.AccountType is not null)
+        if (_acc.AccountType is not null || _acc.AccountTypeId != 0)
         {
             _typeCode = _context.AccountTypes
                 .AsNoTracking()

@@ -20,7 +20,7 @@ public class LoanCodeGenerator : ValueGenerator<string>
         var _context = (ApplicationDbContext)entry.Context;
         var _lon = (Loan)entry.Entity;
 
-        if (_lon.LoanType is not null)
+        if (_lon.LoanType is not null || _lon.LoanTypeId != 0)
         {
             _typeCode = _context.LoanTypes
                 .AsNoTracking()

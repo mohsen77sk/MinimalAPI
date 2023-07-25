@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Minimal.Api.Common.TokenService;
 using Minimal.DataAccess;
+using Minimal.Domain;
 using Minimal.IntegrationTest.Helpers;
 
 namespace Minimal.IntegrationTest;
@@ -30,6 +31,57 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
             var token = tokenService?.CreateAccessTokenAsync(user, false).Result;
             return new AuthenticationHeaderValue("Bearer", token);
         }
+    }
+
+    public async Task<Person> CreateNewPerson()
+    {
+        return await AddRowToDbAsync<Person>(new Person
+        {
+            FirstName = "First name",
+            LastName = "Last name",
+            NationalCode = "1234567890",
+            Gender = 1,
+            DateOfBirth = new DateTime(1990, 1, 1),
+            Note = "Test create person",
+            IsActive = true
+        });
+    }
+
+    public async Task<Account> CreateNewAccount()
+    {
+        var accountType = await GetRowFromDbAsync<AccountType>(x => x.Code == "2101");
+        var accountCategory = await GetRowFromDbAsync<AccountCategory>(x => x.Code == "2");
+
+        var account = await AddRowToDbAsync<Account>(new Account
+        {
+            People = new List<Person>(new Person[] {
+                new Person
+                {
+                    FirstName = "Person first name",
+                    LastName = "Person last name",
+                    NationalCode = "1234512345",
+                    Gender = 1,
+                    DateOfBirth = new DateTime(2000, 1, 1),
+                    IsActive = true
+                }
+            }),
+            AccountDetail = new AccountDetail
+            {
+                Title = "Account test",
+                AccountCategoryId = accountCategory.Id,
+                IsActive = true
+            },
+            AccountTypeId = accountType.Id,
+            CreateDate = DateTimeOffset.Now,
+            CloseDate = null,
+            Note = "Test create account",
+            IsActive = true
+        });
+
+        // Fill account type
+        account.AccountType = accountType;
+
+        return account;
     }
 
     protected async Task<T> GetRowFromDbAsync<T>(Expression<Func<T, bool>> where) where T : class

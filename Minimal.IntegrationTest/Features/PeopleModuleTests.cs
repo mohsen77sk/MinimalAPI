@@ -92,6 +92,7 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(newPerson.NationalCode, responseResult?.NationalCode);
         Assert.Equal(newPerson.DateOfBirth, responseResult?.DateOfBirth);
         Assert.Equal(newPerson.Note, responseResult?.Note);
+        Assert.True(responseResult?.IsActive);
 
         await ClearDbForPeopleTest();
     }
@@ -101,15 +102,7 @@ public class PeopleModuleTests : BaseModuleTests
     {
         await ClearDbForPeopleTest();
 
-        var person = await AddRowToDbAsync<Person>(new Person
-        {
-            FirstName = "First name",
-            LastName = "Last name",
-            NationalCode = "1234512345",
-            Gender = 1,
-            DateOfBirth = new DateTime(1993, 12, 23),
-            Note = "Test note"
-        });
+        var person = await CreateNewPerson();
 
         var updatePerson = new UpdatePerson
         {
@@ -133,6 +126,7 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(updatePerson.NationalCode, responseResult?.NationalCode);
         Assert.Equal(updatePerson.DateOfBirth, responseResult?.DateOfBirth);
         Assert.Equal(updatePerson.Note, responseResult?.Note);
+        Assert.True(responseResult?.IsActive);
 
         await ClearDbForPeopleTest();
     }
@@ -142,15 +136,7 @@ public class PeopleModuleTests : BaseModuleTests
     {
         await ClearDbForPeopleTest();
 
-        var person = await AddRowToDbAsync<Person>(new Person
-        {
-            FirstName = "First name",
-            LastName = "Last name",
-            NationalCode = "1234512345",
-            Gender = 1,
-            DateOfBirth = new DateTime(1993, 12, 23),
-            Note = "Test note"
-        });
+        var person = await CreateNewPerson();
 
         var updatePerson = new UpdateStatusPerson
         {
@@ -173,15 +159,8 @@ public class PeopleModuleTests : BaseModuleTests
     {
         await ClearDbForPeopleTest();
 
-        var person = await AddRowToDbAsync<Person>(new Person
-        {
-            FirstName = "First name",
-            LastName = "Last name",
-            NationalCode = "1234512345",
-            Gender = 1,
-            DateOfBirth = new DateTime(1993, 12, 23),
-            Note = "Test note"
-        });
+        var person = await CreateNewPerson();
+
         var response = await _httpClient.GetAsync("/api/person/" + person.Id);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

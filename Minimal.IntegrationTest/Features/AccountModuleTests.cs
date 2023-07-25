@@ -156,6 +156,48 @@ public class AccountModuleTests : BaseModuleTests
         await ClearDbForAccountTest();
     }
 
+    [Fact]
+    public async Task GetAccount()
+    {
+        await ClearDbForAccountTest();
+
+        var person = new Person
+        {
+            FirstName = "First name",
+            LastName = "Last name",
+            NationalCode = "1234512345",
+            Gender = 1,
+            DateOfBirth = new DateTime(1993, 12, 23),
+            IsActive = true
+        };
+        var accountType = await GetRowFromDbAsync<AccountType>(x => x.Code == "2101");
+        var account = await AddRowToDbAsync<Account>(new Account
+        {
+            People = new List<Person>(new Person[] { person }),
+            AccountTypeId = accountType.Id,
+            CreateDate = DateTimeOffset.Now,
+            CloseDate = null,
+            Note = "Test note",
+            IsActive = true
+        });
+        var response = await _httpClient.GetAsync("/api/account/" + account.Id);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseResult = await response.Content.ReadFromJsonAsync<AccountGetDto>();
+
+        Assert.Equal(account.Id, responseResult?.Id);
+        Assert.Equal(account.Code, responseResult?.Code);
+        Assert.True(responseResult?.Persons.Any(x => x.Id == person.Id));
+        Assert.Equal(account.AccountTypeId, responseResult?.AccountTypeId);
+        Assert.Equal(accountType.Name, responseResult?.AccountTypeName);
+        Assert.Equal(account.CreateDate, responseResult?.CreateDate);
+        Assert.Equal(account.CloseDate, responseResult?.CloseDate);
+        Assert.Equal(account.Note, responseResult?.Note);
+        Assert.Equal(account.IsActive, responseResult?.IsActive);
+
+        await ClearDbForAccountTest();
+    }
+
     private async Task ClearDbForAccountTest()
     {
         await ClearEntityFromDbAsync<Document>();

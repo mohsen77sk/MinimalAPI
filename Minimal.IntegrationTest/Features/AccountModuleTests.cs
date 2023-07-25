@@ -103,6 +103,59 @@ public class AccountModuleTests : BaseModuleTests
         await ClearDbForAccountTest();
     }
 
+    [Fact]
+    public async Task UpdateAccount()
+    {
+        await ClearDbForAccountTest();
+
+        var person = new Person
+        {
+            FirstName = "First",
+            LastName = "Last",
+            NationalCode = "1234512345",
+            Gender = 1,
+            DateOfBirth = new DateTime(1993, 12, 23),
+            IsActive = true
+        };
+        var person2 = await AddRowToDbAsync<Person>(new Person
+        {
+            FirstName = "First name",
+            LastName = "Last name",
+            NationalCode = "1234512345",
+            Gender = 1,
+            DateOfBirth = new DateTime(1993, 12, 23),
+            IsActive = true
+        });
+        var account = await AddRowToDbAsync<Account>(new Account
+        {
+            People = new List<Person>(new Person[] { person }),
+            AccountTypeId = (await GetRowFromDbAsync<AccountType>(x => x.Code == "2101")).Id,
+            CreateDate = DateTimeOffset.Now,
+            CloseDate = null,
+            Note = "Test note",
+            IsActive = true
+        });
+
+        var updateAccount = new UpdateAccount
+        {
+            Id = account.Id,
+            PersonId = new List<int>(new int[] { person2.Id }),
+            Note = "Test update note"
+        };
+        var response = await _httpClient.PutAsJsonAsync("/api/account", updateAccount);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseResult = await response.Content.ReadFromJsonAsync<AccountGetDto>();
+
+        Assert.NotNull(responseResult?.Id);
+        Assert.NotNull(responseResult?.Code);
+        Assert.False(responseResult?.Persons.Any(x => x.Id == person.Id));
+        Assert.True(responseResult?.Persons.Any(x => x.Id == person2.Id));
+        Assert.Equal(updateAccount.Note, responseResult?.Note);
+
+        await ClearDbForAccountTest();
+    }
+
     private async Task ClearDbForAccountTest()
     {
         await ClearEntityFromDbAsync<Document>();

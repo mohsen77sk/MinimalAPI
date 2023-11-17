@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Minimal.Api/bin/Debug/net7.0/Minimal.Api.dll",
+            "program": "${workspaceFolder}/Minimal.Api/bin/Debug/net8.0/Minimal.Api.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Minimal.Api",
             "stopAtEntry": false,

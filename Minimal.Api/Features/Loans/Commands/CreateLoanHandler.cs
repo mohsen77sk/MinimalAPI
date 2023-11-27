@@ -56,7 +56,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             throw new ValidationException(nameof(request.LoanTypeId), _localizer.GetString("loanTypeIsNotActive").Value);
         }
 
-        var wage = ((loanToAdd.Amount * loanToAdd.InterestRates) / 100);
+        var wage = loanToAdd.Amount * loanToAdd.InterestRates / 100;
         var installmentAmount = (loanToAdd.Amount / loanToAdd.InstallmentCount);
 
         if (installmentAmount - (long)installmentAmount > 0)
@@ -80,13 +80,14 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
         };
         _context.AccountDetails.Add(accountDetailToAdd);
 
-        var documentsToAdd = new List<Document>();
-        documentsToAdd.Add(new Document
+        var documentsToAdd = new List<Document>
         {
-            Date = loanToAdd.CreateDate,
-            FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-            DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "20", cancellationToken),
-            DocumentItems = new List<DocumentArticle>()
+            new Document
+            {
+                Date = loanToAdd.CreateDate,
+                FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
+                DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "20", cancellationToken),
+                DocumentItems = new List<DocumentArticle>()
                 {
                     new DocumentArticle
                     {
@@ -104,9 +105,10 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                         Note = ""
                     }
                 },
-            Note = string.Empty,
-            IsActive = true
-        });
+                Note = string.Empty,
+                IsActive = true
+            }
+        };
 
         if (wage > 0)
         {

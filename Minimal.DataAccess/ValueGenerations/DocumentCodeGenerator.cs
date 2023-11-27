@@ -16,7 +16,7 @@ public class DocumentCodeGenerator : ValueGenerator<string>
 
         var lastDocumentCode =
             _context.Documents.Local.OrderByDescending(x => x.Code).Select(x => x.Code).FirstOrDefault() ??
-            (_context.Documents.AsNoTracking().OrderByDescending(x => x.Code).Select(x => x.Code).FirstOrDefault() ?? "0");
+            _context.Documents.AsNoTracking().OrderByDescending(x => x.Code).Select(x => x.Code).FirstOrDefault() ?? "0";
 
         return (int.Parse(lastDocumentCode ?? "0") + 1).ToString().PadLeft(10, '0');
     }

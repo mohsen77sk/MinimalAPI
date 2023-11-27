@@ -36,7 +36,7 @@ public class AccountCodeGenerator : ValueGenerator<string>
                 .FirstOrDefault() ?? "00000000";
         }
 
-        _lastAccountCode = (_lastAccountCode).Substring(4);
+        _lastAccountCode = _lastAccountCode.Substring(4);
         _code = (int.Parse(_lastAccountCode) + 1).ToString().PadLeft(4, '0');
 
         return _typeCode + _code;

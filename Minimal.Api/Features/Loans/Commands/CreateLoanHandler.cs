@@ -57,7 +57,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
         }
 
         var wage = loanToAdd.Amount * loanToAdd.InterestRates / 100;
-        var installmentAmount = (loanToAdd.Amount / loanToAdd.InstallmentCount);
+        var installmentAmount = loanToAdd.Amount / loanToAdd.InstallmentCount;
 
         if (installmentAmount - (long)installmentAmount > 0)
         {

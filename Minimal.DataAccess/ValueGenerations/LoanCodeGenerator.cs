@@ -36,7 +36,7 @@ public class LoanCodeGenerator : ValueGenerator<string>
                 .FirstOrDefault() ?? "00000000";
         }
 
-        _lastLoanCode = (_lastLoanCode).Substring(4);
+        _lastLoanCode = _lastLoanCode.Substring(4);
         _code = (int.Parse(_lastLoanCode) + 1).ToString().PadLeft(4, '0');
 
         return _typeCode + _code;

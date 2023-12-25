@@ -170,7 +170,7 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(person.Code, responseResult?.Code);
         Assert.Equal(person.FirstName, responseResult?.FirstName);
         Assert.Equal(person.LastName, responseResult?.LastName);
-        Assert.Equal(person.Gender, (Byte)(responseResult?.Gender ?? 0));
+        Assert.Equal(person.Gender, (byte)(responseResult?.Gender ?? 0));
         Assert.Equal(person.NationalCode, responseResult?.NationalCode);
         Assert.Equal(person.DateOfBirth, responseResult?.DateOfBirth);
         Assert.Equal(person.Note, responseResult?.Note);

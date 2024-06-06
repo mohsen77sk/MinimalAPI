@@ -25,16 +25,16 @@ public static class WebApplicationExtensions
         localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
         app.UseRequestLocalization(localizationOptions);
 
-        if (app.Environment.IsDevelopment())
+        // if (app.Environment.IsDevelopment())
+        // {
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                // Hide schema
-                options.DefaultModelsExpandDepth(-1);
-                options.EnableDeepLinking();
-            });
-        }
+            // Hide schema
+            options.DefaultModelsExpandDepth(-1);
+            options.EnableDeepLinking();
+        });
+        // }
 
         app.UseHttpsRedirection();
 

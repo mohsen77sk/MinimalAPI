@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Minimal.Api</name>
+    </assembly>
+    <members>
+        <member name="M:Minimal.Api.Features.AccountTypes.AccountTypeModule.GetLookupAccountTypesAsync(MediatR.IMediator,System.Threading.CancellationToken)">
+            <remarks>
+            ### * Get active account types
+            </remarks>
+        </member>
+        <member name="M:Minimal.Api.Features.Banks.BankModule.GetLookupBanksAsync(MediatR.IMediator,System.Threading.CancellationToken)">
+            <remarks>
+            ### * Get active banks
+            </remarks>
+        </member>
+        <member name="M:Minimal.Api.Features.LoanTypes.LoanTypeModule.GetLookupLoanTypesAsync(MediatR.IMediator,System.Threading.CancellationToken)">
+            <remarks>
+            ### * Get active loan types
+            </remarks>
+        </member>
+        <member name="P:Minimal.Api.Models.PagingData.Page">
+            <summary>
+            Default value = 1
+            </summary>
+        </member>
+        <member name="P:Minimal.Api.Models.PagingData.PageSize">
+            <summary>
+            Default value = 10
+            </summary>
+        </member>
+        <member name="P:Minimal.Api.Models.PagingData.SortBy">
+            <summary>
+            Example: `id asc, code desc`
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -34,7 +34,10 @@ jobs:
         run: dotnet build ./Minimal.Api/Minimal.Api.csproj -c Release --no-restore
 
       - name: Publish
-        run: dotnet publish ./Minimal.Api/Minimal.Api.csproj -c Release -o ./publish -r win-x64 --self-contained true -p:UseAppHost=true
+        run: dotnet publish ./Minimal.Api/Minimal.Api.csproj -c Release --no-restore -o ./publish -r win-x64
+
+      - name: Remove wwwroot directory
+        run: rm -r ./publish/wwwroot
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

@@ -1,12 +1,12 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v8.0/linux-x64",
+    "name": ".NETCoreApp,Version=v8.0/win-x64",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {},
-    ".NETCoreApp,Version=v8.0/linux-x64": {
+    ".NETCoreApp,Version=v8.0/win-x64": {
       "Minimal.Api/1.0.0": {
         "dependencies": {
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
@@ -23,8 +23,8 @@
           "Minimal.Domain": "1.0.0",
           "Swashbuckle.AspNetCore": "6.5.0",
           "UAParser": "3.1.47",
-          "runtimepack.Microsoft.NETCore.App.Runtime.linux-x64": "8.0.6",
-          "runtimepack.Microsoft.AspNetCore.App.Runtime.linux-x64": "8.0.6"
+          "runtimepack.Microsoft.NETCore.App.Runtime.win-x64": "8.0.6",
+          "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64": "8.0.6"
         },
         "runtime": {
           "Minimal.Api.dll": {}
@@ -38,7 +38,7 @@
           }
         }
       },
-      "runtimepack.Microsoft.NETCore.App.Runtime.linux-x64/8.0.6": {
+      "runtimepack.Microsoft.NETCore.App.Runtime.win-x64/8.0.6": {
         "runtime": {
           "Microsoft.CSharp.dll": {
             "assemblyVersion": "8.0.0.0",
@@ -714,51 +714,51 @@
           }
         },
         "native": {
-          "createdump": {
+          "Microsoft.DiaSymReader.Native.amd64.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libSystem.Globalization.Native.so": {
+          "System.IO.Compression.Native.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libSystem.IO.Compression.Native.so": {
+          "clretwrc.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libSystem.Native.so": {
+          "clrgc.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libSystem.Net.Security.Native.so": {
+          "clrjit.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libSystem.Security.Cryptography.Native.OpenSsl.so": {
+          "coreclr.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libclrgc.so": {
+          "createdump.exe": {
             "fileVersion": "0.0.0.0"
           },
-          "libclrjit.so": {
+          "hostfxr.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libcoreclr.so": {
+          "hostpolicy.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libcoreclrtraceptprovider.so": {
+          "mscordaccore.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libhostfxr.so": {
+          "mscordaccore_amd64_amd64_8.0.624.26715.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libhostpolicy.so": {
+          "mscordbi.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libmscordaccore.so": {
+          "mscorrc.dll": {
             "fileVersion": "0.0.0.0"
           },
-          "libmscordbi.so": {
+          "msquic.dll": {
             "fileVersion": "0.0.0.0"
           }
         }
       },
-      "runtimepack.Microsoft.AspNetCore.App.Runtime.linux-x64/8.0.6": {
+      "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64/8.0.6": {
         "runtime": {
           "Microsoft.AspNetCore.Antiforgery.dll": {
             "assemblyVersion": "8.0.0.0",
@@ -1296,6 +1296,10 @@
             "assemblyVersion": "8.0.0.0",
             "fileVersion": "8.0.624.26909"
           },
+          "System.Diagnostics.EventLog.Messages.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          },
           "System.Diagnostics.EventLog.dll": {
             "assemblyVersion": "8.0.0.0",
             "fileVersion": "8.0.23.53103"
@@ -1315,6 +1319,11 @@
           "System.Threading.RateLimiting.dll": {
             "assemblyVersion": "8.0.0.0",
             "fileVersion": "8.0.23.53103"
+          }
+        },
+        "native": {
+          "aspnetcorev2_inprocess.dll": {
+            "fileVersion": "0.0.0.0"
           }
         }
       },
@@ -1558,13 +1567,19 @@
           "System.Text.Encodings.Web": "8.0.0"
         },
         "runtime": {
-          "runtimes/unix/lib/net6.0/Microsoft.Data.SqlClient.dll": {
+          "runtimes/win/lib/net6.0/Microsoft.Data.SqlClient.dll": {
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.0.0"
           }
         }
       },
-      "Microsoft.Data.SqlClient.SNI.runtime/5.1.0": {},
+      "Microsoft.Data.SqlClient.SNI.runtime/5.1.0": {
+        "native": {
+          "runtimes/win-x64/native/Microsoft.Data.SqlClient.SNI.dll": {
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
       "Microsoft.EntityFrameworkCore/8.0.0": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Abstractions": "8.0.0",
@@ -1807,7 +1822,7 @@
       },
       "Microsoft.Win32.SystemEvents/6.0.0": {
         "runtime": {
-          "lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+          "runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
@@ -1912,7 +1927,7 @@
           "Microsoft.Win32.SystemEvents": "6.0.0"
         },
         "runtime": {
-          "runtimes/unix/lib/net6.0/System.Drawing.Common.dll": {
+          "runtimes/win/lib/net6.0/System.Drawing.Common.dll": {
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
@@ -1956,7 +1971,7 @@
           "System.Configuration.ConfigurationManager": "6.0.1"
         },
         "runtime": {
-          "lib/net6.0/System.Runtime.Caching.dll": {
+          "runtimes/win/lib/net6.0/System.Runtime.Caching.dll": {
             "assemblyVersion": "4.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
@@ -1971,7 +1986,7 @@
       },
       "System.Security.Cryptography.ProtectedData/6.0.0": {
         "runtime": {
-          "lib/net6.0/System.Security.Cryptography.ProtectedData.dll": {
+          "runtimes/win/lib/net6.0/System.Security.Cryptography.ProtectedData.dll": {
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
@@ -2008,7 +2023,7 @@
           "System.Drawing.Common": "6.0.0"
         },
         "runtime": {
-          "lib/net6.0/System.Windows.Extensions.dll": {
+          "runtimes/win/lib/net6.0/System.Windows.Extensions.dll": {
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
@@ -2050,12 +2065,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.NETCore.App.Runtime.linux-x64/8.0.6": {
+    "runtimepack.Microsoft.NETCore.App.Runtime.win-x64/8.0.6": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.AspNetCore.App.Runtime.linux-x64/8.0.6": {
+    "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64/8.0.6": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -2751,39 +2766,8 @@
     }
   },
   "runtimes": {
-    "android-x64": [
-      "android",
-      "linux-bionic-x64",
-      "linux-bionic",
-      "linux-x64",
-      "linux",
-      "unix-x64",
-      "unix",
-      "any",
-      "base"
-    ],
-    "linux-bionic-x64": [
-      "linux-bionic",
-      "linux-x64",
-      "linux",
-      "unix-x64",
-      "unix",
-      "any",
-      "base"
-    ],
-    "linux-musl-x64": [
-      "linux-musl",
-      "linux-x64",
-      "linux",
-      "unix-x64",
-      "unix",
-      "any",
-      "base"
-    ],
-    "linux-x64": [
-      "linux",
-      "unix-x64",
-      "unix",
+    "win-x64": [
+      "win",
       "any",
       "base"
     ]

@@ -17,12 +17,12 @@ public static class LinqExtensions
         src = src.Provider.CreateQuery<T>(queryExpression);
 
         var results = new PageList<T>
-        {
-            Items = await src.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(),
-            Total = await src.CountAsync(),
-            Page = page,
-            PageSize = pageSize
-        };
+        (
+            await src.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(),
+            await src.CountAsync(),
+            page,
+            pageSize
+        );
 
         return results;
     }

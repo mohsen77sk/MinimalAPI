@@ -4,6 +4,11 @@
         <name>Minimal.Api</name>
     </assembly>
     <members>
+        <member name="M:Minimal.Api.Features.Accounts.AccountModule.GetLookupAccountsAsync(MediatR.IMediator,System.Threading.CancellationToken)">
+            <remarks>
+            ### * Get active accounts
+            </remarks>
+        </member>
         <member name="M:Minimal.Api.Features.AccountTypes.AccountTypeModule.GetLookupAccountTypesAsync(MediatR.IMediator,System.Threading.CancellationToken)">
             <remarks>
             ### * Get active account types
@@ -17,6 +22,11 @@
         <member name="M:Minimal.Api.Features.LoanTypes.LoanTypeModule.GetLookupLoanTypesAsync(MediatR.IMediator,System.Threading.CancellationToken)">
             <remarks>
             ### * Get active loan types
+            </remarks>
+        </member>
+        <member name="M:Minimal.Api.Features.People.PeopleModule.GetLookupPersonsAsync(MediatR.IMediator,System.Threading.CancellationToken)">
+            <remarks>
+            ### * Get active persons
             </remarks>
         </member>
         <member name="P:Minimal.Api.Models.PagingData.Page">

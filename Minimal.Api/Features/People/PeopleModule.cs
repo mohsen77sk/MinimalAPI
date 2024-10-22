@@ -17,6 +17,10 @@ public class PeopleModule : IModule
             .Produces<PageList<PersonGetDto>>()
             .Produces(500);
 
+        persons.MapGet("/lookup", GetLookupPersonsAsync)
+            .Produces<List<LookupDto>>()
+            .Produces(500);
+
         persons.MapPost("/", CreatePersonAsync)
             .Produces<PersonGetDto>()
             .Produces<ValidationError>(400)
@@ -45,6 +49,16 @@ public class PeopleModule : IModule
     private async Task<IResult> GetPersonsAsync([AsParameters] GetAllPerson request, IMediator mediator, CancellationToken ct)
     {
         var persons = await mediator.Send(request, ct);
+        return Results.Ok(persons);
+    }
+
+    /// <remarks>
+    /// ### * Get active persons
+    /// </remarks>
+    private async Task<IResult> GetLookupPersonsAsync(IMediator mediator, CancellationToken ct)
+    {
+        var query = new GetLookupPersons();
+        var persons = await mediator.Send(query, ct);
         return Results.Ok(persons);
     }
 

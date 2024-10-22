@@ -11,6 +11,8 @@ public class PeopleProfile : Profile
     public PeopleProfile()
     {
         CreateMap<CreatePerson, Person>().ReverseMap();
+        CreateMap<Person, LookupDto>()
+            .ForMember(dto => dto.Name, opt => opt.MapFrom(src => src.FullName));
         CreateMap<Person, PersonGetDto>();
         CreateMap<PageList<Person>, PageList<PersonGetDto>>();
     }

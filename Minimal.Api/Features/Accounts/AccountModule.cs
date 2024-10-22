@@ -17,6 +17,10 @@ public class AccountModule : IModule
             .Produces<PageList<AccountGetDto>>()
             .Produces(500);
 
+        accounts.MapGet("/lookup", GetLookupAccountsAsync)
+            .Produces<List<LookupDto>>()
+            .Produces(500);
+
         accounts.MapPost("/", CreateAccountAsync)
             .Produces<AccountGetDto>()
             .Produces<ValidationError>(400)
@@ -49,6 +53,16 @@ public class AccountModule : IModule
     private async Task<IResult> GetAccountsAsync([AsParameters] GetAllAccount request, IMediator mediator, CancellationToken ct)
     {
         var accounts = await mediator.Send(request, ct);
+        return Results.Ok(accounts);
+    }
+
+    /// <remarks>
+    /// ### * Get active accounts
+    /// </remarks>
+    private async Task<IResult> GetLookupAccountsAsync(IMediator mediator, CancellationToken ct)
+    {
+        var query = new GetLookupAccounts();
+        var accounts = await mediator.Send(query, ct);
         return Results.Ok(accounts);
     }
 

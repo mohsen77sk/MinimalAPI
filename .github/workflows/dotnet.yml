@@ -40,7 +40,7 @@ jobs:
         run: rm -r ./publish/wwwroot
 
       - name: Copy webconfig file
-        run: cp -v .web.config ./publish/
+        run: cp -v web.config ./publish/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

@@ -40,7 +40,7 @@ public class UpdateLoanHandler : IRequestHandler<UpdateLoan, LoanGetDto>
 
         if (loan.IsActive is false)
         {
-            throw new ValidationException(nameof(request.Id), _localizer.GetString("loanIsNotActive").Value);
+            throw new ErrorException(_localizer.GetString("loanIsNotActive").Value);
         }
 
         // If change account

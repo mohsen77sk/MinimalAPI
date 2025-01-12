@@ -29,6 +29,11 @@ public class ErrorHandlerMiddleware
                     response.StatusCode = StatusCodes.Status400BadRequest;
                     await response.WriteAsJsonAsync(new { message = e?.Message, errors = e?.Errors });
                     break;
+                case ErrorException e:
+                    // logical error
+                    response.StatusCode = StatusCodes.Status400BadRequest;
+                    await response.WriteAsJsonAsync(new { message = e?.Message });
+                    break;
                 case NotFoundException e:
                     // not found error
                     response.StatusCode = StatusCodes.Status404NotFound;

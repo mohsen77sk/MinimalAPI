@@ -37,17 +37,17 @@ public class DeleteLoanTransactionHandler : IRequestHandler<DeleteLoanTransactio
 
         if (document.IsActive is false)
         {
-            throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionIsNotActive").Value);
+            throw new ErrorException(_localizer.GetString("transactionIsNotActive").Value);
         }
 
         if (document.DocumentType.Code != "22")
         {
-            throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeEdited").Value);
+            throw new ErrorException(_localizer.GetString("transactionCanNotBeEdited").Value);
         }
 
         if (document.DocumentItems.Any(x => x.AccountDetail?.IsActive == false))
         {
-            throw new ValidationException(nameof(request.Id), _localizer.GetString("transactionCanNotBeDeleted").Value);
+            throw new ErrorException(_localizer.GetString("transactionCanNotBeDeleted").Value);
         }
 
         document.IsActive = false;

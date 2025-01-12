@@ -40,7 +40,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, AccountGetDto
 
         if (account.IsActive is false)
         {
-            throw new ValidationException(nameof(request.Id), _localizer.GetString("accountIsNotActive").Value);
+            throw new ErrorException(_localizer.GetString("accountIsNotActive").Value);
         }
 
         // If change persons

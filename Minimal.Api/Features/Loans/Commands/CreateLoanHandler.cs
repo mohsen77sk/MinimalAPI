@@ -42,7 +42,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
 
         if (account.IsActive is false)
         {
-            throw new ValidationException(nameof(request.LoanTypeId), _localizer.GetString("accountIsNotActive").Value);
+            throw new ValidationException(nameof(request.AccountId), _localizer.GetString("accountIsNotActive").Value);
         }
 
         var loanType = await _context.LoanTypes.FirstOrDefaultAsync(lt => lt.Id.Equals(request.LoanTypeId), cancellationToken);

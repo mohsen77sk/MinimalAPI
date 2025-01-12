@@ -40,7 +40,7 @@ public class UpdateStatusPersonHandler : IRequestHandler<UpdateStatusPerson, Per
 
         if (request.IsActive is false && person.Accounts.Any(a => a.IsActive == true))
         {
-            throw new ValidationException(nameof(request.IsActive), _localizer.GetString("personHasActiveAccount").Value);
+            throw new ErrorException(_localizer.GetString("personHasActiveAccount").Value);
         }
 
         person.IsActive = request.IsActive;

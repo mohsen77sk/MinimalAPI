@@ -41,7 +41,7 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
 
         if (account.IsActive is false)
         {
-            throw new ValidationException(nameof(request.Id), _localizer.GetString("accountIsNotActive").Value);
+            throw new ErrorException(_localizer.GetString("accountIsNotActive").Value);
         }
 
         if (account.CreateDate >= request.CloseDate)

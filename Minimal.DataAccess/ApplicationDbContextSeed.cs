@@ -121,7 +121,6 @@ public static class ApplicationDbContextSeed
                 new DocumentType { Code = "11", Title = "سند اختتامیه" },
                 new DocumentType { Code = "12", Title = "سند دریافت" },
                 new DocumentType { Code = "13", Title = "سند پرداخت" },
-                new DocumentType { Code = "14", Title = "سند انتقال" },
                 //
                 new DocumentType { Code = "20", Title = "سند پرداخت تسهیلات" },
                 new DocumentType { Code = "21", Title = "سند دریافت سود تسهیلات" },

@@ -141,6 +141,14 @@
     <value>Not found account.</value>
     <comment/>
   </data>
+  <data name="notFoundSourceAccount" xml:space="preserve">
+    <value>Not found source account.</value>
+    <comment/>
+  </data>
+  <data name="notFoundDestinationAccount" xml:space="preserve">
+    <value>Not found destination account.</value>
+    <comment/>
+  </data>
   <data name="notFoundBankAccount" xml:space="preserve">
     <value>Not found bank account.</value>
     <comment/>
@@ -159,6 +167,14 @@
   </data>
   <data name="accountIsNotActive" xml:space="preserve">
     <value>The selected account is disabled.</value>
+    <comment/>
+  </data>
+  <data name="sourceAccountIsNotActive" xml:space="preserve">
+    <value>The source account is disabled.</value>
+    <comment/>
+  </data>
+  <data name="destinationAccountIsNotActive" xml:space="preserve">
+    <value>The distination account is disabled.</value>
     <comment/>
   </data>
   <data name="loanIsNotActive" xml:space="preserve">

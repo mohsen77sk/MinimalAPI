@@ -29,23 +29,49 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
             throw new ArgumentNullException(nameof(request));
         }
 
-        var account = await _context.Accounts
+        var sourceAccount = await _context.Accounts
             .Include(a => a.AccountType)
             .Include(a => a.AccountDetail)
-            .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
-        if (account is null)
+            .FirstOrDefaultAsync(a => a.Id == request.SourceAccountId, cancellationToken);
+
+        if (sourceAccount is null)
         {
-            throw new NotFoundException();
+            throw new ValidationException(nameof(request.SourceAccountId), _localizer.GetString("notFoundSourceAccount").Value);
         }
 
-        if (account.IsActive is false)
+        if (sourceAccount.IsActive is false)
         {
-            throw new ValidationException(nameof(request.AccountId), _localizer.GetString("accountIsNotActive").Value);
+            throw new ValidationException(nameof(request.SourceAccountId), _localizer.GetString("sourceAccountIsNotActive").Value);
         }
 
-        if (account.CreateDate > request.Date)
+        if (sourceAccount.CreateDate > request.Date)
         {
             throw new ValidationException(nameof(request.Date), _localizer.GetString("transactionDateIsEarlierOpeningDate").Value);
+        }
+
+        Account? destinationAccount = null;
+
+        if (request.TransactionType == TransactionTypeEnum.Transfer)
+        {
+            destinationAccount = await _context.Accounts
+                .Include(a => a.AccountType)
+                .Include(a => a.AccountDetail)
+                .FirstOrDefaultAsync(a => a.Id == request.DestinationAccountId, cancellationToken);
+
+            if (destinationAccount is null)
+            {
+                throw new ValidationException(nameof(request.DestinationAccountId), _localizer.GetString("notFoundDestinationAccount").Value);
+            }
+
+            if (destinationAccount.IsActive is false)
+            {
+                throw new ValidationException(nameof(request.DestinationAccountId), _localizer.GetString("destinationAccountIsNotActive").Value);
+            }
+
+            if (destinationAccount.CreateDate > request.Date)
+            {
+                throw new ValidationException(nameof(request.Date), _localizer.GetString("transactionDateIsEarlierOpeningDate").Value);
+            }
         }
 
         var documentToAdd = new Document
@@ -53,29 +79,44 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
             Date = request.Date,
             Note = request.Note,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-            DocumentType = request.TransactionType == TransactionTypeEnum.Credit ?
-                await _context.DocumentTypes.SingleAsync(at => at.Code == "12", cancellationToken) :
-                await _context.DocumentTypes.SingleAsync(at => at.Code == "13", cancellationToken),
+            DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == (request.TransactionType == TransactionTypeEnum.Deposit ? "12" : "13"), cancellationToken),
             DocumentItems = new List<DocumentArticle>()
             {
                 new DocumentArticle
                 {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == account.AccountType.Code, cancellationToken),
-                    AccountDetail = account.AccountDetail,
-                    Credit = request.TransactionType == TransactionTypeEnum.Credit ? request.Amount : 0,
-                    Debit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0,
+                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == sourceAccount.AccountType.Code, cancellationToken),
+                    AccountDetail = sourceAccount.AccountDetail,
+                    Credit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
+                    Debit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
                     Note = ""
                 },
-                new DocumentArticle
-                {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
-                    Debit = request.TransactionType == TransactionTypeEnum.Credit ? request.Amount : 0,
-                    Credit = request.TransactionType == TransactionTypeEnum.Debit ? request.Amount : 0,
-                    Note = ""
-                }
             },
             IsActive = true,
         };
+
+        // Add the destination account if the transaction type is Transfer
+        if (destinationAccount is null)
+        {
+            documentToAdd.DocumentItems.Add(new DocumentArticle
+            {
+                AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
+                Debit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
+                Credit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
+                Note = ""
+            });
+        }
+        else
+        {
+            documentToAdd.DocumentItems.Add(new DocumentArticle
+            {
+                AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == destinationAccount.AccountType.Code, cancellationToken),
+                AccountDetail = destinationAccount.AccountDetail,
+                Debit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
+                Credit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
+                Note = ""
+            });
+        }
+
         _context.Documents.Add(documentToAdd);
 
         await _context.SaveChangesAsync(cancellationToken);

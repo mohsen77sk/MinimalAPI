@@ -141,6 +141,14 @@
     <value>حساب پیدا نشد.</value>
     <comment/>
   </data>
+  <data name="notFoundSourceAccount" xml:space="preserve">
+    <value>حساب مبدا پیدا نشد.</value>
+    <comment/>
+  </data>
+  <data name="notFoundDestinationAccount" xml:space="preserve">
+    <value>حساب مقصد پیدا نشد.</value>
+    <comment/>
+  </data>
   <data name="notFoundBankAccount" xml:space="preserve">
     <value>حساب بانکی پیدا نشد.</value>
     <comment/>
@@ -159,6 +167,14 @@
   </data>
   <data name="accountIsNotActive" xml:space="preserve">
     <value>حساب انتخاب شده غیر فعال است.</value>
+    <comment/>
+  </data>
+  <data name="sourceAccountIsNotActive" xml:space="preserve">
+    <value>حساب مبدا غیر فعال است.</value>
+    <comment/>
+  </data>
+  <data name="destinationAccountIsNotActive" xml:space="preserve">
+    <value>حساب مقصد غیر فعال است.</value>
     <comment/>
   </data>
   <data name="loanIsNotActive" xml:space="preserve">

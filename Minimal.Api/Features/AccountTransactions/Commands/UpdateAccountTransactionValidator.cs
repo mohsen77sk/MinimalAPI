@@ -7,9 +7,5 @@ public class UpdateAccountTransactionValidator : AbstractValidator<UpdateAccount
     public UpdateAccountTransactionValidator()
     {
         RuleFor(r => r.Id).NotEmpty();
-        RuleFor(r => r.AccountId).NotEmpty();
-        RuleFor(r => r.Amount).GreaterThan(0);
-        RuleFor(r => r.TransactionType).IsInEnum();
-        RuleFor(r => r.Date).LessThanOrEqualTo(DateTimeOffset.Now);
     }
 }

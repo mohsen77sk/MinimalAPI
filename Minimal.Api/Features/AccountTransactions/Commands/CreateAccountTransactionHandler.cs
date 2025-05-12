@@ -80,8 +80,8 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
             Note = request.Note,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
             DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == (request.TransactionType == TransactionTypeEnum.Deposit ? "12" : "13"), cancellationToken),
-            DocumentItems = new List<DocumentArticle>()
-            {
+            DocumentItems =
+            [
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == sourceAccount.AccountType.Code, cancellationToken),
@@ -90,7 +90,7 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
                     Debit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
                     Note = ""
                 },
-            },
+            ],
             IsActive = true,
         };
 

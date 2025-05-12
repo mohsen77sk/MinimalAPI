@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "Minimal API", Version = "v1" });
-            options.TagActionsBy(ta => new List<string> { ta.ActionDescriptor.DisplayName! });
+            options.TagActionsBy(ta => [ta.ActionDescriptor.DisplayName!]);
 
             options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {

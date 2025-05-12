@@ -4,7 +4,7 @@ public class AccountGroup
 {
     public AccountGroup()
     {
-        AccountLedgers = new List<AccountLedger>();
+        AccountLedgers = [];
     }
 
     public int Id { get; set; }

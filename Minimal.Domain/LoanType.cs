@@ -4,7 +4,7 @@ public class LoanType
 {
     public LoanType()
     {
-        Loans = new List<Loan>();
+        Loans = [];
     }
 
     public int Id { get; set; }

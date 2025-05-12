@@ -4,7 +4,7 @@ public class AccountLedger
 {
     public AccountLedger()
     {
-        AccountSubsids = new List<AccountSubsid>();
+        AccountSubsids = [];
     }
 
     public int Id { get; set; }

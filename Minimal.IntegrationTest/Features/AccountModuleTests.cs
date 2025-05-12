@@ -16,15 +16,15 @@ public class AccountModuleTests : BaseModuleTests
 
     public static IEnumerable<object[]> InvalidAccountsForCreate => new List<object[]>
     {
-        new object[] { new CreateAccount { PersonId = new List<int>(), AccountTypeId = 0 }, "'Person Id' must not be empty." },
-        new object[] { new CreateAccount { PersonId = new List<int>(0), AccountTypeId = 0 }, "'Account Type Id' must not be empty." },
-        new object[] { new CreateAccount { PersonId = new List<int>(0), AccountTypeId = 0, InitCredit = 0 }, "'Init Credit' must be greater than or equal to '1000'." },
+        new object[] { new CreateAccount { PersonId = [], AccountTypeId = 0 }, "'Person Id' must not be empty." },
+        new object[] { new CreateAccount { PersonId = [], AccountTypeId = 0 }, "'Account Type Id' must not be empty." },
+        new object[] { new CreateAccount { PersonId = [], AccountTypeId = 0, InitCredit = 0 }, "'Init Credit' must be greater than or equal to '1000'." },
     };
 
     public static IEnumerable<object[]> InvalidAccountsForUpdate => new List<object[]>
     {
-        new object[] { new UpdateAccount { Id = 0, PersonId = new List<int>() }, "'Id' must not be empty." },
-        new object[] { new UpdateAccount { Id = 0, PersonId = new List<int>() }, "'Person Id' must not be empty." },
+        new object[] { new UpdateAccount { Id = 0, PersonId = [] }, "'Id' must not be empty." },
+        new object[] { new UpdateAccount { Id = 0, PersonId = [] }, "'Person Id' must not be empty." },
     };
 
     [Theory]

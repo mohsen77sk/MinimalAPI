@@ -4,7 +4,7 @@ public class AccountEssence
 {
     public AccountEssence()
     {
-        AccountSubsids = new List<AccountSubsid>();
+        AccountSubsids = [];
     }
 
     public int Id { get; set; }

@@ -4,7 +4,7 @@ public class AccountType
 {
     public AccountType()
     {
-        Accounts = new List<Account>();
+        Accounts = [];
     }
 
     public int Id { get; set; }

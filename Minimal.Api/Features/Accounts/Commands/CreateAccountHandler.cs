@@ -74,8 +74,8 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
             Date = accountToAdd.CreateDate,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
             DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "10", cancellationToken),
-            DocumentItems = new List<DocumentArticle>()
-            {
+            DocumentItems =
+            [
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == accountType.Code, cancellationToken),
@@ -91,7 +91,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
                     Debit = request.InitCredit,
                     Note = ""
                 }
-            },
+            ],
             Note = string.Empty,
             IsActive = true,
         };

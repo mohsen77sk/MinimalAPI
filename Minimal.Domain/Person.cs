@@ -6,8 +6,8 @@ public class Person
 {
     public Person()
     {
-        BankAccounts = new List<BankAccount>();
-        Accounts = new List<Account>();
+        BankAccounts = [];
+        Accounts = [];
     }
 
     public int Id { get; set; }

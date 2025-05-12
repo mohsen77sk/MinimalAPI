@@ -4,7 +4,7 @@ public class Bank
 {
     public Bank()
     {
-        BankAccounts = new List<BankAccount>();
+        BankAccounts = [];
     }
 
     public int Id { get; set; }

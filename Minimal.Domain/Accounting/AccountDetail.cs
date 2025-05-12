@@ -4,7 +4,7 @@ public class AccountDetail
 {
     public AccountDetail()
     {
-        DocumentArticleList = new List<DocumentArticle>();
+        DocumentArticleList = [];
     }
 
     public int Id { get; set; }

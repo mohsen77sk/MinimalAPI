@@ -4,8 +4,8 @@ public class AccountCategory
 {
     public AccountCategory()
     {
-        AccountSubsidList = new List<AccountSubsid>();
-        AccountDetailList = new List<AccountDetail>();
+        AccountSubsidList = [];
+        AccountDetailList = [];
     }
 
     public int Id { get; set; }

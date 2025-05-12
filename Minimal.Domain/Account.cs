@@ -4,8 +4,8 @@ public class Account
 {
     public Account()
     {
-        People = new List<Person>();
-        Loans = new List<Loan>();
+        People = [];
+        Loans = [];
     }
 
     public int Id { get; set; }

@@ -87,8 +87,8 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                 Date = loanToAdd.CreateDate,
                 FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
                 DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "20", cancellationToken),
-                DocumentItems = new List<DocumentArticle>()
-                {
+                DocumentItems =
+                [
                     new DocumentArticle
                     {
                         AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == loanType.Code, cancellationToken),
@@ -104,7 +104,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                         Debit = 0,
                         Note = ""
                     }
-                },
+                ],
                 Note = string.Empty,
                 IsActive = true
             }
@@ -117,8 +117,8 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                 Date = loanToAdd.CreateDate,
                 FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
                 DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "21", cancellationToken),
-                DocumentItems = new List<DocumentArticle>()
-                {
+                DocumentItems =
+                [
                     new DocumentArticle
                     {
                         AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == loanType.Code, cancellationToken),
@@ -134,7 +134,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                         Debit = 0,
                         Note = ""
                     },
-                },
+                ],
                 Note = string.Empty,
                 IsActive = true
             });

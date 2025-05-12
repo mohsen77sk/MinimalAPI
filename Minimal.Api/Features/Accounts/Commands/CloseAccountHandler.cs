@@ -67,8 +67,8 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
             Date = request.CloseDate,
             FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
             DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "11", cancellationToken),
-            DocumentItems = new List<DocumentArticle>()
-            {
+            DocumentItems =
+            [
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == account.AccountType.Code, cancellationToken),
@@ -84,7 +84,7 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
                     Debit = 0,
                     Note = ""
                 }
-            },
+            ],
             Note = string.Empty,
             IsActive = true,
         };

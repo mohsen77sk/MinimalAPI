@@ -4,8 +4,8 @@ public class AccountSubsid
 {
     public AccountSubsid()
     {
-        DocumentArticleList = new List<DocumentArticle>();
-        AccountCategoryList = new List<AccountCategory>();
+        DocumentArticleList = [];
+        AccountCategoryList = [];
     }
 
     public int Id { get; set; }

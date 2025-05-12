@@ -4,7 +4,7 @@ public class FiscalYear
 {
     public FiscalYear()
     {
-        Documents = new List<Document>();
+        Documents = [];
     }
 
     public int Id { get; set; }

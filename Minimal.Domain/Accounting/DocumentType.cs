@@ -4,7 +4,7 @@ public class DocumentType
 {
     public DocumentType()
     {
-        Documents = new List<Document>();
+        Documents = [];
     }
 
     public int Id { get; set; }

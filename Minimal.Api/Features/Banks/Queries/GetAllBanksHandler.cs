@@ -28,6 +28,15 @@ public class GetAllBankHandler : IRequestHandler<GetAllBank, PageList<BankGetDto
             banks = banks.Where(p => p.IsActive == request.IsActive.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = request.Search.Trim().ToLower();
+            banks = banks.Where(b =>
+                b.Code.ToLower().Contains(search) ||
+                b.Name.ToLower().Contains(search)
+            );
+        }
+
         var pagedBanks = await banks.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
         return _mapper.Map<PageList<BankGetDto>>(pagedBanks);

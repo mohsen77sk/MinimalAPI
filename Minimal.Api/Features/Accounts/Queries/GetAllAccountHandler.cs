@@ -28,6 +28,18 @@ public class GetAllAccountHandler : IRequestHandler<GetAllAccount, PageList<Acco
             accounts = accounts.Where(a => a.IsActive == request.IsActive.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = request.Search.Trim().ToLower();
+            accounts = accounts.Where(a =>
+                a.Code.ToLower().Contains(search) ||
+                a.AccountType.Name.ToLower().Contains(search) ||
+                a.People.Any(p =>
+                    p.FirstName.ToLower().Contains(search) ||
+                    p.LastName.ToLower().Contains(search))
+            );
+        }
+
         var pagedAccounts = await accounts.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
         return _mapper.Map<PageList<AccountGetDto>>(pagedAccounts);

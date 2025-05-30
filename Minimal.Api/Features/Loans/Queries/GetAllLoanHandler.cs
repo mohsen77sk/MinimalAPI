@@ -28,6 +28,15 @@ public class GetAllLoanHandler : IRequestHandler<GetAllLoan, PageList<LoanGetDto
             loans = loans.Where(p => p.IsActive == request.IsActive.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = request.Search.Trim().ToLower();
+            loans = loans.Where(l =>
+                l.Code.ToLower().Contains(search) ||
+                l.LoanType.Name.ToLower().Contains(search)
+            );
+        }
+
         var pagedLoans = await loans.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
         return _mapper.Map<PageList<LoanGetDto>>(pagedLoans);

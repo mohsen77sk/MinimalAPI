@@ -28,6 +28,15 @@ public class GetAllAccountTypeHandler : IRequestHandler<GetAllAccountType, PageL
             accountTypes = accountTypes.Where(p => p.IsActive == request.IsActive.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = request.Search.Trim().ToLower();
+            accountTypes = accountTypes.Where(p =>
+                p.Code.ToLower().Contains(search) ||
+                p.Name.ToLower().Contains(search)
+            );
+        }
+
         var pagedAccountTypes = await accountTypes.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
         return _mapper.Map<PageList<AccountTypeGetDto>>(pagedAccountTypes);

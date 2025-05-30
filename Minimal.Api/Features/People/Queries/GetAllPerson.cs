@@ -6,5 +6,6 @@ namespace Minimal.Api.Features.People.Queries;
 
 public class GetAllPerson : PagingData, IRequest<PageList<PersonGetDto>>
 {
+    public string? Search { get; set; }
     public bool? IsActive { get; set; }
 }

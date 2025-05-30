@@ -28,6 +28,16 @@ public class GetAllPersonHandler : IRequestHandler<GetAllPerson, PageList<Person
             persons = persons.Where(p => p.IsActive == request.IsActive.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = request.Search.Trim().ToLower();
+            persons = persons.Where(p =>
+                p.Code.ToLower().Contains(search) ||
+                p.FirstName.ToLower().Contains(search) ||
+                p.LastName.ToLower().Contains(search)
+            );
+        }
+
         var pagedPersons = await persons.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
         return _mapper.Map<PageList<PersonGetDto>>(pagedPersons);

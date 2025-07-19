@@ -10,10 +10,10 @@ public static class LoggingExtensions
         }
 
         builder.Logging.ClearProviders();
-        builder.Logging.AddDebug();
 
         if (builder.Environment.IsDevelopment())
         {
+            builder.Logging.AddDebug();
             builder.Logging.AddConsole();
         }
 

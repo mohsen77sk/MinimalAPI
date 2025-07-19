@@ -38,7 +38,7 @@ public class UpdatePersonHandler : IRequestHandler<UpdatePerson, PersonGetDto>
         person.FirstName = request.FirstName;
         person.LastName = request.LastName;
         person.NationalCode = request.NationalCode;
-        person.DateOfBirth = request.DateOfBirth;
+        person.Birthday = request.Birthday;
         person.Gender = (byte)request.Gender;
         person.Note = request.Note;
 

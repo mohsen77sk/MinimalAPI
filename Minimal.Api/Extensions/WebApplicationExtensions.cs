@@ -25,8 +25,6 @@ public static class WebApplicationExtensions
         localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
         app.UseRequestLocalization(localizationOptions);
 
-        // if (app.Environment.IsDevelopment())
-        // {
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
@@ -34,7 +32,6 @@ public static class WebApplicationExtensions
             options.DefaultModelsExpandDepth(-1);
             options.EnableDeepLinking();
         });
-        // }
 
         app.UseHttpsRedirection();
 

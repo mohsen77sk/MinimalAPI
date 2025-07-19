@@ -14,12 +14,12 @@ public class PersonCodeGenerator : ValueGenerator<string>
     {
         var _context = (ApplicationDbContext)entry.Context;
 
-        var lastAccountCode = int.Parse(
+        var lastPersonCode = int.Parse(
             _context.People.AsNoTracking().OrderByDescending(x => x.Code).Select(x => x.Code).FirstOrDefault() ?? "0"
         );
 
-        lastAccountCode++;
+        lastPersonCode++;
 
-        return lastAccountCode.ToString().PadLeft(4, '0');
+        return lastPersonCode.ToString().PadLeft(4, '0');
     }
 }

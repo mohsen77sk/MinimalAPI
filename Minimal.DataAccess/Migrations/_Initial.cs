@@ -156,7 +156,7 @@ namespace Minimal.DataAccess.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NationalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Birthday = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     Gender = table.Column<byte>(type: "tinyint", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)

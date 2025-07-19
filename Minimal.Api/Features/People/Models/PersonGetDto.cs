@@ -12,7 +12,7 @@ public class PersonGetDto
 
     public string NationalCode { get; set; } = default!;
 
-    public DateTime? DateOfBirth { get; init; }
+    public DateTimeOffset? Birthday { get; init; }
 
     public GenderEnum Gender { get; init; }
 

@@ -22,7 +22,7 @@ public class Person
 
     public string NationalCode { get; set; } = default!;
 
-    public DateTime? DateOfBirth { get; set; }
+    public DateTimeOffset? Birthday { get; set; }
 
     public byte Gender { get; set; }
 

@@ -65,7 +65,7 @@ public class AccountModuleTests : BaseModuleTests
 
         var newAccount = new CreateAccount
         {
-            PersonId = new List<int>(new int[] { person.Id }),
+            PersonId = [person.Id],
             AccountTypeId = accountType.Id,
             CreateDate = DateTimeOffset.Now,
             InitCredit = 1000,
@@ -106,7 +106,7 @@ public class AccountModuleTests : BaseModuleTests
         var updateAccount = new UpdateAccount
         {
             Id = account.Id,
-            PersonId = new List<int>(new int[] { newPerson.Id }),
+            PersonId = [newPerson.Id],
             Note = "Test update note"
         };
         var response = await _httpClient.PutAsJsonAsync("/api/account", updateAccount);

@@ -76,7 +76,7 @@ public class PeopleModuleTests : BaseModuleTests
             LastName = "Last name",
             NationalCode = "1234512345",
             Gender = GenderEnum.Male,
-            DateOfBirth = new DateTime(1993, 12, 23),
+            Birthday = new DateTimeOffset(1993, 12, 23, 0, 0, 0, TimeSpan.Zero),
             Note = "Test note"
         };
         var response = await _httpClient.PostAsJsonAsync("/api/person", newPerson);
@@ -90,7 +90,7 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(newPerson.LastName, responseResult?.LastName);
         Assert.Equal(newPerson.Gender, responseResult?.Gender);
         Assert.Equal(newPerson.NationalCode, responseResult?.NationalCode);
-        Assert.Equal(newPerson.DateOfBirth, responseResult?.DateOfBirth);
+        Assert.Equal(newPerson.Birthday, responseResult?.Birthday);
         Assert.Equal(newPerson.Note, responseResult?.Note);
         Assert.True(responseResult?.IsActive);
 
@@ -111,7 +111,7 @@ public class PeopleModuleTests : BaseModuleTests
             LastName = "Name",
             NationalCode = "",
             Gender = GenderEnum.Female,
-            DateOfBirth = new DateTime(1993, 12, 23),
+            Birthday = new DateTimeOffset(1993, 12, 23, 0, 0, 0, TimeSpan.Zero),
             Note = "note",
         };
         var response = await _httpClient.PutAsJsonAsync("/api/person", updatePerson);
@@ -124,7 +124,7 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(updatePerson.LastName, responseResult?.LastName);
         Assert.Equal(updatePerson.Gender, responseResult?.Gender);
         Assert.Equal(updatePerson.NationalCode, responseResult?.NationalCode);
-        Assert.Equal(updatePerson.DateOfBirth, responseResult?.DateOfBirth);
+        Assert.Equal(updatePerson.Birthday, responseResult?.Birthday);
         Assert.Equal(updatePerson.Note, responseResult?.Note);
         Assert.True(responseResult?.IsActive);
 
@@ -172,7 +172,7 @@ public class PeopleModuleTests : BaseModuleTests
         Assert.Equal(person.LastName, responseResult?.LastName);
         Assert.Equal(person.Gender, (byte)(responseResult?.Gender ?? 0));
         Assert.Equal(person.NationalCode, responseResult?.NationalCode);
-        Assert.Equal(person.DateOfBirth, responseResult?.DateOfBirth);
+        Assert.Equal(person.Birthday, responseResult?.Birthday);
         Assert.Equal(person.Note, responseResult?.Note);
         Assert.Equal(person.IsActive, responseResult?.IsActive);
 

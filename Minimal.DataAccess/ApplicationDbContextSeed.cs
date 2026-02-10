@@ -169,7 +169,6 @@ public static class ApplicationDbContextSeed
                 new Bank { Code = "059", Name = "بانک سینا", IsActive = true },
                 new Bank { Code = "060", Name = "بانک قرض‌الحسنه مهر ایران", IsActive = true },
                 new Bank { Code = "061", Name = "بانک شهر", IsActive = true },
-                new Bank { Code = "062", Name = "بانک آینده", IsActive = true },
                 new Bank { Code = "064", Name = "بانک گردشگری", IsActive = true },
                 new Bank { Code = "066", Name = "بانک دی", IsActive = true },
                 new Bank { Code = "069", Name = "بانک ایران زمین", IsActive = true },
@@ -177,8 +176,6 @@ public static class ApplicationDbContextSeed
                 new Bank { Code = "075", Name = "مؤسسه اعتباری غیربانکی ملل", IsActive = true },
                 new Bank { Code = "078", Name = "بانک خاورمیانه", IsActive = true },
                 new Bank { Code = "095", Name = "بانک مشترک ایران - ونزوئلا", IsActive = true },
-                new Bank { Code = "000", Name = "مؤسسه اعتباری غیربانکی كاسپین", IsActive = true },
-                new Bank { Code = "000", Name = "موسسه اعتباری غیربانکی نور", IsActive = true },
             });
             await context.SaveChangesAsync();
         }

@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -11,13 +10,11 @@ namespace Minimal.Api.Features.FundAccount.Queries;
 public class GetFundAccountBalanceHandler : IRequestHandler<GetFundAccountBalance, FundAccountBalanceGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly IStringLocalizer _localizer;
 
-    public GetFundAccountBalanceHandler(ApplicationDbContext context, IMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public GetFundAccountBalanceHandler(ApplicationDbContext context, IStringLocalizer<SharedResource> localizer)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
 

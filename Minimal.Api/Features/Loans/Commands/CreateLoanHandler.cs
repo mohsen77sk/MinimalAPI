@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.Loans.Models;
+using Minimal.Api.Features.Loans.Profiles;
 using Minimal.DataAccess;
 using Minimal.Domain;
 
@@ -12,10 +12,10 @@ namespace Minimal.Api.Features.Loans.Commands;
 public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly LoanMapper _mapper;
     private readonly IStringLocalizer _localizer;
 
-    public CreateLoanHandler(ApplicationDbContext context, IMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public CreateLoanHandler(ApplicationDbContext context, LoanMapper mapper, IStringLocalizer<SharedResource> localizer)
     {
         _context = context ??
             throw new ArgumentNullException(nameof(context));
@@ -32,7 +32,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             throw new ArgumentNullException(nameof(request));
         }
 
-        var loanToAdd = _mapper.Map<Loan>(request);
+        var loanToAdd = _mapper.MapToLoan(request);
 
         var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id.Equals(request.AccountId), cancellationToken);
         if (account is null)
@@ -143,6 +143,6 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<LoanGetDto>(loanToAdd);
+        return _mapper.MapToLoanGetDto(loanToAdd);
     }
 }

@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.Accounts.Models;
+using Minimal.Api.Features.Accounts.Profiles;
 using Minimal.DataAccess;
 
 namespace Minimal.Api.Features.Accounts.Queries;
@@ -11,10 +11,10 @@ namespace Minimal.Api.Features.Accounts.Queries;
 public class GetAccountByIdHandler : IRequestHandler<GetAccountById, AccountGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly AccountMapper _mapper;
     private readonly IStringLocalizer _localizer;
 
-    public GetAccountByIdHandler(ApplicationDbContext context, IMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public GetAccountByIdHandler(ApplicationDbContext context, AccountMapper mapper, IStringLocalizer<SharedResource> localizer)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -39,6 +39,6 @@ public class GetAccountByIdHandler : IRequestHandler<GetAccountById, AccountGetD
             throw new NotFoundException(_localizer.GetString("notFoundAccount").Value);
         }
 
-        return _mapper.Map<AccountGetDto>(account);
+        return _mapper.MapToAccountGetDto(account);
     }
 }

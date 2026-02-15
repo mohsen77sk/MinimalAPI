@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.Accounts.Models;
+using Minimal.Api.Features.Accounts.Profiles;
 using Minimal.DataAccess;
 using Minimal.Domain;
 
@@ -12,10 +12,10 @@ namespace Minimal.Api.Features.Accounts.Commands;
 public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly AccountMapper _mapper;
     private readonly IStringLocalizer _localizer;
 
-    public CreateAccountHandler(ApplicationDbContext context, IMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public CreateAccountHandler(ApplicationDbContext context, AccountMapper mapper, IStringLocalizer<SharedResource> localizer)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -29,7 +29,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
             throw new ArgumentNullException(nameof(request));
         }
 
-        var accountToAdd = _mapper.Map<Account>(request);
+        var accountToAdd = _mapper.MapToAccount(request);
 
         var accountType = await _context.AccountTypes.FirstOrDefaultAsync(at => at.Id.Equals(request.AccountTypeId), cancellationToken);
         if (accountType is null)
@@ -99,6 +99,6 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<AccountGetDto>(accountToAdd);
+        return _mapper.MapToAccountGetDto(accountToAdd);
     }
 }

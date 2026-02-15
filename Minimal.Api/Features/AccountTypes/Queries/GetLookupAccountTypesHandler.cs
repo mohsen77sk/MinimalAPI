@@ -1,6 +1,6 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Minimal.Api.Features.AccountTypes.Profiles;
 using Minimal.Api.Models;
 using Minimal.DataAccess;
 
@@ -9,9 +9,9 @@ namespace Minimal.Api.Features.AccountTypes.Queries;
 public class GetLookupAccountTypeHandler : IRequestHandler<GetLookupAccountType, List<LookupDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly AccountTypeMapper _mapper;
 
-    public GetLookupAccountTypeHandler(ApplicationDbContext context, IMapper mapper)
+    public GetLookupAccountTypeHandler(ApplicationDbContext context, AccountTypeMapper mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -24,6 +24,6 @@ public class GetLookupAccountTypeHandler : IRequestHandler<GetLookupAccountType,
             .Where(at => at.IsActive == true)
             .ToListAsync(cancellationToken);
 
-        return _mapper.Map<List<LookupDto>>(accountTypes);
+        return accountTypes.Select(_mapper.MapToLookupDto).ToList();
     }
 }

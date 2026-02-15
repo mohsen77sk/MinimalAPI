@@ -1,6 +1,6 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Minimal.Api.Features.Banks.Profiles;
 using Minimal.Api.Models;
 using Minimal.DataAccess;
 
@@ -9,9 +9,9 @@ namespace Minimal.Api.Features.Banks.Queries;
 public class GetLookupBankHandler : IRequestHandler<GetLookupBank, List<LookupDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly BankMapper _mapper;
 
-    public GetLookupBankHandler(ApplicationDbContext context, IMapper mapper)
+    public GetLookupBankHandler(ApplicationDbContext context, BankMapper mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -24,6 +24,6 @@ public class GetLookupBankHandler : IRequestHandler<GetLookupBank, List<LookupDt
             .Where(b => b.IsActive == true)
             .ToListAsync(cancellationToken);
 
-        return _mapper.Map<List<LookupDto>>(banks);
+        return banks.Select(_mapper.MapToLookupDto).ToList();
     }
 }

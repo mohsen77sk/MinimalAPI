@@ -10,6 +10,16 @@ using Minimal.Api.Behaviors;
 using Minimal.Api.Common.DeviceDetectionService;
 using Minimal.Api.Common.IdentityServices;
 using Minimal.Api.Common.TokenService;
+using Minimal.Api.Features.AccountTransactions.Profiles;
+using Minimal.Api.Features.AccountTypes.Profiles;
+using Minimal.Api.Features.Accounts.Profiles;
+using Minimal.Api.Features.BankAccounts.Profiles;
+using Minimal.Api.Features.Banks.Profiles;
+using Minimal.Api.Features.FundAccount.Profiles;
+using Minimal.Api.Features.LoanTransactions.Profiles;
+using Minimal.Api.Features.LoanTypes.Profiles;
+using Minimal.Api.Features.Loans.Profiles;
+using Minimal.Api.Features.People.Profiles;
 using Minimal.DataAccess;
 using Minimal.Domain.Identity;
 
@@ -33,7 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddCustomAuthentication(config);
         services.AddCustomCors();
 
-        services.AddAutoMapper(typeof(Program));
+        services.AddMappers();
         services.AddValidatorsFromAssemblyContaining(typeof(Program));
         services.AddMediatR(typeof(Program));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
@@ -153,5 +163,19 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ISecurityService, SecurityService>();
         services.AddScoped<ITokenFactoryService, TokenFactoryService>();
         services.AddScoped<ITokenValidatorService, TokenValidatorService>();
+    }
+
+    private static void AddMappers(this IServiceCollection services)
+    {
+        services.AddSingleton<BankMapper>();
+        services.AddSingleton<BankAccountMapper>();
+        services.AddSingleton<PeopleMapper>();
+        services.AddSingleton<AccountTypeMapper>();
+        services.AddSingleton<AccountMapper>();
+        services.AddSingleton<AccountTransactionMapper>();
+        services.AddSingleton<LoanTypeMapper>();
+        services.AddSingleton<LoanMapper>();
+        services.AddSingleton<LoanTransactionMapper>();
+        services.AddSingleton<FundAccountMapper>();
     }
 }

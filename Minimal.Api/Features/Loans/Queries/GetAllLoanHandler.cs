@@ -1,8 +1,8 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Extensions;
 using Minimal.Api.Features.Loans.Models;
+using Minimal.Api.Features.Loans.Profiles;
 using Minimal.Api.Models;
 using Minimal.DataAccess;
 
@@ -11,9 +11,9 @@ namespace Minimal.Api.Features.Loans.Queries;
 public class GetAllLoanHandler : IRequestHandler<GetAllLoan, PageList<LoanGetDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly LoanMapper _mapper;
 
-    public GetAllLoanHandler(ApplicationDbContext context, IMapper mapper)
+    public GetAllLoanHandler(ApplicationDbContext context, LoanMapper mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -39,6 +39,6 @@ public class GetAllLoanHandler : IRequestHandler<GetAllLoan, PageList<LoanGetDto
 
         var pagedLoans = await loans.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
-        return _mapper.Map<PageList<LoanGetDto>>(pagedLoans);
+        return _mapper.MapToPageList(pagedLoans);
     }
 }

@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Extensions;
 using Minimal.Api.Features.LoanTransactions.Models;
+using Minimal.Api.Features.LoanTransactions.Profiles;
 using Minimal.Api.Models;
 using Minimal.DataAccess;
 
@@ -12,9 +12,9 @@ namespace Minimal.Api.Features.LoanTransactions.Queries;
 public class GetAllLoanTransactionHandler : IRequestHandler<GetAllLoanTransaction, PageList<LoanTransactionGetDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly LoanTransactionMapper _mapper;
 
-    public GetAllLoanTransactionHandler(ApplicationDbContext context, IMapper mapper)
+    public GetAllLoanTransactionHandler(ApplicationDbContext context, LoanTransactionMapper mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -44,6 +44,6 @@ public class GetAllLoanTransactionHandler : IRequestHandler<GetAllLoanTransactio
             .Where(d => d.IsActive == true && d.DocumentType.Code != "20" && d.DocumentItems.Any(x => x.AccountDetailId == Loan.AccountDetailId))
             .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
-        return _mapper.Map<PageList<LoanTransactionGetDto>>(documents);
+        return _mapper.MapToPageList(documents);
     }
 }

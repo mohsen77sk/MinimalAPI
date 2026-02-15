@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.AccountTransactions.Models;
+using Minimal.Api.Features.AccountTransactions.Profiles;
 using Minimal.DataAccess;
 
 namespace Minimal.Api.Features.AccountTransactions.Commands;
@@ -11,10 +11,10 @@ namespace Minimal.Api.Features.AccountTransactions.Commands;
 public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTransaction, AccountTransactionGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly AccountTransactionMapper _mapper;
     private readonly IStringLocalizer _localizer;
 
-    public UpdateAccountTransactionHandler(ApplicationDbContext context, IMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public UpdateAccountTransactionHandler(ApplicationDbContext context, AccountTransactionMapper mapper, IStringLocalizer<SharedResource> localizer)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -52,6 +52,6 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<AccountTransactionGetDto>(document);
+        return _mapper.MapToAccountTransactionGetDto(document);
     }
 }

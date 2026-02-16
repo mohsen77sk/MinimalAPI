@@ -7,7 +7,7 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.BankAccounts.Commands;
 
-public class DeleteBankAccountHandler : IRequestHandler<DeleteBankAccount>
+public class DeleteBankAccountHandler : IRequestHandler<DeleteBankAccount, Unit>
 {
     private readonly ApplicationDbContext _context;
     private readonly IStringLocalizer _localizer;

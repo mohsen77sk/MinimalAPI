@@ -7,7 +7,7 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.LoanTransactions.Commands;
 
-public class DeleteLoanTransactionHandler : IRequestHandler<DeleteLoanTransaction>
+public class DeleteLoanTransactionHandler : IRequestHandler<DeleteLoanTransaction, Unit>
 {
     private readonly ApplicationDbContext _context;
     private readonly IStringLocalizer _localizer;

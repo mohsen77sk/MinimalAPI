@@ -10,16 +10,6 @@ using Minimal.Api.Behaviors;
 using Minimal.Api.Common.DeviceDetectionService;
 using Minimal.Api.Common.IdentityServices;
 using Minimal.Api.Common.TokenService;
-using Minimal.Api.Features.AccountTransactions.Profiles;
-using Minimal.Api.Features.AccountTypes.Profiles;
-using Minimal.Api.Features.Accounts.Profiles;
-using Minimal.Api.Features.BankAccounts.Profiles;
-using Minimal.Api.Features.Banks.Profiles;
-using Minimal.Api.Features.FundAccount.Profiles;
-using Minimal.Api.Features.LoanTransactions.Profiles;
-using Minimal.Api.Features.LoanTypes.Profiles;
-using Minimal.Api.Features.Loans.Profiles;
-using Minimal.Api.Features.People.Profiles;
 using Minimal.DataAccess;
 using Minimal.Domain.Identity;
 
@@ -44,8 +34,8 @@ public static class ServiceCollectionExtensions
         services.AddCustomCors();
 
         services.AddMappers();
-        services.AddValidatorsFromAssemblyContaining(typeof(Program));
-        services.AddMediatR(typeof(Program));
+        services.AddAllValidators();
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
@@ -167,15 +157,34 @@ public static class ServiceCollectionExtensions
 
     private static void AddMappers(this IServiceCollection services)
     {
-        services.AddSingleton<BankMapper>();
-        services.AddSingleton<BankAccountMapper>();
-        services.AddSingleton<PeopleMapper>();
-        services.AddSingleton<AccountTypeMapper>();
-        services.AddSingleton<AccountMapper>();
-        services.AddSingleton<AccountTransactionMapper>();
-        services.AddSingleton<LoanTypeMapper>();
-        services.AddSingleton<LoanMapper>();
-        services.AddSingleton<LoanTransactionMapper>();
-        services.AddSingleton<FundAccountMapper>();
+        var mappers = typeof(Program).Assembly
+            .GetTypes()
+            .Where(t => t.Name.EndsWith("Mapper") && !t.IsAbstract && !t.IsInterface)
+            .ToList();
+
+        foreach (var mapper in mappers)
+        {
+            services.AddSingleton(mapper);
+        }
+    }
+
+    private static void AddAllValidators(this IServiceCollection services)
+    {
+        var validatorType = typeof(IValidator<>);
+        var validators = typeof(Program).Assembly
+            .GetTypes()
+            .Where(t => t.GetInterfaces().Any(i =>
+                i.IsGenericType && i.GetGenericTypeDefinition() == validatorType))
+            .ToList();
+
+        foreach (var validator in validators)
+        {
+            var validatedType = validator.GetInterfaces()
+                .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == validatorType)
+                .GetGenericArguments()[0];
+
+            var serviceType = typeof(IValidator<>).MakeGenericType(validatedType);
+            services.AddTransient(serviceType, validator);
+        }
     }
 }

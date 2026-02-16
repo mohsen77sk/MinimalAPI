@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.BankAccounts.Models;
+using Minimal.Api.Features.BankAccounts.Profiles;
 using Minimal.DataAccess;
 
 namespace Minimal.Api.Features.BankAccounts.Queries;
@@ -11,10 +11,10 @@ namespace Minimal.Api.Features.BankAccounts.Queries;
 public class GetBankAccountByIdHandler : IRequestHandler<GetBankAccountById, BankAccountGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly BankAccountMapper _mapper;
     private readonly IStringLocalizer _localizer;
 
-    public GetBankAccountByIdHandler(ApplicationDbContext context, IMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public GetBankAccountByIdHandler(ApplicationDbContext context, BankAccountMapper mapper, IStringLocalizer<SharedResource> localizer)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -39,6 +39,6 @@ public class GetBankAccountByIdHandler : IRequestHandler<GetBankAccountById, Ban
             throw new NotFoundException(_localizer.GetString("notFoundBankAccount").Value);
         }
 
-        return _mapper.Map<BankAccountGetDto>(BankAccount);
+        return _mapper.MapToBankAccountGetDto(BankAccount);
     }
 }

@@ -1,8 +1,8 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Extensions;
 using Minimal.Api.Features.Banks.Models;
+using Minimal.Api.Features.Banks.Profiles;
 using Minimal.Api.Models;
 using Minimal.DataAccess;
 
@@ -11,9 +11,9 @@ namespace Minimal.Api.Features.Banks.Queries;
 public class GetAllBankHandler : IRequestHandler<GetAllBank, PageList<BankGetDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly BankMapper _mapper;
 
-    public GetAllBankHandler(ApplicationDbContext context, IMapper mapper)
+    public GetAllBankHandler(ApplicationDbContext context, BankMapper mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -39,6 +39,6 @@ public class GetAllBankHandler : IRequestHandler<GetAllBank, PageList<BankGetDto
 
         var pagedBanks = await banks.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
-        return _mapper.Map<PageList<BankGetDto>>(pagedBanks);
+        return _mapper.MapToPageList(pagedBanks);
     }
 }

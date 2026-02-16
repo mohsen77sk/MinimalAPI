@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.People.Models;
+using Minimal.Api.Features.People.Profiles;
 using Minimal.DataAccess;
 
 namespace Minimal.Api.Features.People.Queries;
@@ -11,10 +11,10 @@ namespace Minimal.Api.Features.People.Queries;
 public class GetPersonByIdHandler : IRequestHandler<GetPersonById, PersonGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly PeopleMapper _mapper;
     private readonly IStringLocalizer _localizer;
 
-    public GetPersonByIdHandler(ApplicationDbContext context, IMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public GetPersonByIdHandler(ApplicationDbContext context, PeopleMapper mapper, IStringLocalizer<SharedResource> localizer)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -34,6 +34,6 @@ public class GetPersonByIdHandler : IRequestHandler<GetPersonById, PersonGetDto>
             throw new NotFoundException(_localizer.GetString("notFoundPerson").Value);
         }
 
-        return _mapper.Map<PersonGetDto>(person);
+        return _mapper.MapToPersonGetDto(person);
     }
 }

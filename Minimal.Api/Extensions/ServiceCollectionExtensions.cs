@@ -33,9 +33,9 @@ public static class ServiceCollectionExtensions
         services.AddCustomAuthentication(config);
         services.AddCustomCors();
 
-        services.AddAutoMapper(typeof(Program));
-        services.AddValidatorsFromAssemblyContaining(typeof(Program));
-        services.AddMediatR(typeof(Program));
+        services.AddMappers();
+        services.AddAllValidators();
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
@@ -153,5 +153,38 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ISecurityService, SecurityService>();
         services.AddScoped<ITokenFactoryService, TokenFactoryService>();
         services.AddScoped<ITokenValidatorService, TokenValidatorService>();
+    }
+
+    private static void AddMappers(this IServiceCollection services)
+    {
+        var mappers = typeof(Program).Assembly
+            .GetTypes()
+            .Where(t => t.Name.EndsWith("Mapper") && !t.IsAbstract && !t.IsInterface)
+            .ToList();
+
+        foreach (var mapper in mappers)
+        {
+            services.AddSingleton(mapper);
+        }
+    }
+
+    private static void AddAllValidators(this IServiceCollection services)
+    {
+        var validatorType = typeof(IValidator<>);
+        var validators = typeof(Program).Assembly
+            .GetTypes()
+            .Where(t => t.GetInterfaces().Any(i =>
+                i.IsGenericType && i.GetGenericTypeDefinition() == validatorType))
+            .ToList();
+
+        foreach (var validator in validators)
+        {
+            var validatedType = validator.GetInterfaces()
+                .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == validatorType)
+                .GetGenericArguments()[0];
+
+            var serviceType = typeof(IValidator<>).MakeGenericType(validatedType);
+            services.AddTransient(serviceType, validator);
+        }
     }
 }

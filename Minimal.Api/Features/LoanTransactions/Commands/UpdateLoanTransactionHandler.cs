@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.LoanTransactions.Models;
+using Minimal.Api.Features.LoanTransactions.Profiles;
 using Minimal.DataAccess;
 using Minimal.Domain;
 
@@ -12,10 +12,10 @@ namespace Minimal.Api.Features.LoanTransactions.Commands;
 public class UpdateLoanTransactionHandler : IRequestHandler<UpdateLoanTransaction, LoanTransactionGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly LoanTransactionMapper _mapper;
     private readonly IStringLocalizer _localizer;
 
-    public UpdateLoanTransactionHandler(ApplicationDbContext context, IMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public UpdateLoanTransactionHandler(ApplicationDbContext context, LoanTransactionMapper mapper, IStringLocalizer<SharedResource> localizer)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -111,6 +111,6 @@ public class UpdateLoanTransactionHandler : IRequestHandler<UpdateLoanTransactio
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<LoanTransactionGetDto>(document);
+        return _mapper.MapToLoanTransactionGetDto(document);
     }
 }

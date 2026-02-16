@@ -1,8 +1,8 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Extensions;
 using Minimal.Api.Features.People.Models;
+using Minimal.Api.Features.People.Profiles;
 using Minimal.Api.Models;
 using Minimal.DataAccess;
 
@@ -11,9 +11,9 @@ namespace Minimal.Api.Features.People.Queries;
 public class GetAllPersonHandler : IRequestHandler<GetAllPerson, PageList<PersonGetDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly PeopleMapper _mapper;
 
-    public GetAllPersonHandler(ApplicationDbContext context, IMapper mapper)
+    public GetAllPersonHandler(ApplicationDbContext context, PeopleMapper mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -40,6 +40,6 @@ public class GetAllPersonHandler : IRequestHandler<GetAllPerson, PageList<Person
 
         var pagedPersons = await persons.ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
-        return _mapper.Map<PageList<PersonGetDto>>(pagedPersons);
+        return _mapper.MapToPageList(pagedPersons);
     }
 }

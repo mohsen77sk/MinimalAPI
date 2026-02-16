@@ -1,9 +1,9 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Extensions;
 using Minimal.Api.Features.AccountTransactions.Models;
+using Minimal.Api.Features.AccountTransactions.Profiles;
 using Minimal.Api.Models;
 using Minimal.DataAccess;
 
@@ -12,9 +12,9 @@ namespace Minimal.Api.Features.AccountTransactions.Queries;
 public class GetAllAccountTransactionHandler : IRequestHandler<GetAllAccountTransaction, PageList<AccountTransactionGetDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly AccountTransactionMapper _mapper;
 
-    public GetAllAccountTransactionHandler(ApplicationDbContext context, IMapper mapper)
+    public GetAllAccountTransactionHandler(ApplicationDbContext context, AccountTransactionMapper mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -44,6 +44,6 @@ public class GetAllAccountTransactionHandler : IRequestHandler<GetAllAccountTran
             .Where(d => d.IsActive == true && d.DocumentItems.Any(x => x.AccountDetailId == account.AccountDetailId))
             .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
-        return _mapper.Map<PageList<AccountTransactionGetDto>>(documents);
+        return _mapper.MapToPageList(documents);
     }
 }

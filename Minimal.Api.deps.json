@@ -9,9 +9,9 @@
     ".NETCoreApp,Version=v9.0/win-x64": {
       "Minimal.Api/1.0.0": {
         "dependencies": {
-          "AutoMapper": "13.0.1",
-          "FluentValidation.AspNetCore": "11.3.1",
-          "MediatR.Extensions.Microsoft.DependencyInjection": "11.1.0",
+          "FluentValidation": "11.9.1",
+          "MediatR": "12.5.0",
+          "MediatR.Contracts": "2.0.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.12",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "9.0.12",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.12",
@@ -20,6 +20,7 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.12",
           "Minimal.DataAccess": "1.0.0",
           "Minimal.Domain": "1.0.0",
+          "Riok.Mapperly": "4.3.1",
           "Swashbuckle.AspNetCore": "9.0.6",
           "UAParser": "3.1.47"
         },
@@ -32,17 +33,6 @@
           },
           "fa/Minimal.Api.resources.dll": {
             "locale": "fa"
-          }
-        }
-      },
-      "AutoMapper/13.0.1": {
-        "dependencies": {
-          "Microsoft.Extensions.Options": "9.0.12"
-        },
-        "runtime": {
-          "lib/net6.0/AutoMapper.dll": {
-            "assemblyVersion": "13.0.0.0",
-            "fileVersion": "13.0.1.0"
           }
         }
       },
@@ -81,66 +71,31 @@
           }
         }
       },
-      "FluentValidation/11.11.0": {
+      "FluentValidation/11.9.1": {
         "runtime": {
           "lib/net8.0/FluentValidation.dll": {
             "assemblyVersion": "11.0.0.0",
-            "fileVersion": "11.11.0.0"
+            "fileVersion": "11.9.1.0"
           }
         }
       },
-      "FluentValidation.AspNetCore/11.3.1": {
+      "MediatR/12.5.0": {
         "dependencies": {
-          "FluentValidation": "11.11.0",
-          "FluentValidation.DependencyInjectionExtensions": "11.11.0"
-        },
-        "runtime": {
-          "lib/net6.0/FluentValidation.AspNetCore.dll": {
-            "assemblyVersion": "11.0.0.0",
-            "fileVersion": "11.3.1.0"
-          }
-        }
-      },
-      "FluentValidation.DependencyInjectionExtensions/11.11.0": {
-        "dependencies": {
-          "FluentValidation": "11.11.0",
+          "MediatR.Contracts": "2.0.1",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.12"
         },
         "runtime": {
-          "lib/netstandard2.1/FluentValidation.DependencyInjectionExtensions.dll": {
-            "assemblyVersion": "11.0.0.0",
-            "fileVersion": "11.11.0.0"
+          "lib/net6.0/MediatR.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.5.0.0"
           }
         }
       },
-      "MediatR/11.0.0": {
-        "dependencies": {
-          "MediatR.Contracts": "1.0.1"
-        },
-        "runtime": {
-          "lib/netstandard2.1/MediatR.dll": {
-            "assemblyVersion": "11.0.0.0",
-            "fileVersion": "11.0.0.0"
-          }
-        }
-      },
-      "MediatR.Contracts/1.0.1": {
+      "MediatR.Contracts/2.0.1": {
         "runtime": {
           "lib/netstandard2.0/MediatR.Contracts.dll": {
-            "assemblyVersion": "1.0.1.0",
-            "fileVersion": "1.0.1.0"
-          }
-        }
-      },
-      "MediatR.Extensions.Microsoft.DependencyInjection/11.1.0": {
-        "dependencies": {
-          "MediatR": "11.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.12"
-        },
-        "runtime": {
-          "lib/netstandard2.1/MediatR.Extensions.Microsoft.DependencyInjection.dll": {
-            "assemblyVersion": "11.0.0.0",
-            "fileVersion": "11.1.0.0"
+            "assemblyVersion": "2.0.1.0",
+            "fileVersion": "2.0.1.0"
           }
         }
       },
@@ -551,6 +506,14 @@
           }
         }
       },
+      "Riok.Mapperly/4.3.1": {
+        "runtime": {
+          "lib/netstandard2.0/Riok.Mapperly.Abstractions.dll": {
+            "assemblyVersion": "4.3.1.0",
+            "fileVersion": "4.3.1.0"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore/9.0.6": {
         "dependencies": {
           "Swashbuckle.AspNetCore.Swagger": "9.0.6",
@@ -725,13 +688,6 @@
       "serviceable": false,
       "sha512": ""
     },
-    "AutoMapper/13.0.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-/Fx1SbJ16qS7dU4i604Sle+U9VLX+WSNVJggk6MupKVkYvvBm4XqYaeFuf67diHefHKHs50uQIS2YEDFhPCakQ==",
-      "path": "automapper/13.0.1",
-      "hashPath": "automapper.13.0.1.nupkg.sha512"
-    },
     "Azure.Core/1.38.0": {
       "type": "package",
       "serviceable": true,
@@ -753,47 +709,26 @@
       "path": "dntpersianutils.core/6.9.0",
       "hashPath": "dntpersianutils.core.6.9.0.nupkg.sha512"
     },
-    "FluentValidation/11.11.0": {
+    "FluentValidation/11.9.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-cyIVdQBwSipxWG8MA3Rqox7iNbUNUTK5bfJi9tIdm4CAfH71Oo5ABLP4/QyrUwuakqpUEPGtE43BDddvEehuYw==",
-      "path": "fluentvalidation/11.11.0",
-      "hashPath": "fluentvalidation.11.11.0.nupkg.sha512"
+      "sha512": "sha512-C+PqISSMdlOZZJx0Hx25atW32tv4vbpsaiQB+PLjK+ZGLzOFuHl1fUJ3Lny77mIZ31ZtYtNG0JgUjxa3wwLsWg==",
+      "path": "fluentvalidation/11.9.1",
+      "hashPath": "fluentvalidation.11.9.1.nupkg.sha512"
     },
-    "FluentValidation.AspNetCore/11.3.1": {
+    "MediatR/12.5.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-FjkfrGGwC+25oH8QpX1ti3gxkFjDDtotkAQWyQz2CkwQwEfRKTANjhh77I79kY8dov2ydK1SY+e4jiOWsbbDdQ==",
-      "path": "fluentvalidation.aspnetcore/11.3.1",
-      "hashPath": "fluentvalidation.aspnetcore.11.3.1.nupkg.sha512"
+      "sha512": "sha512-vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
+      "path": "mediatr/12.5.0",
+      "hashPath": "mediatr.12.5.0.nupkg.sha512"
     },
-    "FluentValidation.DependencyInjectionExtensions/11.11.0": {
+    "MediatR.Contracts/2.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-viTKWaMbL3yJYgGI0DiCeavNbE9UPMWFVK2XS9nYXGbm3NDMd0/L5ER4wBzmTtW3BYh3SrlSXm9RACiKZ6stlA==",
-      "path": "fluentvalidation.dependencyinjectionextensions/11.11.0",
-      "hashPath": "fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512"
-    },
-    "MediatR/11.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-8klzVGZQiA2oxZRzQFBZbdPD/IQUm9RYtfiyTDKhxDQ99Gi93+GXt1ZJjH2D7Lh7ZFHCv5XdkwbmfHEQBCatPg==",
-      "path": "mediatr/11.0.0",
-      "hashPath": "mediatr.11.0.0.nupkg.sha512"
-    },
-    "MediatR.Contracts/1.0.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-NsRvOxthhkYml4DcBMyJsmym8C4MchioH7wxKVPEg7plFj9Euh/i4IcmZ3Gvgx6+K8obeuhPeJdoBl56wnuo3A==",
-      "path": "mediatr.contracts/1.0.1",
-      "hashPath": "mediatr.contracts.1.0.1.nupkg.sha512"
-    },
-    "MediatR.Extensions.Microsoft.DependencyInjection/11.1.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-RW3etRuy6Xp63cgqfC0r/ITOtUT0f9ymJl1+1XZdzsYUsfv7WBPC2kXGOP8IYpY/6c4Q6805vbIW/88DopUs3w==",
-      "path": "mediatr.extensions.microsoft.dependencyinjection/11.1.0",
-      "hashPath": "mediatr.extensions.microsoft.dependencyinjection.11.1.0.nupkg.sha512"
+      "sha512": "sha512-FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ==",
+      "path": "mediatr.contracts/2.0.1",
+      "hashPath": "mediatr.contracts.2.0.1.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/9.0.12": {
       "type": "package",
@@ -1053,6 +988,13 @@
       "sha512": "sha512-hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A==",
       "path": "microsoft.win32.systemevents/6.0.0",
       "hashPath": "microsoft.win32.systemevents.6.0.0.nupkg.sha512"
+    },
+    "Riok.Mapperly/4.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oSE+OVLHyiojrws0QVbQaAT2YKsYbyHqJXPdV7EhGseR/dYgeWS2x1T5qY5I4E+RJkJqMSG+FyZOq4SljWgJWQ==",
+      "path": "riok.mapperly/4.3.1",
+      "hashPath": "riok.mapperly.4.3.1.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/9.0.6": {
       "type": "package",

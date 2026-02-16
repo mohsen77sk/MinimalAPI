@@ -5,11 +5,14 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.Banks.Profiles;
 
-[Mapper(IgnoreObsoleteMembersStrategy = IgnoreObsoleteMembersStrategy.Both)]
+[Mapper]
 public partial class BankMapper
 {
+    [MapperIgnoreSource(nameof(Bank.BankAccounts))]
     public partial BankGetDto MapToBankGetDto(Bank source);
 
+    [MapperIgnoreSource(nameof(Bank.BankAccounts))]
+    [MapperIgnoreSource(nameof(Bank.IsActive))]
     public partial LookupDto MapToLookupDto(Bank source);
 
     public PageList<BankGetDto> MapToPageList(PageList<Bank> source) =>

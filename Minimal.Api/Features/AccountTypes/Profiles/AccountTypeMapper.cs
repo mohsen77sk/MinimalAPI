@@ -5,11 +5,14 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.AccountTypes.Profiles;
 
-[Mapper(IgnoreObsoleteMembersStrategy = IgnoreObsoleteMembersStrategy.Both)]
+[Mapper]
 public partial class AccountTypeMapper
 {
+    [MapperIgnoreSource(nameof(AccountType.Accounts))]
     public partial AccountTypeGetDto MapToAccountTypeGetDto(AccountType source);
-    
+
+    [MapperIgnoreSource(nameof(AccountType.Accounts))]
+    [MapperIgnoreSource(nameof(AccountType.IsActive))]
     public partial LookupDto MapToLookupDto(AccountType source);
 
     public PageList<AccountTypeGetDto> MapToPageList(PageList<AccountType> source) =>

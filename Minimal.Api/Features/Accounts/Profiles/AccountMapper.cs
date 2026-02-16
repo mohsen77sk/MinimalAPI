@@ -6,16 +6,28 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.Accounts.Profiles;
 
-[Mapper(IgnoreObsoleteMembersStrategy = IgnoreObsoleteMembersStrategy.Both)]
+[Mapper]
 public partial class AccountMapper
 {
+    [MapperIgnoreSource(nameof(CreateAccount.InitCredit))]
+    [MapperIgnoreSource(nameof(CreateAccount.PersonId))]
+    [MapperIgnoreTarget(nameof(Account.Id))]
+    [MapperIgnoreTarget(nameof(Account.Code))]
+    [MapperIgnoreTarget(nameof(Account.AccountType))]
+    [MapperIgnoreTarget(nameof(Account.CloseDate))]
+    [MapperIgnoreTarget(nameof(Account.IsActive))]
+    [MapperIgnoreTarget(nameof(Account.AccountDetail))]
+    [MapperIgnoreTarget(nameof(Account.People))]
+    [MapperIgnoreTarget(nameof(Account.Loans))]
     public partial Account MapToAccount(CreateAccount source);
-    
+
     [MapProperty(nameof(Account), nameof(LookupDto.Name), Use = nameof(GetAccountLookupName))]
     public partial LookupDto MapToLookupDto(Account source);
-    
+
     [MapProperty(nameof(Account.AccountType), nameof(AccountGetDto.AccountTypeName), Use = nameof(GetAccountTypeName))]
     [MapProperty(nameof(Account.People), nameof(AccountGetDto.Persons), Use = nameof(MapPeopleToLookup))]
+    [MapperIgnoreSource(nameof(Account.AccountDetail))]
+    [MapperIgnoreSource(nameof(Account.Loans))]
     public partial AccountGetDto MapToAccountGetDto(Account source);
 
     public PageList<AccountGetDto> MapToPageList(PageList<Account> source) =>

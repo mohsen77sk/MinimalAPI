@@ -6,9 +6,13 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.BankAccounts.Profiles;
 
-[Mapper(IgnoreObsoleteMembersStrategy = IgnoreObsoleteMembersStrategy.Both)]
+[Mapper]
 public partial class BankAccountMapper
 {
+    [MapperIgnoreTarget(nameof(BankAccount.Id))]
+    [MapperIgnoreTarget(nameof(BankAccount.Bank))]
+    [MapperIgnoreTarget(nameof(BankAccount.IsActive))]
+    [MapperIgnoreTarget(nameof(BankAccount.Person))]
     public partial BankAccount MapToBankAccount(CreateBankAccount source);
 
     [MapProperty(nameof(BankAccount.Person), nameof(BankAccountGetDto.PersonName), Use = nameof(GetPersonFullName))]

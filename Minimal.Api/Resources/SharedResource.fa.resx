@@ -217,6 +217,10 @@
     <value>این تراکنش قابل حذف نیست.</value>
     <comment/>
   </data>
+  <data name="transactionAmountBiggerThanBalance" xml:space="preserve">
+    <value>مبلغ بزرگتر از باقیمانده موجودی است.</value>
+    <comment/>
+  </data>
   <data name="transactionAmountBiggerThanRemaining" xml:space="preserve">
     <value>مبلغ معامله بزرگتر از باقیمانده وام است.</value>
     <comment/>

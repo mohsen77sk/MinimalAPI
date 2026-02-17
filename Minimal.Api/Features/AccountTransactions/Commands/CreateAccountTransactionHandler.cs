@@ -49,6 +49,19 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
             throw new ValidationException(nameof(request.Date), _localizer.GetString("transactionDateIsEarlierOpeningDate").Value);
         }
 
+        if (request.TransactionType != TransactionTypeEnum.Deposit)
+        {
+            var balance = await _context.DocumentArticles
+                .AsNoTracking()
+                .Where(da => da.AccountDetailId == sourceAccount.AccountDetail.Id && da.Document.IsActive == true)
+                .SumAsync(da => da.Credit - da.Debit, cancellationToken);
+
+            if (balance < request.Amount)
+            {
+                throw new ValidationException(nameof(request.Amount), _localizer.GetString("transactionAmountBiggerThanBalance").Value);
+            }
+        }
+
         Account? destinationAccount = null;
 
         if (request.TransactionType == TransactionTypeEnum.Transfer)

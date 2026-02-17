@@ -217,6 +217,10 @@
     <value>This transaction cannot be deleted.</value>
     <comment/>
   </data>
+  <data name="transactionAmountBiggerThanBalance" xml:space="preserve">
+    <value>Transaction amount bigger than account balance.</value>
+    <comment/>
+  </data>
   <data name="transactionAmountBiggerThanRemaining" xml:space="preserve">
     <value>Transaction amount bigger than loan remaining.</value>
     <comment/>

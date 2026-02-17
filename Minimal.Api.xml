@@ -4,6 +4,71 @@
         <name>Minimal.Api</name>
     </assembly>
     <members>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetBankAccountAsync(Minimal.DataAccess.ApplicationDbContext,System.Threading.CancellationToken)">
+            <summary>
+            Get the bank account (code "1101") from the database.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetAccountSubsidByCodeAsync(Minimal.DataAccess.ApplicationDbContext,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get an account detail by its code.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetAccountCategoryByCodeAsync(Minimal.DataAccess.ApplicationDbContext,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get an account category by its code.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetCurrentFiscalYearAsync(Minimal.DataAccess.ApplicationDbContext,System.Threading.CancellationToken)">
+            <summary>
+            Get the current fiscal year (assuming it's the one with Id = 1) from the database.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetDocumentTypeByCodeAsync(Minimal.DataAccess.ApplicationDbContext,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get a document type by its code.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetAccountBalanceAsync(Minimal.DataAccess.ApplicationDbContext,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Calculate the balance of an account detail by summing its debit and credit amounts from the document articles.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.IsBalanced(System.Collections.Generic.IEnumerable{Minimal.Domain.DocumentArticle})">
+            <summary>
+            Check if the document articles are balanced by comparing the total debit and credit amounts.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetTotalDebit(System.Collections.Generic.IEnumerable{Minimal.Domain.DocumentArticle})">
+            <summary>
+            Calculate the total debit amount from the document articles.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetTotalCredit(System.Collections.Generic.IEnumerable{Minimal.Domain.DocumentArticle})">
+            <summary>
+            Calculate the total credit amount from the document articles.
+            </summary>
+        </member>
+        <member name="T:Minimal.Api.Common.Accounting.Validators.DocumentValidator">
+            <summary>
+            Validator for accounting documents to ensure data integrity
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.Validators.DocumentValidator.ValidateBalance(Minimal.Domain.Document)">
+            <summary>
+            Validate that the total debit and credit amounts in the document are equal (accounting equation holds).
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.Validators.DocumentValidator.ValidateAmounts(Minimal.Domain.Document)">
+            <summary>
+            Validate that the debit and credit amounts in the document items are non-negative and that at least one of them has a value greater than zero.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.Validators.DocumentValidator.ValidateDocument(Minimal.Domain.Document)">
+            <summary>
+            Validate the document by checking both the balance and the amounts. Returns a tuple indicating whether the document is valid and an error message if it's not.
+            </summary>
+        </member>
         <member name="M:Minimal.Api.Features.Accounts.AccountModule.GetLookupAccountsAsync(MediatR.IMediator,System.Threading.CancellationToken)">
             <remarks>
             ### * Get active accounts

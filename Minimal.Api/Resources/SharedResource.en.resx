@@ -229,4 +229,24 @@
     <value>The installment amount cannot be a decimal number.</value>
     <comment/>
   </data>
+  <data name="invalidDocument" xml:space="preserve">
+    <value>Invalid document</value>
+    <comment/>
+  </data>
+  <data name="documentMustHaveAtLeastOneItem" xml:space="preserve">
+    <value>Document must have at least one item</value>
+    <comment/>
+  </data>
+  <data name="accountingEquationViolated" xml:space="preserve">
+    <value>Accounting equation violated! Debit: {0}, Credit: {1}</value>
+    <comment/>
+  </data>
+  <data name="debitCreditCannotBeNegative" xml:space="preserve">
+    <value>Debit and Credit values cannot be negative</value>
+    <comment/>
+  </data>
+  <data name="atLeastOneItemMustHaveValue" xml:space="preserve">
+    <value>At least one item must have a value</value>
+    <comment/>
+  </data>
 </root>

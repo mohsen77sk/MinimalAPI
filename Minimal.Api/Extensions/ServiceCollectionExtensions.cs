@@ -153,6 +153,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ISecurityService, SecurityService>();
         services.AddScoped<ITokenFactoryService, TokenFactoryService>();
         services.AddScoped<ITokenValidatorService, TokenValidatorService>();
+
+        // ✅ Add Accounting Services
+        services.AddScoped<Minimal.Api.Common.Accounting.Validators.DocumentValidator>();
     }
 
     private static void AddMappers(this IServiceCollection services)

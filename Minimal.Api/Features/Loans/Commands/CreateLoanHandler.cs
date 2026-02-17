@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Minimal.Api.Common.Accounting;
+using Minimal.Api.Common.Accounting.Validators;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.Loans.Models;
 using Minimal.Api.Features.Loans.Profiles;
@@ -14,8 +16,13 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
     private readonly ApplicationDbContext _context;
     private readonly LoanMapper _mapper;
     private readonly IStringLocalizer _localizer;
+    private readonly DocumentValidator _documentValidator;
 
-    public CreateLoanHandler(ApplicationDbContext context, LoanMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public CreateLoanHandler(
+        ApplicationDbContext context,
+        LoanMapper mapper,
+        IStringLocalizer<SharedResource> localizer,
+        DocumentValidator documentValidator)
     {
         _context = context ??
             throw new ArgumentNullException(nameof(context));
@@ -23,6 +30,8 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             throw new ArgumentNullException(nameof(mapper));
         _localizer = localizer ??
             throw new ArgumentNullException(nameof(localizer));
+        _documentValidator = documentValidator ??
+            throw new ArgumentNullException(nameof(documentValidator));
     }
 
     public async Task<LoanGetDto> Handle(CreateLoan request, CancellationToken cancellationToken)
@@ -75,7 +84,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
         {
             Title = $"تسهیلات {loanToAdd.Code}",
             Loan = loanToAdd,
-            AccountCategory = await _context.AccountCategories.SingleAsync(ac => ac.Code == "3", cancellationToken),
+            AccountCategory = await _context.GetAccountCategoryByCodeAsync("3", cancellationToken),
             IsActive = true
         };
         _context.AccountDetails.Add(accountDetailToAdd);
@@ -85,13 +94,13 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             new Document
             {
                 Date = loanToAdd.CreateDate,
-                FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-                DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "20", cancellationToken),
+                FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
+                DocumentType = await _context.GetDocumentTypeByCodeAsync("20", cancellationToken),
                 DocumentItems =
                 [
                     new DocumentArticle
                     {
-                        AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == loanType.Code, cancellationToken),
+                        AccountSubsid = await _context.GetAccountSubsidByCodeAsync(loanType.Code, cancellationToken),
                         AccountDetail = accountDetailToAdd,
                         Credit = 0,
                         Debit = request.Amount,
@@ -99,7 +108,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                     },
                     new DocumentArticle
                     {
-                        AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
+                        AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
                         Credit = request.Amount,
                         Debit = 0,
                         Note = ""
@@ -115,13 +124,13 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             documentsToAdd.Add(new Document
             {
                 Date = loanToAdd.CreateDate,
-                FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-                DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "21", cancellationToken),
+                FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
+                DocumentType = await _context.GetDocumentTypeByCodeAsync("21", cancellationToken),
                 DocumentItems =
                 [
                     new DocumentArticle
                     {
-                        AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == loanType.Code, cancellationToken),
+                        AccountSubsid = await _context.GetAccountSubsidByCodeAsync(loanType.Code, cancellationToken),
                         AccountDetail = accountDetailToAdd,
                         Credit = 0,
                         Debit = wage,
@@ -129,7 +138,7 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                     },
                     new DocumentArticle
                     {
-                        AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "3101", cancellationToken),
+                        AccountSubsid = await _context.GetAccountSubsidByCodeAsync("3101", cancellationToken),
                         Credit = wage,
                         Debit = 0,
                         Note = ""
@@ -139,6 +148,16 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
                 IsActive = true
             });
         }
+
+        foreach (var doc in documentsToAdd)
+        {
+            var validation = _documentValidator.ValidateDocument(doc);
+            if (!validation.IsValid)
+            {
+                throw new ErrorException(validation.ErrorMessage);
+            }
+        }
+
         _context.Documents.AddRange(documentsToAdd);
 
         await _context.SaveChangesAsync(cancellationToken);

@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Minimal.Api.Common.Accounting;
+using Minimal.Api.Common.Accounting.Validators;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.AccountTransactions.Models;
 using Minimal.Api.Features.AccountTransactions.Profiles;
@@ -14,12 +16,18 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
     private readonly ApplicationDbContext _context;
     private readonly AccountTransactionMapper _mapper;
     private readonly IStringLocalizer _localizer;
+    private readonly DocumentValidator _documentValidator;
 
-    public CreateAccountTransactionHandler(ApplicationDbContext context, AccountTransactionMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public CreateAccountTransactionHandler(
+        ApplicationDbContext context,
+        AccountTransactionMapper mapper,
+        IStringLocalizer<SharedResource> localizer,
+        DocumentValidator documentValidator)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
+        _documentValidator = documentValidator ?? throw new ArgumentNullException(nameof(documentValidator));
     }
 
     public async Task<AccountTransactionGetDto> Handle(CreateAccountTransaction request, CancellationToken cancellationToken)
@@ -51,10 +59,7 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
 
         if (request.TransactionType != TransactionTypeEnum.Deposit)
         {
-            var balance = await _context.DocumentArticles
-                .AsNoTracking()
-                .Where(da => da.AccountDetailId == sourceAccount.AccountDetail.Id && da.Document.IsActive == true)
-                .SumAsync(da => da.Credit - da.Debit, cancellationToken);
+            var balance = await _context.GetAccountBalanceAsync(sourceAccount.AccountDetail.Id, cancellationToken);
 
             if (balance < request.Amount)
             {
@@ -91,13 +96,15 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
         {
             Date = request.Date,
             Note = request.Note,
-            FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-            DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == (request.TransactionType == TransactionTypeEnum.Deposit ? "12" : "13"), cancellationToken),
+            FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
+            DocumentType = await _context.GetDocumentTypeByCodeAsync(
+                request.TransactionType == TransactionTypeEnum.Deposit ? "12" : "13",
+                cancellationToken),
             DocumentItems =
             [
                 new DocumentArticle
                 {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == sourceAccount.AccountType.Code, cancellationToken),
+                    AccountSubsid = await _context.GetAccountSubsidByCodeAsync(sourceAccount.AccountType.Code, cancellationToken),
                     AccountDetail = sourceAccount.AccountDetail,
                     Credit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
                     Debit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
@@ -112,7 +119,7 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
         {
             documentToAdd.DocumentItems.Add(new DocumentArticle
             {
-                AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
+                AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
                 Debit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
                 Credit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
                 Note = ""
@@ -122,12 +129,18 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
         {
             documentToAdd.DocumentItems.Add(new DocumentArticle
             {
-                AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == destinationAccount.AccountType.Code, cancellationToken),
+                AccountSubsid = await _context.GetAccountSubsidByCodeAsync(destinationAccount.AccountType.Code, cancellationToken),
                 AccountDetail = destinationAccount.AccountDetail,
                 Debit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
                 Credit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
                 Note = ""
             });
+        }
+
+        var validation = _documentValidator.ValidateDocument(documentToAdd);
+        if (!validation.IsValid)
+        {
+            throw new ErrorException(validation.ErrorMessage);
         }
 
         _context.Documents.Add(documentToAdd);

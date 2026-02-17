@@ -229,4 +229,24 @@
     <value>مبلغ قسط نمی تواند عدد اعشاری باشد.</value>
     <comment/>
   </data>
+  <data name="invalidDocument" xml:space="preserve">
+    <value>سند نامعتبر است</value>
+    <comment/>
+  </data>
+  <data name="documentMustHaveAtLeastOneItem" xml:space="preserve">
+    <value>سند باید حداقل یک مورد داشته باشد</value>
+    <comment/>
+  </data>
+  <data name="accountingEquationViolated" xml:space="preserve">
+    <value>معادله حسابداری نقض شد! Debit: {0}, Credit: {1}</value>
+    <comment/>
+  </data>
+  <data name="debitCreditCannotBeNegative" xml:space="preserve">
+    <value>مقادیر Debit و Credit نمی‌تواند منفی باشند</value>
+    <comment/>
+  </data>
+  <data name="atLeastOneItemMustHaveValue" xml:space="preserve">
+    <value>حداقل یک مورد باید دارای مقدار باشد</value>
+    <comment/>
+  </data>
 </root>

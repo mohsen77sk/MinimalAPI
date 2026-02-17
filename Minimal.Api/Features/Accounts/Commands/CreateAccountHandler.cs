@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Minimal.Api.Common.Accounting;
+using Minimal.Api.Common.Accounting.Validators;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.Accounts.Models;
 using Minimal.Api.Features.Accounts.Profiles;
@@ -14,12 +16,18 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
     private readonly ApplicationDbContext _context;
     private readonly AccountMapper _mapper;
     private readonly IStringLocalizer _localizer;
+    private readonly DocumentValidator _documentValidator;
 
-    public CreateAccountHandler(ApplicationDbContext context, AccountMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public CreateAccountHandler(
+        ApplicationDbContext context,
+        AccountMapper mapper,
+        IStringLocalizer<SharedResource> localizer,
+        DocumentValidator documentValidator)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
+        _documentValidator = documentValidator ?? throw new ArgumentNullException(nameof(documentValidator));
     }
 
     public async Task<AccountGetDto> Handle(CreateAccount request, CancellationToken cancellationToken)
@@ -64,7 +72,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
         {
             Title = $"حساب {accountToAdd.Code}",
             Account = accountToAdd,
-            AccountCategory = await _context.AccountCategories.SingleAsync(ac => ac.Code == "2", cancellationToken),
+            AccountCategory = await _context.GetAccountCategoryByCodeAsync("2", cancellationToken),
             IsActive = true
         };
         _context.AccountDetails.Add(accountDetailToAdd);
@@ -72,13 +80,13 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
         var documentToAdd = new Document
         {
             Date = accountToAdd.CreateDate,
-            FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-            DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "10", cancellationToken),
+            FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
+            DocumentType = await _context.GetDocumentTypeByCodeAsync("10", cancellationToken),
             DocumentItems =
             [
                 new DocumentArticle
                 {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == accountType.Code, cancellationToken),
+                    AccountSubsid = await _context.GetAccountSubsidByCodeAsync(accountType.Code, cancellationToken),
                     AccountDetail = accountDetailToAdd,
                     Credit = request.InitCredit,
                     Debit = 0,
@@ -86,7 +94,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
                 },
                 new DocumentArticle
                 {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
+                    AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
                     Credit = 0,
                     Debit = request.InitCredit,
                     Note = ""
@@ -95,6 +103,13 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
             Note = string.Empty,
             IsActive = true,
         };
+
+        var validation = _documentValidator.ValidateDocument(documentToAdd);
+        if (!validation.IsValid)
+        {
+            throw new ErrorException(validation.ErrorMessage);
+        }
+
         _context.Documents.Add(documentToAdd);
 
         await _context.SaveChangesAsync(cancellationToken);

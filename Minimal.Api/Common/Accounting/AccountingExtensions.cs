@@ -11,9 +11,7 @@ public static class AccountingExtensions
     /// </summary>
     public static async Task<AccountSubsid> GetBankAccountAsync(this ApplicationDbContext context, CancellationToken cancellationToken = default)
     {
-        return await context.AccountSubsids
-            .AsNoTracking()
-            .FirstAsync(x => x.Code == "1101", cancellationToken);
+        return await context.AccountSubsids.FirstAsync(x => x.Code == "1101", cancellationToken);
     }
 
     /// <summary>
@@ -21,9 +19,7 @@ public static class AccountingExtensions
     /// </summary>
     public static async Task<AccountSubsid> GetAccountSubsidByCodeAsync(this ApplicationDbContext context, string code, CancellationToken cancellationToken = default)
     {
-        return await context.AccountSubsids
-            .AsNoTracking()
-            .FirstAsync(x => x.Code == code, cancellationToken);
+        return await context.AccountSubsids.FirstAsync(x => x.Code == code, cancellationToken);
     }
 
     /// <summary>
@@ -31,9 +27,7 @@ public static class AccountingExtensions
     /// </summary>
     public static async Task<AccountCategory> GetAccountCategoryByCodeAsync(this ApplicationDbContext context, string code, CancellationToken cancellationToken = default)
     {
-        return await context.AccountCategories
-            .AsNoTracking()
-            .FirstAsync(ac => ac.Code == code, cancellationToken);
+        return await context.AccountCategories.FirstAsync(ac => ac.Code == code, cancellationToken);
     }
 
     /// <summary>
@@ -41,9 +35,7 @@ public static class AccountingExtensions
     /// </summary>
     public static async Task<FiscalYear> GetCurrentFiscalYearAsync(this ApplicationDbContext context, CancellationToken cancellationToken = default)
     {
-        return await context.FiscalYears
-            .AsNoTracking()
-            .FirstAsync(f => f.Id == 1, cancellationToken);
+        return await context.FiscalYears.FirstAsync(f => f.Id == 1, cancellationToken);
     }
 
     /// <summary>
@@ -51,9 +43,7 @@ public static class AccountingExtensions
     /// </summary>
     public static async Task<DocumentType> GetDocumentTypeByCodeAsync(this ApplicationDbContext context, string code, CancellationToken cancellationToken = default)
     {
-        return await context.DocumentTypes
-            .AsNoTracking()
-            .FirstAsync(dt => dt.Code == code, cancellationToken);
+        return await context.DocumentTypes.FirstAsync(dt => dt.Code == code, cancellationToken);
     }
 
     /// <summary>

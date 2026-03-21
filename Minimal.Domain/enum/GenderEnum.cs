@@ -1,4 +1,4 @@
-namespace Minimal.Api.Features.People.Models;
+namespace Minimal.Domain;
 
 public enum GenderEnum : byte
 {

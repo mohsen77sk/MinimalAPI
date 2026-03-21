@@ -44,7 +44,7 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
             FirstName = "First name",
             LastName = "Last name",
             NationalCode = "1234567890",
-            Gender = 1,
+            Gender = GenderEnum.Other,
             Birthday = new DateTimeOffset(1990, 1, 1, 0, 0, 0, TimeSpan.Zero),
             Note = "Test create person",
             IsActive = true
@@ -63,7 +63,7 @@ public class BaseModuleTests : IClassFixture<TestWebApplicationFactory<Program>>
                     FirstName = "Person first name",
                     LastName = "Person last name",
                     NationalCode = "1234512345",
-                    Gender = 1,
+                    Gender = GenderEnum.Other,
                     Birthday = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero),
                     IsActive = true
                 }],

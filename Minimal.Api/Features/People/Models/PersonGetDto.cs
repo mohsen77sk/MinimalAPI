@@ -1,3 +1,5 @@
+using Minimal.Domain;
+
 namespace Minimal.Api.Features.People.Models;
 
 public class PersonGetDto

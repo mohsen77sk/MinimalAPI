@@ -39,7 +39,7 @@ public class UpdatePersonHandler : IRequestHandler<UpdatePerson, PersonGetDto>
         person.LastName = request.LastName;
         person.NationalCode = request.NationalCode;
         person.Birthday = request.Birthday;
-        person.Gender = (byte)request.Gender;
+        person.Gender = request.Gender;
         person.Note = request.Note;
 
         await _context.SaveChangesAsync(cancellationToken);

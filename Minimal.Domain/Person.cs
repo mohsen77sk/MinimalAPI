@@ -24,7 +24,7 @@ public class Person
 
     public DateTimeOffset? Birthday { get; set; }
 
-    public byte Gender { get; set; }
+    public GenderEnum Gender { get; set; }
 
     public string? Note { get; set; }
 

@@ -1,5 +1,6 @@
 using MediatR;
 using Minimal.Api.Features.People.Models;
+using Minimal.Domain;
 
 namespace Minimal.Api.Features.People.Commands;
 

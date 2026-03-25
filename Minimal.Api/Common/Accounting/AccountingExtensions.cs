@@ -15,7 +15,7 @@ public static class AccountingExtensions
     }
 
     /// <summary>
-    /// Get an account detail by its code.
+    /// Get an account subsid by its code.
     /// </summary>
     public static async Task<AccountSubsid> GetAccountSubsidByCodeAsync(this ApplicationDbContext context, string code, CancellationToken cancellationToken = default)
     {

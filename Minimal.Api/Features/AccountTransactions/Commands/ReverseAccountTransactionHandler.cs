@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Common.Accounting;
+using Minimal.Api.Common.Accounting.Validators;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.AccountTransactions.Models;
 using Minimal.Api.Features.AccountTransactions.Profiles;
@@ -15,12 +16,18 @@ public class ReverseAccountTransactionHandler : IRequestHandler<ReverseAccountTr
     private readonly ApplicationDbContext _context;
     private readonly AccountTransactionMapper _mapper;
     private readonly IStringLocalizer _localizer;
+    private readonly DocumentValidator _documentValidator;
 
-    public ReverseAccountTransactionHandler(ApplicationDbContext context, AccountTransactionMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public ReverseAccountTransactionHandler(
+        ApplicationDbContext context,
+        AccountTransactionMapper mapper,
+        IStringLocalizer<SharedResource> localizer,
+        DocumentValidator documentValidator)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
+        _documentValidator = documentValidator ?? throw new ArgumentNullException(nameof(documentValidator));
     }
 
     public async Task<AccountTransactionGetDto> Handle(ReverseAccountTransaction request, CancellationToken cancellationToken)
@@ -49,32 +56,23 @@ public class ReverseAccountTransactionHandler : IRequestHandler<ReverseAccountTr
             throw new ErrorException(_localizer.GetString("transactionCanNotBeReversed").Value);
         }
 
-        var reverseDocument = new Document
+        var reversalDocumentType = await _context.GetDocumentTypeByCodeAsync("15", cancellationToken);
+
+        var reverseDocument = new AccountingDocumentReversalBuilder(originalDocument, reversalDocumentType, request.Note).Build();
+
+        var validation = _documentValidator.ValidateDocument(reverseDocument);
+        if (!validation.IsValid)
         {
-            Date = originalDocument.Date.AddMinutes(1),
-            Note = request.Note,
-            FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
-            DocumentType = await _context.GetDocumentTypeByCodeAsync("15", cancellationToken),
-            DocumentItems = [],
-            RefDocument = originalDocument
-        };
-        foreach (var detail in originalDocument.DocumentItems)
-        {
-            reverseDocument.DocumentItems.Add(new DocumentArticle
-            {
-                AccountSubsidId = detail.AccountSubsidId,
-                AccountDetailId = detail.AccountDetailId,
-                Credit = detail.Debit,
-                Debit = detail.Credit
-            });
+            throw new ErrorException(validation.ErrorMessage);
         }
+
         _context.Documents.Add(reverseDocument);
 
         originalDocument.Status = DocumentStatusEnum.Reversed;
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        var accountDetailId = reverseDocument.DocumentItems.First(di => di.AccountDetail.AccountId == request.AccountId).AccountDetailId;
+        var accountDetailId = reverseDocument.DocumentItems.First(di => di.AccountDetail?.AccountId == request.AccountId).AccountDetailId;
         return _mapper.MapToAccountTransactionGetDto(reverseDocument.DocumentItems.First(di => di.AccountDetailId == accountDetailId));
     }
 }

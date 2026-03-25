@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Minimal.Api.Common.Accounting;
+using Minimal.Api.Common.Accounting.Validators;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.Accounts.Models;
 using Minimal.Api.Features.Accounts.Profiles;
@@ -15,12 +16,18 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
     private readonly ApplicationDbContext _context;
     private readonly AccountMapper _mapper;
     private readonly IStringLocalizer _localizer;
+    private readonly DocumentValidator _documentValidator;
 
-    public CloseAccountHandler(ApplicationDbContext context, AccountMapper mapper, IStringLocalizer<SharedResource> localizer)
+    public CloseAccountHandler(
+        ApplicationDbContext context,
+        AccountMapper mapper,
+        IStringLocalizer<SharedResource> localizer,
+        DocumentValidator documentValidator)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
+        _documentValidator = documentValidator ?? throw new ArgumentNullException(nameof(documentValidator));
     }
 
     public async Task<AccountGetDto> Handle(CloseAccount request, CancellationToken cancellationToken)
@@ -57,30 +64,23 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
             throw new ValidationException(nameof(request.CloseDate), _localizer.GetString("closingAccountDateIsBeforeTransaction").Value);
         }
 
+        var fiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken);
+        var closeAccountDocumentType = await _context.GetDocumentTypeByCodeAsync("11", cancellationToken);
+        var bankAccountSubsid = await _context.GetBankAccountAsync(cancellationToken);
+        var accountAccountSubsid = await _context.GetAccountSubsidByCodeAsync(account.AccountType.Code, cancellationToken);
         var accountBalance = await _context.GetAccountDetailBalanceAsync(account.AccountDetail.Id, cancellationToken);
 
-        var documentToAdd = new Document
+        var documentToAdd = new AccountingDocumentBuilder(fiscalYear, closeAccountDocumentType, request.CloseDate)
+            .Debit(accountBalance, accountAccountSubsid, account.AccountDetail)
+            .Credit(accountBalance, bankAccountSubsid)
+            .Build();
+
+        var validation = _documentValidator.ValidateDocument(documentToAdd);
+        if (!validation.IsValid)
         {
-            Date = request.CloseDate,
-            FiscalYear = await _context.FiscalYears.SingleAsync(f => f.Id == 1, cancellationToken),
-            DocumentType = await _context.DocumentTypes.SingleAsync(dt => dt.Code == "11", cancellationToken),
-            DocumentItems =
-            [
-                new DocumentArticle
-                {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == account.AccountType.Code, cancellationToken),
-                    AccountDetail = account.AccountDetail,
-                    Credit = 0,
-                    Debit = accountBalance,
-                },
-                new DocumentArticle
-                {
-                    AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
-                    Credit = accountBalance,
-                    Debit = 0,
-                }
-            ]
-        };
+            throw new ErrorException(validation.ErrorMessage);
+        }
+
         _context.Documents.Add(documentToAdd);
 
         account.CloseDate = request.CloseDate;

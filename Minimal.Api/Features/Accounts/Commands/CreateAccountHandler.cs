@@ -77,28 +77,15 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
         };
         _context.AccountDetails.Add(accountDetailToAdd);
 
-        var documentToAdd = new Document
-        {
-            Date = accountToAdd.CreateDate,
-            FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
-            DocumentType = await _context.GetDocumentTypeByCodeAsync("10", cancellationToken),
-            DocumentItems =
-            [
-                new DocumentArticle
-                {
-                    AccountSubsid = await _context.GetAccountSubsidByCodeAsync(accountType.Code, cancellationToken),
-                    AccountDetail = accountDetailToAdd,
-                    Credit = request.InitCredit,
-                    Debit = 0,
-                },
-                new DocumentArticle
-                {
-                    AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
-                    Credit = 0,
-                    Debit = request.InitCredit,
-                }
-            ]
-        };
+        var fiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken);
+        var createAccountDocumentType = await _context.GetDocumentTypeByCodeAsync("10", cancellationToken);
+        var bankAccountSubsid = await _context.GetBankAccountAsync(cancellationToken);
+        var accountAccountSubsid = await _context.GetAccountSubsidByCodeAsync(accountType.Code, cancellationToken);
+
+        var documentToAdd = new AccountingDocumentBuilder(fiscalYear, createAccountDocumentType, accountToAdd.CreateDate)
+            .Credit(request.InitCredit, accountAccountSubsid, accountDetailToAdd)
+            .Debit(request.InitCredit, bankAccountSubsid)
+            .Build();
 
         var validation = _documentValidator.ValidateDocument(documentToAdd);
         if (!validation.IsValid)

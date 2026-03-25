@@ -2,6 +2,6 @@ namespace Minimal.Domain;
 
 public enum DocumentStatusEnum : byte
 {
-    Normal = 1,
-    Reversed = 2
+    Normal = 0,
+    Reversed = 1
 }

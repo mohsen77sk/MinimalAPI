@@ -92,47 +92,38 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
             }
         }
 
-        var documentToAdd = new Document
-        {
-            Date = request.Date,
-            Note = request.Note,
-            FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
-            DocumentType = await _context.GetDocumentTypeByCodeAsync(
-                request.TransactionType == TransactionTypeEnum.Transfer ? "14" :
-                    request.TransactionType == TransactionTypeEnum.Deposit ? "12" : "13",
-                cancellationToken),
-            DocumentItems =
-            [
-                new DocumentArticle
-                {
-                    AccountSubsid = await _context.GetAccountSubsidByCodeAsync(sourceAccount.AccountType.Code, cancellationToken),
-                    AccountDetail = sourceAccount.AccountDetail,
-                    Credit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
-                    Debit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
-                },
-            ]
-        };
+        string documentTypeCode =
+            request.TransactionType == TransactionTypeEnum.Transfer ? "14" :
+                request.TransactionType == TransactionTypeEnum.Deposit ? "12" : "13";
+
+        var fiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken);
+        var documentType = await _context.GetDocumentTypeByCodeAsync(documentTypeCode, cancellationToken);
+        var bankAccountSubsid = await _context.GetBankAccountAsync(cancellationToken);
+        var sourceAccountSubsid = await _context.GetAccountSubsidByCodeAsync(sourceAccount.AccountType.Code, cancellationToken);
+
+        var documentBuilder = new AccountingDocumentBuilder(fiscalYear, documentType, request.Date, request.Note);
+
+        _ = request.TransactionType == TransactionTypeEnum.Deposit ?
+            documentBuilder.Credit(request.Amount, sourceAccountSubsid, sourceAccount.AccountDetail) :
+            documentBuilder.Debit(request.Amount, sourceAccountSubsid, sourceAccount.AccountDetail);
 
         // Add the destination account if the transaction type is Transfer
-        if (destinationAccount is null)
+        if (destinationAccount is not null)
         {
-            documentToAdd.DocumentItems.Add(new DocumentArticle
-            {
-                AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
-                Debit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
-                Credit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
-            });
+            var destinationAccountSubsid = await _context.GetAccountSubsidByCodeAsync(destinationAccount.AccountType.Code, cancellationToken);
+
+            _ = request.TransactionType == TransactionTypeEnum.Deposit ?
+                documentBuilder.Debit(request.Amount, destinationAccountSubsid, destinationAccount.AccountDetail) :
+                documentBuilder.Credit(request.Amount, destinationAccountSubsid, destinationAccount.AccountDetail);
         }
         else
         {
-            documentToAdd.DocumentItems.Add(new DocumentArticle
-            {
-                AccountSubsid = await _context.GetAccountSubsidByCodeAsync(destinationAccount.AccountType.Code, cancellationToken),
-                AccountDetail = destinationAccount.AccountDetail,
-                Debit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
-                Credit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
-            });
+            _ = request.TransactionType == TransactionTypeEnum.Deposit ?
+                documentBuilder.Debit(request.Amount, bankAccountSubsid) :
+                documentBuilder.Credit(request.Amount, bankAccountSubsid);
         }
+
+        var documentToAdd = documentBuilder.Build();
 
         var validation = _documentValidator.ValidateDocument(documentToAdd);
         if (!validation.IsValid)

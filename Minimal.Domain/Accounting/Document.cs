@@ -26,7 +26,7 @@ public class Document
     public DocumentStatusEnum Status { get; set; }
 
     public int? RefDocumentId { get; set; }
-    public Document RefDocument { get; set; } = default!;
+    public Document? RefDocument { get; set; } = default!;
 
     public ICollection<DocumentArticle> DocumentItems { get; set; }
 }

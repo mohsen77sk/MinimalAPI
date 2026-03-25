@@ -47,7 +47,7 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        var accountDetailId = document.DocumentItems.First(di => di.AccountDetail.AccountId == request.AccountId).AccountDetailId;
+        var accountDetailId = document.DocumentItems.First(di => di.AccountDetail?.AccountId == request.AccountId).AccountDetailId;
         return _mapper.MapToAccountTransactionGetDto(document.DocumentItems.First(di => di.AccountDetailId == accountDetailId));
     }
 }

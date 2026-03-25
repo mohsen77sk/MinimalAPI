@@ -20,7 +20,7 @@ namespace Minimal.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "9.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -546,15 +546,22 @@ namespace Minimal.DataAccess.Migrations
                     b.Property<int>("FiscalYearId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("Note")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("");
+
+                    b.Property<int?>("RefDocumentId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint")
+                        .HasDefaultValue((byte)1);
 
                     b.HasKey("Id");
 
@@ -564,6 +571,8 @@ namespace Minimal.DataAccess.Migrations
                     b.HasIndex("DocumentTypeId");
 
                     b.HasIndex("FiscalYearId");
+
+                    b.HasIndex("RefDocumentId");
 
                     b.ToTable("Documents", "accounting");
                 });
@@ -593,7 +602,9 @@ namespace Minimal.DataAccess.Migrations
 
                     b.Property<string>("Note")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("");
 
                     b.HasKey("Id");
 
@@ -1037,9 +1048,15 @@ namespace Minimal.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Minimal.Domain.Document", "RefDocument")
+                        .WithMany()
+                        .HasForeignKey("RefDocumentId");
+
                     b.Navigation("DocumentType");
 
                     b.Navigation("FiscalYear");
+
+                    b.Navigation("RefDocument");
                 });
 
             modelBuilder.Entity("Minimal.Domain.DocumentArticle", b =>

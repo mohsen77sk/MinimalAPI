@@ -11,5 +11,6 @@ public class DocumentArticleConfiguration : IEntityTypeConfiguration<DocumentArt
         builder.ToTable("DocumentArticles", Schema.Accounting);
         builder.Property(documentArticles => documentArticles.Debit).HasColumnType("Money");
         builder.Property(documentArticles => documentArticles.Credit).HasColumnType("Money");
+        builder.Property(documentArticles => documentArticles.Note).HasDefaultValue(string.Empty);
     }
 }

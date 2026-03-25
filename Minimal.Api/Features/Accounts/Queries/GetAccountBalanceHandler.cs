@@ -32,7 +32,7 @@ public class GetAccountBalanceHandler : IRequestHandler<GetAccountBalance, Accou
             .Select(a => new AccountBalanceGetDto
             {
                 Id = a.Id,
-                Balance = a.AccountDetail.DocumentArticleList.Where(dr => dr.Document.IsActive == true).Sum(da => da.Credit - da.Debit)
+                Balance = a.AccountDetail.DocumentArticleList.Sum(da => da.Credit - da.Debit)
             })
             .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
 

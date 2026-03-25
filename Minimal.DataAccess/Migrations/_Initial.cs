@@ -242,9 +242,10 @@ namespace Minimal.DataAccess.Migrations
                     FiscalYearId = table.Column<int>(type: "int", nullable: false),
                     DocumentTypeId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: ""),
                     IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    Status = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)1),
+                    RefDocumentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -256,6 +257,12 @@ namespace Minimal.DataAccess.Migrations
                         principalTable: "DocumentTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Documents_Documents_RefDocumentId",
+                        column: x => x.RefDocumentId,
+                        principalSchema: "accounting",
+                        principalTable: "Documents",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Documents_FiscalYears_FiscalYearId",
                         column: x => x.FiscalYearId,
@@ -627,7 +634,7 @@ namespace Minimal.DataAccess.Migrations
                     AccountDetailId = table.Column<int>(type: "int", nullable: true),
                     Credit = table.Column<decimal>(type: "Money", nullable: false),
                     Debit = table.Column<decimal>(type: "Money", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "")
                 },
                 constraints: table =>
                 {
@@ -815,6 +822,12 @@ namespace Minimal.DataAccess.Migrations
                 schema: "accounting",
                 table: "Documents",
                 column: "FiscalYearId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_RefDocumentId",
+                schema: "accounting",
+                table: "Documents",
+                column: "RefDocumentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DocumentTypes_Code",

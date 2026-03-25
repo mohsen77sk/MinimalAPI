@@ -14,6 +14,7 @@ public class DocumentValidator
     {
         _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
     }
+
     /// <summary>
     /// Validate that the total debit and credit amounts in the document are equal (accounting equation holds).
     /// </summary>

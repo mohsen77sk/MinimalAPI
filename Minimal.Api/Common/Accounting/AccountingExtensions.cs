@@ -47,14 +47,25 @@ public static class AccountingExtensions
     }
 
     /// <summary>
-    /// Calculate the balance of an account detail by summing its debit and credit amounts from the document articles.
+    /// Calculate the balance of an account subsid by summing its debit and credit amounts from the document articles.
     /// </summary>
-    public static async Task<decimal> GetAccountBalanceAsync(this ApplicationDbContext context, int accountDetailId, CancellationToken cancellationToken = default)
+    public static async Task<decimal> GetAccountSubsidBalanceAsync(this ApplicationDbContext context, int accountSubsidId, CancellationToken cancellationToken = default)
     {
         return await context.DocumentArticles
             .AsNoTracking()
-            .Where(x => x.AccountDetailId == accountDetailId && x.Document.IsActive)
-            .SumAsync(x => x.Debit - x.Credit, cancellationToken);
+            .Where(x => x.AccountSubsidId == accountSubsidId)
+            .SumAsync(x => x.Credit - x.Debit, cancellationToken);
+    }
+
+    /// <summary>
+    /// Calculate the balance of an account detail by summing its debit and credit amounts from the document articles.
+    /// </summary>
+    public static async Task<decimal> GetAccountDetailBalanceAsync(this ApplicationDbContext context, int accountDetailId, CancellationToken cancellationToken = default)
+    {
+        return await context.DocumentArticles
+            .AsNoTracking()
+            .Where(x => x.AccountDetailId == accountDetailId)
+            .SumAsync(x => x.Credit - x.Debit, cancellationToken);
     }
 
     /// <summary>

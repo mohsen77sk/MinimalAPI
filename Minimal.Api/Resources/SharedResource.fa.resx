@@ -189,8 +189,8 @@
     <value>نوع تسهیلات انتخاب شده غیر فعال است.</value>
     <comment/>
   </data>
-  <data name="transactionIsNotActive" xml:space="preserve">
-    <value>تراکنش انتخاب شده غیر فعال است.</value>
+  <data name="transactionIsReversed" xml:space="preserve">
+    <value>تراکنش انتخاب شده قبلاً ابطال شده است.</value>
     <comment/>
   </data>
   <data name="personHasActiveAccount" xml:space="preserve">
@@ -215,6 +215,10 @@
   </data>
   <data name="transactionCanNotBeDeleted" xml:space="preserve">
     <value>این تراکنش قابل حذف نیست.</value>
+    <comment/>
+  </data>
+  <data name="transactionCanNotBeReversed" xml:space="preserve">
+    <value>این تراکنش قابل ابطال نیست.</value>
     <comment/>
   </data>
   <data name="transactionAmountBiggerThanBalance" xml:space="preserve">

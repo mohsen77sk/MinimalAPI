@@ -59,7 +59,7 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
 
         if (request.TransactionType != TransactionTypeEnum.Deposit)
         {
-            var balance = await _context.GetAccountBalanceAsync(sourceAccount.AccountDetail.Id, cancellationToken);
+            var balance = await _context.GetAccountDetailBalanceAsync(sourceAccount.AccountDetail.Id, cancellationToken);
 
             if (balance < request.Amount)
             {
@@ -98,7 +98,8 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
             Note = request.Note,
             FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
             DocumentType = await _context.GetDocumentTypeByCodeAsync(
-                request.TransactionType == TransactionTypeEnum.Deposit ? "12" : "13",
+                request.TransactionType == TransactionTypeEnum.Transfer ? "14" :
+                    request.TransactionType == TransactionTypeEnum.Deposit ? "12" : "13",
                 cancellationToken),
             DocumentItems =
             [
@@ -108,10 +109,8 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
                     AccountDetail = sourceAccount.AccountDetail,
                     Credit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
                     Debit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
-                    Note = ""
                 },
-            ],
-            IsActive = true,
+            ]
         };
 
         // Add the destination account if the transaction type is Transfer
@@ -122,7 +121,6 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
                 AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
                 Debit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
                 Credit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
-                Note = ""
             });
         }
         else
@@ -133,7 +131,6 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
                 AccountDetail = destinationAccount.AccountDetail,
                 Debit = request.TransactionType == TransactionTypeEnum.Deposit ? request.Amount : 0,
                 Credit = request.TransactionType != TransactionTypeEnum.Deposit ? request.Amount : 0,
-                Note = ""
             });
         }
 
@@ -147,6 +144,6 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.MapToAccountTransactionGetDto(documentToAdd);
+        return _mapper.MapToAccountTransactionGetDto(documentToAdd.DocumentItems.First(di => di.AccountDetailId == sourceAccount.AccountDetail.Id));
     }
 }

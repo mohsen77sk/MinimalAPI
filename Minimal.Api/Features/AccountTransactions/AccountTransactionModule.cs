@@ -27,10 +27,9 @@ public class AccountTransactionModule : IModule
             .Produces<ValidationError>(400)
             .Produces(500);
 
-        transactions.MapDelete("/{id}", DeleteTransactionAccountAsync)
-            .Produces<bool>()
+        transactions.MapPost("/reverse", ReverseTransactionAccountAsync)
+            .Produces<AccountTransactionGetDto>()
             .Produces<ValidationError>(400)
-            .Produces(404)
             .Produces(500);
 
         return endpoints;
@@ -38,26 +37,25 @@ public class AccountTransactionModule : IModule
 
     private async Task<IResult> GetTransactionAccountsAsync([AsParameters] GetAllAccountTransaction request, IMediator mediator, CancellationToken ct)
     {
-        var accounts = await mediator.Send(request, ct);
-        return Results.Ok(accounts);
+        var transactions = await mediator.Send(request, ct);
+        return Results.Ok(transactions);
     }
 
     private async Task<IResult> CreateTransactionAccountAsync(CreateAccountTransaction accountTransactionDto, IMediator mediator, CancellationToken ct)
     {
-        var account = await mediator.Send(accountTransactionDto, ct);
-        return Results.Ok(account);
+        var transaction = await mediator.Send(accountTransactionDto, ct);
+        return Results.Ok(transaction);
     }
 
     private async Task<IResult> UpdateTransactionAccountAsync(UpdateAccountTransaction accountTransactionDto, IMediator mediator, CancellationToken ct)
     {
-        var account = await mediator.Send(accountTransactionDto, ct);
-        return Results.Ok(account);
+        var transaction = await mediator.Send(accountTransactionDto, ct);
+        return Results.Ok(transaction);
     }
 
-    private async Task<IResult> DeleteTransactionAccountAsync(int id, IMediator mediator, CancellationToken ct)
+    private async Task<IResult> ReverseTransactionAccountAsync(ReverseAccountTransaction accountTransactionDto, IMediator mediator, CancellationToken ct)
     {
-        var query = new DeleteAccountTransaction { Id = id };
-        await mediator.Send(query, ct);
-        return Results.Ok(true);
+        var transaction = await mediator.Send(accountTransactionDto, ct);
+        return Results.Ok(transaction);
     }
 }

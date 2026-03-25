@@ -29,18 +29,13 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
         }
 
         var document = await _context.Documents
-            .Include(d => d.DocumentType)
             .Include(d => d.DocumentItems)
             .ThenInclude(d => d.AccountDetail)
-            .FirstOrDefaultAsync(d => d.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(d => d.DocumentItems.Any(di => di.Id == request.Id), cancellationToken);
+
         if (document is null)
         {
             throw new NotFoundException(_localizer.GetString("notFoundTransaction").Value);
-        }
-
-        if (document.IsActive is false)
-        {
-            throw new ErrorException(_localizer.GetString("transactionIsNotActive").Value);
         }
 
         if (document.DocumentItems.Any(x => x.AccountDetail?.IsActive == false))
@@ -52,6 +47,7 @@ public class UpdateAccountTransactionHandler : IRequestHandler<UpdateAccountTran
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.MapToAccountTransactionGetDto(document);
+        var accountDetailId = document.DocumentItems.First(di => di.AccountDetail.AccountId == request.AccountId).AccountDetailId;
+        return _mapper.MapToAccountTransactionGetDto(document.DocumentItems.First(di => di.AccountDetailId == accountDetailId));
     }
 }

@@ -13,6 +13,4 @@ public class AccountTransactionGetDto
     public DateTimeOffset Date { get; set; }
 
     public string Note { get; set; } = default!;
-
-    public bool Editable { get; set; }
 }

@@ -29,7 +29,7 @@ public class GetFundAccountTransactionsHandler : IRequestHandler<GetFundAccountT
         var documents = await _context.DocumentArticles
             .AsNoTracking()
             .Include(dr => dr.Document)
-            .Where(dr => dr.Document.IsActive == true && dr.AccountSubsid.Code == "1101")
+            .Where(dr => dr.AccountSubsid.Code == "1101")
             .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
         return _mapper.MapToPageList(documents);

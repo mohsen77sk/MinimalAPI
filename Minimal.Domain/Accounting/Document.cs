@@ -23,7 +23,10 @@ public class Document
 
     public bool IsConfirmed { get; set; }
 
-    public bool IsActive { get; set; }
+    public DocumentStatusEnum Status { get; set; }
+
+    public int? RefDocumentId { get; set; }
+    public Document RefDocument { get; set; } = default!;
 
     public ICollection<DocumentArticle> DocumentItems { get; set; }
 }

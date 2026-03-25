@@ -189,8 +189,8 @@
     <value>The selected loan type is disabled.</value>
     <comment/>
   </data>
-  <data name="transactionIsNotActive" xml:space="preserve">
-    <value>The selected transaction is disabled.</value>
+  <data name="transactionIsReversed" xml:space="preserve">
+    <value>The selected transaction is reversed.</value>
     <comment/>
   </data>
   <data name="personHasActiveAccount" xml:space="preserve">
@@ -215,6 +215,10 @@
   </data>
   <data name="transactionCanNotBeDeleted" xml:space="preserve">
     <value>This transaction cannot be deleted.</value>
+    <comment/>
+  </data>
+  <data name="transactionCanNotBeReversed" xml:space="preserve">
+    <value>This transaction cannot be reversed.</value>
     <comment/>
   </data>
   <data name="transactionAmountBiggerThanBalance" xml:space="preserve">

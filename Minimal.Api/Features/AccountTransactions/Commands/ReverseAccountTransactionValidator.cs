@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace Minimal.Api.Features.AccountTransactions.Commands;
 
-public class UpdateAccountTransactionValidator : AbstractValidator<UpdateAccountTransaction>
+public class ReverseAccountTransactionValidator : AbstractValidator<ReverseAccountTransaction>
 {
-    public UpdateAccountTransactionValidator()
+    public ReverseAccountTransactionValidator()
     {
         RuleFor(r => r.Id).NotEmpty();
         RuleFor(r => r.AccountId).NotEmpty();

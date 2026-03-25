@@ -90,18 +90,14 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, AccountGetDto
                     AccountDetail = accountDetailToAdd,
                     Credit = request.InitCredit,
                     Debit = 0,
-                    Note = ""
                 },
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
                     Credit = 0,
                     Debit = request.InitCredit,
-                    Note = ""
                 }
-            ],
-            Note = string.Empty,
-            IsActive = true,
+            ]
         };
 
         var validation = _documentValidator.ValidateDocument(documentToAdd);

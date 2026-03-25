@@ -12,5 +12,7 @@ public class DocumentConfiguration : IEntityTypeConfiguration<Document>
         builder.ToTable("Documents", Schema.Accounting);
         builder.HasIndex(document => document.Code).IsUnique();
         builder.Property(document => document.Code).ValueGeneratedOnAdd().HasValueGenerator<DocumentCodeGenerator>();
+        builder.Property(document => document.Status).HasDefaultValue(DocumentStatusEnum.Normal);
+        builder.Property(document => document.Note).HasDefaultValue(string.Empty);
     }
 }

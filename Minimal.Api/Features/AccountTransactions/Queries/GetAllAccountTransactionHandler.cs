@@ -22,28 +22,23 @@ public class GetAllAccountTransactionHandler : IRequestHandler<GetAllAccountTran
 
     public async Task<PageList<AccountTransactionGetDto>> Handle(GetAllAccountTransaction request, CancellationToken cancellationToken)
     {
-        var account = await _context.Accounts
+        var accountDetailId = await _context.Accounts
             .AsNoTracking()
             .Include(x => x.AccountDetail)
-            .Select(a => new
-            {
-                Id = a.Id,
-                AccountDetailId = a.AccountDetail.Id
-            })
-            .FirstOrDefaultAsync(a => a.Id == request.AccountId, cancellationToken);
-        if (account is null)
+            .Where(a => a.Id == request.AccountId)
+            .Select(a => a.AccountDetail.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (accountDetailId == 0)
         {
             throw new NotFoundException();
         }
 
-        var documents = await _context.Documents
+        var documentItems = await _context.DocumentArticles
             .AsNoTracking()
-            .Include(d => d.DocumentType)
-            .Include(d => d.DocumentItems)
-            .ThenInclude(di => di.AccountDetail)
-            .Where(d => d.IsActive == true && d.DocumentItems.Any(x => x.AccountDetailId == account.AccountDetailId))
+            .Include(di => di.Document)
+            .Where(di => di.AccountDetailId == accountDetailId)
             .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
-        return _mapper.MapToPageList(documents);
+        return _mapper.MapToPageList(documentItems);
     }
 }

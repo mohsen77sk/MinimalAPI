@@ -27,7 +27,7 @@ public class GetFundAccountBalanceHandler : IRequestHandler<GetFundAccountBalanc
 
         var FundBalance = await _context.DocumentArticles
             .AsNoTracking()
-            .Where(dr => dr.Document.IsActive == true && dr.AccountSubsid.Code == "1101")
+            .Where(dr => dr.AccountSubsid.Code == "1101")
             .SumAsync(da => da.Debit - da.Credit);
 
         return new FundAccountBalanceGetDto { Balance = FundBalance };

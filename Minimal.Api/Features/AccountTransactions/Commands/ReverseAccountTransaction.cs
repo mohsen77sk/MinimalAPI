@@ -3,7 +3,7 @@ using Minimal.Api.Features.AccountTransactions.Models;
 
 namespace Minimal.Api.Features.AccountTransactions.Commands;
 
-public class UpdateAccountTransaction : IRequest<AccountTransactionGetDto>
+public class ReverseAccountTransaction : IRequest<AccountTransactionGetDto>
 {
     public int Id { get; set; }
     public int AccountId { get; set; }

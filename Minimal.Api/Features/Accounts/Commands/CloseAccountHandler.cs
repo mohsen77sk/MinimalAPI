@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Minimal.Api.Common.Accounting;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.Accounts.Models;
 using Minimal.Api.Features.Accounts.Profiles;
@@ -50,17 +51,13 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
         }
 
         if (await _context.DocumentArticles.AnyAsync(dr =>
-            dr.Document.IsActive == true &&
             dr.AccountDetailId == account.AccountDetail.Id &&
             dr.Document.Date >= request.CloseDate, cancellationToken))
         {
             throw new ValidationException(nameof(request.CloseDate), _localizer.GetString("closingAccountDateIsBeforeTransaction").Value);
         }
 
-        var accountBalance = await _context.DocumentArticles
-            .AsNoTracking()
-            .Where(da => da.AccountDetailId == account.AccountDetail.Id && da.Document.IsActive == true)
-            .SumAsync(da => da.Credit - da.Debit, cancellationToken);
+        var accountBalance = await _context.GetAccountDetailBalanceAsync(account.AccountDetail.Id, cancellationToken);
 
         var documentToAdd = new Document
         {
@@ -75,18 +72,14 @@ public class CloseAccountHandler : IRequestHandler<CloseAccount, AccountGetDto>
                     AccountDetail = account.AccountDetail,
                     Credit = 0,
                     Debit = accountBalance,
-                    Note = ""
                 },
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.AccountSubsids.SingleAsync(x => x.Code == "1101", cancellationToken),
                     Credit = accountBalance,
                     Debit = 0,
-                    Note = ""
                 }
-            ],
-            Note = string.Empty,
-            IsActive = true,
+            ]
         };
         _context.Documents.Add(documentToAdd);
 

@@ -56,7 +56,7 @@ public class CreateLoanTransactionHandler : IRequestHandler<CreateLoanTransactio
             throw new ValidationException(nameof(request.Date), _localizer.GetString("transactionDateIsEarlierOpeningDate").Value);
         }
 
-        var remaining = await _context.GetAccountBalanceAsync(loan.AccountDetail.Id, cancellationToken);
+        var remaining = await _context.GetAccountDetailBalanceAsync(loan.AccountDetail.Id, cancellationToken);
 
         if (remaining < request.Amount)
         {
@@ -77,17 +77,14 @@ public class CreateLoanTransactionHandler : IRequestHandler<CreateLoanTransactio
                     AccountDetail = loan.AccountDetail,
                     Credit = request.Amount,
                     Debit = 0,
-                    Note = ""
                 },
                 new DocumentArticle
                 {
                     AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
                     Credit = 0,
                     Debit = request.Amount,
-                    Note = ""
                 }
-            ],
-            IsActive = true,
+            ]
         };
 
         var validation = _documentValidator.ValidateDocument(documentToAdd);

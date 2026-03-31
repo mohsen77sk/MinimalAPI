@@ -10,6 +10,7 @@ using Minimal.Api.Behaviors;
 using Minimal.Api.Common.DeviceDetectionService;
 using Minimal.Api.Common.IdentityServices;
 using Minimal.Api.Common.TokenService;
+using Minimal.Api.Features.Loans.Strategies;
 using Minimal.DataAccess;
 using Minimal.Domain.Identity;
 
@@ -35,6 +36,7 @@ public static class ServiceCollectionExtensions
 
         services.AddMappers();
         services.AddAllValidators();
+        services.AddLoanStrategies();
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
@@ -189,5 +191,11 @@ public static class ServiceCollectionExtensions
             var serviceType = typeof(IValidator<>).MakeGenericType(validatedType);
             services.AddTransient(serviceType, validator);
         }
+    }
+
+    private static void AddLoanStrategies(this IServiceCollection services)
+    {
+        services.AddScoped<ILoanStrategyFactory, LoanStrategyFactory>();
+        services.AddScoped<GharzolHasanehLoanStrategy>();
     }
 }

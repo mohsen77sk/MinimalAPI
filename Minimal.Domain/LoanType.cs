@@ -15,5 +15,7 @@ public class LoanType
 
     public bool IsActive { get; set; }
 
+    public LoanStrategyEnum Strategy { get; set; }
+
     public ICollection<Loan> Loans { get; set; }
 }

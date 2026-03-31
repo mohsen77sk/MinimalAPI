@@ -2,6 +2,12 @@ namespace Minimal.Domain;
 
 public class Loan
 {
+    public Loan()
+    {
+        Installments = [];
+        Payments = [];
+    }
+
     public int Id { get; set; }
 
     public string Code { get; set; } = default!;
@@ -33,4 +39,8 @@ public class Loan
     public bool IsActive { get; set; }
 
     public AccountDetail AccountDetail { get; set; } = default!;
+
+    public ICollection<LoanInstallment> Installments { get; set; }
+
+    public ICollection<LoanPayment> Payments { get; set; }
 }

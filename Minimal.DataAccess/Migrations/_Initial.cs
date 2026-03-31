@@ -138,7 +138,8 @@ namespace Minimal.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Strategy = table.Column<byte>(type: "tinyint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -244,7 +245,7 @@ namespace Minimal.DataAccess.Migrations
                     Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: ""),
                     IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    Status = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)1),
+                    Status = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)0),
                     RefDocumentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -623,6 +624,67 @@ namespace Minimal.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LoanInstallments",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LoanId = table.Column<int>(type: "int", nullable: false),
+                    Number = table.Column<int>(type: "int", nullable: false),
+                    DueDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    PaidDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    Amount = table.Column<decimal>(type: "Money", nullable: false),
+                    PrincipalAmount = table.Column<decimal>(type: "Money", nullable: false),
+                    InterestAmount = table.Column<decimal>(type: "Money", nullable: false),
+                    PaidAmount = table.Column<decimal>(type: "Money", nullable: false),
+                    Status = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoanInstallments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LoanInstallments_Loans_LoanId",
+                        column: x => x.LoanId,
+                        principalSchema: "app",
+                        principalTable: "Loans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LoanPayments",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LoanId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "Money", nullable: false),
+                    PaymentDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DocumentId = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoanPayments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LoanPayments_Documents_DocumentId",
+                        column: x => x.DocumentId,
+                        principalSchema: "accounting",
+                        principalTable: "Documents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LoanPayments_Loans_LoanId",
+                        column: x => x.LoanId,
+                        principalSchema: "app",
+                        principalTable: "Loans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DocumentArticles",
                 schema: "accounting",
                 columns: table => new
@@ -656,6 +718,35 @@ namespace Minimal.DataAccess.Migrations
                         column: x => x.DocumentId,
                         principalSchema: "accounting",
                         principalTable: "Documents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LoanPaymentAllocations",
+                schema: "app",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PaymentId = table.Column<int>(type: "int", nullable: false),
+                    InstallmentId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "Money", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoanPaymentAllocations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LoanPaymentAllocations_LoanInstallments_InstallmentId",
+                        column: x => x.InstallmentId,
+                        principalSchema: "app",
+                        principalTable: "LoanInstallments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_LoanPaymentAllocations_LoanPayments_PaymentId",
+                        column: x => x.PaymentId,
+                        principalSchema: "app",
+                        principalTable: "LoanPayments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -837,6 +928,36 @@ namespace Minimal.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_LoanInstallments_LoanId",
+                schema: "app",
+                table: "LoanInstallments",
+                column: "LoanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoanPaymentAllocations_InstallmentId",
+                schema: "app",
+                table: "LoanPaymentAllocations",
+                column: "InstallmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoanPaymentAllocations_PaymentId",
+                schema: "app",
+                table: "LoanPaymentAllocations",
+                column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoanPayments_DocumentId",
+                schema: "app",
+                table: "LoanPayments",
+                column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LoanPayments_LoanId",
+                schema: "app",
+                table: "LoanPayments",
+                column: "LoanId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Loans_AccountId",
                 schema: "app",
                 table: "Loans",
@@ -944,6 +1065,10 @@ namespace Minimal.DataAccess.Migrations
                 schema: "accounting");
 
             migrationBuilder.DropTable(
+                name: "LoanPaymentAllocations",
+                schema: "app");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaims",
                 schema: "auth");
 
@@ -976,8 +1101,12 @@ namespace Minimal.DataAccess.Migrations
                 schema: "accounting");
 
             migrationBuilder.DropTable(
-                name: "Documents",
-                schema: "accounting");
+                name: "LoanInstallments",
+                schema: "app");
+
+            migrationBuilder.DropTable(
+                name: "LoanPayments",
+                schema: "app");
 
             migrationBuilder.DropTable(
                 name: "Roles",
@@ -992,15 +1121,27 @@ namespace Minimal.DataAccess.Migrations
                 schema: "accounting");
 
             migrationBuilder.DropTable(
-                name: "Loans",
-                schema: "app");
-
-            migrationBuilder.DropTable(
                 name: "AccountEssences",
                 schema: "accounting");
 
             migrationBuilder.DropTable(
                 name: "AccountLedgers",
+                schema: "accounting");
+
+            migrationBuilder.DropTable(
+                name: "Documents",
+                schema: "accounting");
+
+            migrationBuilder.DropTable(
+                name: "Loans",
+                schema: "app");
+
+            migrationBuilder.DropTable(
+                name: "People",
+                schema: "app");
+
+            migrationBuilder.DropTable(
+                name: "AccountGroups",
                 schema: "accounting");
 
             migrationBuilder.DropTable(
@@ -1012,20 +1153,12 @@ namespace Minimal.DataAccess.Migrations
                 schema: "accounting");
 
             migrationBuilder.DropTable(
-                name: "People",
-                schema: "app");
-
-            migrationBuilder.DropTable(
                 name: "Accounts",
                 schema: "app");
 
             migrationBuilder.DropTable(
                 name: "LoanTypes",
                 schema: "app");
-
-            migrationBuilder.DropTable(
-                name: "AccountGroups",
-                schema: "accounting");
 
             migrationBuilder.DropTable(
                 name: "AccountTypes",

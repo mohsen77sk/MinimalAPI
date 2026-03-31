@@ -8,12 +8,22 @@ namespace Minimal.Api.Features.LoanTypes.Profiles;
 [Mapper]
 public partial class LoanTypeMapper
 {
-    [MapperIgnoreSource(nameof(LoanType.Loans))]
-    public partial LoanTypeGetDto MapToLoanTypeGetDto(LoanType source);
+    public LoanTypeGetDto MapToLoanTypeGetDto(LoanType source) =>
+        new LoanTypeGetDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            Name = source.Name,
+            IsActive = source.IsActive
+        };
 
-    [MapperIgnoreSource(nameof(LoanType.Loans))]
-    [MapperIgnoreSource(nameof(LoanType.IsActive))]
-    public partial LookupDto MapToLookupDto(LoanType source);
+    public LookupDto MapToLookupDto(LoanType source) =>
+        new LookupDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            Name = source.Name
+        };
 
     public PageList<LoanTypeGetDto> MapToPageList(PageList<LoanType> source) =>
         new PageList<LoanTypeGetDto>(

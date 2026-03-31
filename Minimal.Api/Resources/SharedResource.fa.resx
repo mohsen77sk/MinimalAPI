@@ -161,6 +161,10 @@
     <value>تسهیلات پیدا نشد.</value>
     <comment/>
   </data>
+  <data name="notFoundInstalment" xml:space="preserve">
+    <value>قسطی پیدا نشد.</value>
+    <comment/>
+  </data>
   <data name="personIsNotActive" xml:space="preserve">
     <value>شخص انتخاب شده غیر فعال است.</value>
     <comment/>

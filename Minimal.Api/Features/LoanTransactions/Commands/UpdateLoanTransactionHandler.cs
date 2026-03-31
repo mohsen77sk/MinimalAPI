@@ -49,7 +49,7 @@ public class UpdateLoanTransactionHandler : IRequestHandler<UpdateLoanTransactio
 
         var remaining = await _context.DocumentArticles
             .AsNoTracking()
-            .Where(da => da.DocumentId != request.Id && da.AccountDetailId == loan.AccountDetail.Id && da.Document.IsActive == true)
+            .Where(da => da.DocumentId != request.Id && da.AccountDetailId == loan.AccountDetail.Id)
             .SumAsync(da => da.Debit - da.Credit, cancellationToken);
         if (remaining < request.Amount)
         {
@@ -64,11 +64,6 @@ public class UpdateLoanTransactionHandler : IRequestHandler<UpdateLoanTransactio
         if (document is null)
         {
             throw new NotFoundException(_localizer.GetString("notFoundTransaction").Value);
-        }
-
-        if (document.IsActive is false)
-        {
-            throw new ErrorException(_localizer.GetString("transactionIsNotActive").Value);
         }
 
         if (document.DocumentType.Code != "22")
@@ -100,7 +95,7 @@ public class UpdateLoanTransactionHandler : IRequestHandler<UpdateLoanTransactio
         if (remaining == request.Amount)
         {
             var maxInstalmentDate = await _context.Documents
-                .Where(d => d.IsActive == true && d.DocumentItems.Any(da => da.AccountDetailId == loan.AccountDetail.Id))
+                .Where(d => d.DocumentItems.Any(da => da.AccountDetailId == loan.AccountDetail.Id))
                 .MaxAsync(d => d.Date);
             if (maxInstalmentDate < request.Date) maxInstalmentDate = request.Date;
 

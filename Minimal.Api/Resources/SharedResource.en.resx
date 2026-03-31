@@ -161,6 +161,10 @@
     <value>Not found loan.</value>
     <comment/>
   </data>
+  <data name="notFoundInstalment" xml:space="preserve">
+    <value>Not found instalment.</value>
+    <comment/>
+  </data>
   <data name="personIsNotActive" xml:space="preserve">
     <value>The selected person is disabled.</value>
     <comment/>

@@ -35,11 +35,6 @@ public class DeleteLoanTransactionHandler : IRequestHandler<DeleteLoanTransactio
             throw new NotFoundException(_localizer.GetString("notFoundTransaction").Value);
         }
 
-        if (document.IsActive is false)
-        {
-            throw new ErrorException(_localizer.GetString("transactionIsNotActive").Value);
-        }
-
         if (document.DocumentType.Code != "22")
         {
             throw new ErrorException(_localizer.GetString("transactionCanNotBeEdited").Value);
@@ -50,7 +45,6 @@ public class DeleteLoanTransactionHandler : IRequestHandler<DeleteLoanTransactio
             throw new ErrorException(_localizer.GetString("transactionCanNotBeDeleted").Value);
         }
 
-        document.IsActive = false;
         await _context.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;

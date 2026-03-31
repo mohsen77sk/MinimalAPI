@@ -6,6 +6,7 @@ using Minimal.Api.Common.Accounting.Validators;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.Loans.Models;
 using Minimal.Api.Features.Loans.Profiles;
+using Minimal.Api.Features.Loans.Strategies;
 using Minimal.DataAccess;
 using Minimal.Domain;
 
@@ -17,21 +18,20 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
     private readonly LoanMapper _mapper;
     private readonly IStringLocalizer _localizer;
     private readonly DocumentValidator _documentValidator;
+    private readonly ILoanStrategyFactory _strategyFactory;
 
     public CreateLoanHandler(
         ApplicationDbContext context,
         LoanMapper mapper,
         IStringLocalizer<SharedResource> localizer,
-        DocumentValidator documentValidator)
+        DocumentValidator documentValidator,
+        ILoanStrategyFactory strategyFactory)
     {
-        _context = context ??
-            throw new ArgumentNullException(nameof(context));
-        _mapper = mapper ??
-            throw new ArgumentNullException(nameof(mapper));
-        _localizer = localizer ??
-            throw new ArgumentNullException(nameof(localizer));
-        _documentValidator = documentValidator ??
-            throw new ArgumentNullException(nameof(documentValidator));
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
+        _documentValidator = documentValidator ?? throw new ArgumentNullException(nameof(documentValidator));
+        _strategyFactory = strategyFactory ?? throw new ArgumentNullException(nameof(strategyFactory));
     }
 
     public async Task<LoanGetDto> Handle(CreateLoan request, CancellationToken cancellationToken)
@@ -40,8 +40,6 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
         {
             throw new ArgumentNullException(nameof(request));
         }
-
-        var loanToAdd = _mapper.MapToLoan(request);
 
         var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id.Equals(request.AccountId), cancellationToken);
         if (account is null)
@@ -65,91 +63,30 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             throw new ValidationException(nameof(request.LoanTypeId), _localizer.GetString("loanTypeIsNotActive").Value);
         }
 
-        var wage = loanToAdd.Amount * loanToAdd.InterestRates / 100;
-        var installmentAmount = loanToAdd.Amount / loanToAdd.InstallmentCount;
+        var strategy = _strategyFactory.GetStrategy(loanType.Strategy);
 
-        if (installmentAmount - (long)installmentAmount > 0)
+        var loan = strategy.BuildLoan(request, account, loanType);
+        _context.Loans.Add(loan);
+
+        var installments = strategy.GenerateInstallments(loan);
+        _context.LoanInstallments.AddRange(installments);
+
+        var disbursement = strategy.CalculateDisbursement(loan);
+
+        var accountingContext = new LoanAccountingContext
         {
-            throw new ValidationException("InstallmentAmount", _localizer.GetString("installmentIsDecimal").Value);
-        }
-
-        loanToAdd.Account = account;
-        loanToAdd.LoanType = loanType;
-        loanToAdd.InstallmentAmount = installmentAmount;
-        loanToAdd.StartInstallmentPayment = loanToAdd.CreateDate.AddMonths(loanToAdd.InstallmentInterval);
-        loanToAdd.IsActive = true;
-        _context.Loans.Add(loanToAdd);
-
-        var accountDetailToAdd = new AccountDetail
-        {
-            Title = $"تسهیلات {loanToAdd.Code}",
-            Loan = loanToAdd,
-            AccountCategory = await _context.GetAccountCategoryByCodeAsync("3", cancellationToken),
-            IsActive = true
-        };
-        _context.AccountDetails.Add(accountDetailToAdd);
-
-        var documentsToAdd = new List<Document>
-        {
-            new Document
-            {
-                Date = loanToAdd.CreateDate,
-                FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
-                DocumentType = await _context.GetDocumentTypeByCodeAsync("20", cancellationToken),
-                DocumentItems =
-                [
-                    new DocumentArticle
-                    {
-                        AccountSubsid = await _context.GetAccountSubsidByCodeAsync(loanType.Code, cancellationToken),
-                        AccountDetail = accountDetailToAdd,
-                        Credit = 0,
-                        Debit = request.Amount,
-                        Note = ""
-                    },
-                    new DocumentArticle
-                    {
-                        AccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
-                        Credit = request.Amount,
-                        Debit = 0,
-                        Note = ""
-                    }
-                ],
-                Note = string.Empty,
-                IsActive = true
-            }
+            FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
+            LoanAccountCategory = await _context.GetAccountCategoryByCodeAsync("3", cancellationToken),
+            BankAccountSubsid = await _context.GetBankAccountAsync(cancellationToken),
+            LoanAccountSubsid = await _context.GetAccountSubsidByCodeAsync(loanType.Code, cancellationToken),
+            FeeAccountSubsid = await _context.GetAccountSubsidByCodeAsync("3102", cancellationToken),
+            LoanDocumentType = await _context.GetDocumentTypeByCodeAsync("20", cancellationToken),
+            InterestDocumentType = await _context.GetDocumentTypeByCodeAsync("21", cancellationToken)
         };
 
-        if (wage > 0)
-        {
-            documentsToAdd.Add(new Document
-            {
-                Date = loanToAdd.CreateDate,
-                FiscalYear = await _context.GetCurrentFiscalYearAsync(cancellationToken),
-                DocumentType = await _context.GetDocumentTypeByCodeAsync("21", cancellationToken),
-                DocumentItems =
-                [
-                    new DocumentArticle
-                    {
-                        AccountSubsid = await _context.GetAccountSubsidByCodeAsync(loanType.Code, cancellationToken),
-                        AccountDetail = accountDetailToAdd,
-                        Credit = 0,
-                        Debit = wage,
-                        Note = ""
-                    },
-                    new DocumentArticle
-                    {
-                        AccountSubsid = await _context.GetAccountSubsidByCodeAsync("3101", cancellationToken),
-                        Credit = wage,
-                        Debit = 0,
-                        Note = ""
-                    },
-                ],
-                Note = string.Empty,
-                IsActive = true
-            });
-        }
+        var accounting = strategy.CreateAccounting(loan, disbursement, accountingContext);
 
-        foreach (var doc in documentsToAdd)
+        foreach (var doc in accounting.Documents)
         {
             var validation = _documentValidator.ValidateDocument(doc);
             if (!validation.IsValid)
@@ -158,10 +95,11 @@ public class CreateLoanHandler : IRequestHandler<CreateLoan, LoanGetDto>
             }
         }
 
-        _context.Documents.AddRange(documentsToAdd);
+        _context.AccountDetails.Add(accounting.AccountDetail);
+        _context.Documents.AddRange(accounting.Documents);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.MapToLoanGetDto(loanToAdd);
+        return _mapper.MapToLoanGetDto(loan);
     }
 }

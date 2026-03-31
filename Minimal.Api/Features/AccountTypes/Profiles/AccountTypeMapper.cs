@@ -1,19 +1,27 @@
-using Riok.Mapperly.Abstractions;
 using Minimal.Api.Features.AccountTypes.Models;
 using Minimal.Api.Models;
 using Minimal.Domain;
 
 namespace Minimal.Api.Features.AccountTypes.Profiles;
 
-[Mapper]
-public partial class AccountTypeMapper
+public class AccountTypeMapper
 {
-    [MapperIgnoreSource(nameof(AccountType.Accounts))]
-    public partial AccountTypeGetDto MapToAccountTypeGetDto(AccountType source);
+    public AccountTypeGetDto MapToAccountTypeGetDto(AccountType source) =>
+        new AccountTypeGetDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            Name = source.Name,
+            IsActive = source.IsActive
+        };
 
-    [MapperIgnoreSource(nameof(AccountType.Accounts))]
-    [MapperIgnoreSource(nameof(AccountType.IsActive))]
-    public partial LookupDto MapToLookupDto(AccountType source);
+    public LookupDto MapToLookupDto(AccountType source) =>
+        new LookupDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            Name = source.Name
+        };
 
     public PageList<AccountTypeGetDto> MapToPageList(PageList<AccountType> source) =>
         new PageList<AccountTypeGetDto>(

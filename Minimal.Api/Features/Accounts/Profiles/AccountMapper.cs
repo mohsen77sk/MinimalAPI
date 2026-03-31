@@ -1,4 +1,3 @@
-using Riok.Mapperly.Abstractions;
 using Minimal.Api.Features.Accounts.Commands;
 using Minimal.Api.Features.Accounts.Models;
 using Minimal.Api.Models;
@@ -6,29 +5,37 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.Accounts.Profiles;
 
-[Mapper]
-public partial class AccountMapper
+public class AccountMapper
 {
-    [MapperIgnoreSource(nameof(CreateAccount.InitCredit))]
-    [MapperIgnoreSource(nameof(CreateAccount.PersonId))]
-    [MapperIgnoreTarget(nameof(Account.Id))]
-    [MapperIgnoreTarget(nameof(Account.Code))]
-    [MapperIgnoreTarget(nameof(Account.AccountType))]
-    [MapperIgnoreTarget(nameof(Account.CloseDate))]
-    [MapperIgnoreTarget(nameof(Account.IsActive))]
-    [MapperIgnoreTarget(nameof(Account.AccountDetail))]
-    [MapperIgnoreTarget(nameof(Account.People))]
-    [MapperIgnoreTarget(nameof(Account.Loans))]
-    public partial Account MapToAccount(CreateAccount source);
+    public Account MapToAccount(CreateAccount source) =>
+        new Account
+        {
+            AccountTypeId = source.AccountTypeId,
+            CreateDate = source.CreateDate,
+            Note = source.Note
+        };
 
-    [MapProperty(nameof(Account), nameof(LookupDto.Name), Use = nameof(GetAccountLookupName))]
-    public partial LookupDto MapToLookupDto(Account source);
+    public LookupDto MapToLookupDto(Account source) =>
+        new LookupDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            Name = source == null ? string.Empty : (source.AccountType?.Name ?? "") + " - " + string.Join(", ", source.People?.Select(p => p.FullName) ?? [])
+        };
 
-    [MapProperty(nameof(Account.AccountType), nameof(AccountGetDto.AccountTypeName), Use = nameof(GetAccountTypeName))]
-    [MapProperty(nameof(Account.People), nameof(AccountGetDto.Persons), Use = nameof(MapPeopleToLookup))]
-    [MapperIgnoreSource(nameof(Account.AccountDetail))]
-    [MapperIgnoreSource(nameof(Account.Loans))]
-    public partial AccountGetDto MapToAccountGetDto(Account source);
+    public AccountGetDto MapToAccountGetDto(Account source) =>
+        new AccountGetDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            AccountTypeId = source.AccountTypeId,
+            AccountTypeName = source.AccountType?.Name ?? string.Empty,
+            Persons = source.People?.Select(p => new LookupDto { Id = p.Id, Code = p.Code, Name = p.FullName }).ToList() ?? [],
+            CreateDate = source.CreateDate,
+            CloseDate = source.CloseDate,
+            Note = source.Note,
+            IsActive = source.IsActive
+        };
 
     public PageList<AccountGetDto> MapToPageList(PageList<Account> source) =>
         new PageList<AccountGetDto>(
@@ -36,13 +43,4 @@ public partial class AccountMapper
             source.Total,
             source.Page,
             source.PageSize);
-
-    private static string GetAccountLookupName(Account? account) =>
-        account == null ? string.Empty
-        : (account.AccountType?.Name ?? "") + " - " + string.Join(", ", account.People?.Select(p => p.FullName) ?? []);
-
-    private static string GetAccountTypeName(AccountType? at) => at?.Name ?? string.Empty;
-
-    private static IList<LookupDto> MapPeopleToLookup(ICollection<Person>? people) =>
-        people?.Select(p => new LookupDto { Id = p.Id, Code = p.Code, Name = p.FullName }).ToList() ?? [];
 }

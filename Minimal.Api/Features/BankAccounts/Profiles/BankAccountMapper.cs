@@ -1,4 +1,3 @@
-using Riok.Mapperly.Abstractions;
 using Minimal.Api.Features.BankAccounts.Commands;
 using Minimal.Api.Features.BankAccounts.Models;
 using Minimal.Api.Models;
@@ -6,18 +5,35 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.BankAccounts.Profiles;
 
-[Mapper]
-public partial class BankAccountMapper
+public class BankAccountMapper
 {
-    [MapperIgnoreTarget(nameof(BankAccount.Id))]
-    [MapperIgnoreTarget(nameof(BankAccount.Bank))]
-    [MapperIgnoreTarget(nameof(BankAccount.IsActive))]
-    [MapperIgnoreTarget(nameof(BankAccount.Person))]
-    public partial BankAccount MapToBankAccount(CreateBankAccount source);
+    public BankAccount MapToBankAccount(CreateBankAccount source) =>
+        new BankAccount
+        {
+            PersonId = source.PersonId,
+            BankId = source.BankId,
+            BranchCode = source.BranchCode,
+            BranchName = source.BranchName,
+            AccountNumber = source.AccountNumber,
+            CardNumber = source.CardNumber,
+            Iban = source.Iban
+        };
 
-    [MapProperty(nameof(BankAccount.Person), nameof(BankAccountGetDto.PersonName), Use = nameof(GetPersonFullName))]
-    [MapProperty(nameof(BankAccount.Bank), nameof(BankAccountGetDto.BankName), Use = nameof(GetBankName))]
-    public partial BankAccountGetDto MapToBankAccountGetDto(BankAccount source);
+    public BankAccountGetDto MapToBankAccountGetDto(BankAccount source) =>
+        new BankAccountGetDto
+        {
+            Id = source.Id,
+            PersonId = source.PersonId,
+            PersonName = source.Person?.FullName ?? string.Empty,
+            BankId = source.BankId,
+            BankName = source.Bank?.Name ?? string.Empty,
+            BranchCode = source.BranchCode,
+            BranchName = source.BranchName,
+            AccountNumber = source.AccountNumber,
+            CardNumber = source.CardNumber,
+            Iban = source.Iban,
+            IsActive = source.IsActive
+        };
 
     public PageList<BankAccountGetDto> MapToPageList(PageList<BankAccount> source) =>
         new PageList<BankAccountGetDto>(
@@ -25,7 +41,4 @@ public partial class BankAccountMapper
             source.Total,
             source.Page,
             source.PageSize);
-
-    private static string GetPersonFullName(Person? person) => person?.FullName ?? string.Empty;
-    private static string GetBankName(Bank? bank) => bank?.Name ?? string.Empty;
 }

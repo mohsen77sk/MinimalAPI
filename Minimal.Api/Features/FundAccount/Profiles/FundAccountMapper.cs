@@ -1,4 +1,3 @@
-using Riok.Mapperly.Abstractions;
 using Minimal.Api.Features.FundAccount.Models;
 using Minimal.Api.Models;
 using Minimal.Domain;

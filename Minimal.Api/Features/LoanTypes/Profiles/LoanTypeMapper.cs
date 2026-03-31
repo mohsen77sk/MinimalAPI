@@ -1,12 +1,10 @@
-using Riok.Mapperly.Abstractions;
 using Minimal.Api.Features.LoanTypes.Models;
 using Minimal.Api.Models;
 using Minimal.Domain;
 
 namespace Minimal.Api.Features.LoanTypes.Profiles;
 
-[Mapper]
-public partial class LoanTypeMapper
+public class LoanTypeMapper
 {
     public LoanTypeGetDto MapToLoanTypeGetDto(LoanType source) =>
         new LoanTypeGetDto

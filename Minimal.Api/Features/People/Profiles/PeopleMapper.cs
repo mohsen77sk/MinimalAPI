@@ -1,4 +1,3 @@
-using Riok.Mapperly.Abstractions;
 using Minimal.Api.Features.People.Commands;
 using Minimal.Api.Features.People.Models;
 using Minimal.Api.Models;
@@ -6,35 +5,40 @@ using Minimal.Domain;
 
 namespace Minimal.Api.Features.People.Profiles;
 
-[Mapper]
-public partial class PeopleMapper
+public class PeopleMapper
 {
-    [MapperIgnoreTarget(nameof(Person.Id))]
-    [MapperIgnoreTarget(nameof(Person.Code))]
-    [MapperIgnoreTarget(nameof(Person.IsActive))]
-    [MapperIgnoreTarget(nameof(Person.User))]
-    [MapperIgnoreTarget(nameof(Person.BankAccounts))]
-    [MapperIgnoreTarget(nameof(Person.Accounts))]
-    public partial Person MapToPerson(CreatePerson source);
+    public Person MapToPerson(CreatePerson source) =>
+        new Person
+        {
+            FirstName = source.FirstName,
+            LastName = source.LastName,
+            NationalCode = source.NationalCode,
+            Gender = source.Gender,
+            Birthday = source.Birthday,
+            Note = source.Note,
+        };
 
-    [MapperIgnoreSource(nameof(Person.FullName))]
-    [MapperIgnoreSource(nameof(Person.User))]
-    [MapperIgnoreSource(nameof(Person.BankAccounts))]
-    [MapperIgnoreSource(nameof(Person.Accounts))]
-    public partial PersonGetDto MapToPersonGetDto(Person source);
+    public PersonGetDto MapToPersonGetDto(Person source) =>
+        new PersonGetDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            FirstName = source.FirstName,
+            LastName = source.LastName,
+            NationalCode = source.NationalCode,
+            Gender = source.Gender,
+            Birthday = source.Birthday,
+            Note = source.Note,
+            IsActive = source.IsActive
+        };
 
-    [MapProperty(nameof(Person.FullName), nameof(LookupDto.Name))]
-    [MapperIgnoreSource(nameof(Person.FirstName))]
-    [MapperIgnoreSource(nameof(Person.LastName))]
-    [MapperIgnoreSource(nameof(Person.NationalCode))]
-    [MapperIgnoreSource(nameof(Person.Birthday))]
-    [MapperIgnoreSource(nameof(Person.Gender))]
-    [MapperIgnoreSource(nameof(Person.Note))]
-    [MapperIgnoreSource(nameof(Person.IsActive))]
-    [MapperIgnoreSource(nameof(Person.User))]
-    [MapperIgnoreSource(nameof(Person.BankAccounts))]
-    [MapperIgnoreSource(nameof(Person.Accounts))]
-    public partial LookupDto MapToLookupDto(Person source);
+    public LookupDto MapToLookupDto(Person source) =>
+        new LookupDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            Name = source.FullName
+        };
 
     public PageList<PersonGetDto> MapToPageList(PageList<Person> source) =>
         new PageList<PersonGetDto>(

@@ -1,19 +1,27 @@
-using Riok.Mapperly.Abstractions;
 using Minimal.Api.Features.Banks.Models;
 using Minimal.Api.Models;
 using Minimal.Domain;
 
 namespace Minimal.Api.Features.Banks.Profiles;
 
-[Mapper]
 public partial class BankMapper
 {
-    [MapperIgnoreSource(nameof(Bank.BankAccounts))]
-    public partial BankGetDto MapToBankGetDto(Bank source);
+    public BankGetDto MapToBankGetDto(Bank source) =>
+        new BankGetDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            Name = source.Name,
+            IsActive = source.IsActive
+        };
 
-    [MapperIgnoreSource(nameof(Bank.BankAccounts))]
-    [MapperIgnoreSource(nameof(Bank.IsActive))]
-    public partial LookupDto MapToLookupDto(Bank source);
+    public LookupDto MapToLookupDto(Bank source) =>
+        new LookupDto
+        {
+            Id = source.Id,
+            Code = source.Code,
+            Name = source.Name
+        };
 
     public PageList<BankGetDto> MapToPageList(PageList<Bank> source) =>
         new PageList<BankGetDto>(

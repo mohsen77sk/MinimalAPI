@@ -43,6 +43,11 @@ public class LoanModule : IModule
             .Produces(404)
             .Produces(500);
 
+        loans.MapPost("/payment", CreateLoanPaymentAsync)
+            .Produces<List<LoanPaymentsGetDto>>()
+            .Produces(404)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -83,5 +88,11 @@ public class LoanModule : IModule
         var query = new GetLoanPayments { LoanId = id };
         var instalment = await mediator.Send(query, ct);
         return Results.Ok(instalment);
+    }
+
+    private async Task<IResult> CreateLoanPaymentAsync(CreatePaymentLoan paymentDto, IMediator mediator, CancellationToken ct)
+    {
+        var loan = await mediator.Send(paymentDto, ct);
+        return Results.Ok(loan);
     }
 }

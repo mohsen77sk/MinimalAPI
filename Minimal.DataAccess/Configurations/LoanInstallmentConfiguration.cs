@@ -9,10 +9,12 @@ public class LoanInstallmentConfiguration : IEntityTypeConfiguration<LoanInstall
     public void Configure(EntityTypeBuilder<LoanInstallment> builder)
     {
         builder.ToTable("LoanInstallments", Schema.App);
-        builder.Property(loanInstallment => loanInstallment.Amount).HasColumnType("Money");
         builder.Property(loanInstallment => loanInstallment.PrincipalAmount).HasColumnType("Money");
         builder.Property(loanInstallment => loanInstallment.InterestAmount).HasColumnType("Money");
-        builder.Property(loanInstallment => loanInstallment.PaidAmount).HasColumnType("Money");
+        builder.Property(loanInstallment => loanInstallment.PaidPrincipal).HasColumnType("Money");
+        builder.Property(loanInstallment => loanInstallment.PaidInterest).HasColumnType("Money");
+        builder.Ignore(loanInstallment => loanInstallment.Amount);
+        builder.Ignore(loanInstallment => loanInstallment.PaidAmount);
         builder.Property(loanInstallment => loanInstallment.Status).HasDefaultValue(InstallmentStatus.Pending);
     }
 }

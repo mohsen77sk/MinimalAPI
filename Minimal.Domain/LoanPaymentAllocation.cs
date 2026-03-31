@@ -10,5 +10,9 @@ public class LoanPaymentAllocation
     public int InstallmentId { get; set; }
     public LoanInstallment Installment { get; set; } = default!;
 
-    public decimal Amount { get; set; }
+    public decimal PrincipalAmount { get; set; }
+
+    public decimal InterestAmount { get; set; }
+
+    public decimal TotalAmount => PrincipalAmount + InterestAmount;
 }

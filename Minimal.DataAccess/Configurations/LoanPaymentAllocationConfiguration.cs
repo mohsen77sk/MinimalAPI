@@ -9,7 +9,9 @@ public class LoanPaymentAllocationConfiguration : IEntityTypeConfiguration<LoanP
     public void Configure(EntityTypeBuilder<LoanPaymentAllocation> builder)
     {
         builder.ToTable("LoanPaymentAllocations", Schema.App);
-        builder.Property(loanPaymentAllocation => loanPaymentAllocation.Amount).HasColumnType("Money");
+        builder.Property(loanPaymentAllocation => loanPaymentAllocation.PrincipalAmount).HasColumnType("Money");
+        builder.Property(loanPaymentAllocation => loanPaymentAllocation.InterestAmount).HasColumnType("Money");
+        builder.Ignore(loanPaymentAllocation => loanPaymentAllocation.TotalAmount);
         builder.HasOne(loanPaymentAllocation => loanPaymentAllocation.Installment)
             .WithMany(loanInstallment => loanInstallment.PaymentAllocations)
             .HasForeignKey(loanPaymentAllocation => loanPaymentAllocation.InstallmentId)

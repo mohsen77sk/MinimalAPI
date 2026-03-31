@@ -803,9 +803,6 @@ namespace Minimal.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("Money");
-
                     b.Property<DateTimeOffset>("DueDate")
                         .HasColumnType("datetimeoffset");
 
@@ -818,11 +815,14 @@ namespace Minimal.DataAccess.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PaidAmount")
-                        .HasColumnType("Money");
-
                     b.Property<DateTimeOffset?>("PaidDate")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<decimal>("PaidInterest")
+                        .HasColumnType("Money");
+
+                    b.Property<decimal>("PaidPrincipal")
+                        .HasColumnType("Money");
 
                     b.Property<decimal>("PrincipalAmount")
                         .HasColumnType("Money");
@@ -882,14 +882,17 @@ namespace Minimal.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("Money");
-
                     b.Property<int>("InstallmentId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("InterestAmount")
+                        .HasColumnType("Money");
+
                     b.Property<int>("PaymentId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("PrincipalAmount")
+                        .HasColumnType("Money");
 
                     b.HasKey("Id");
 

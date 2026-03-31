@@ -18,13 +18,17 @@ public class LoanInstallment
 
     public DateTimeOffset? PaidDate { get; set; }
 
-    public decimal Amount { get; set; }
-
     public decimal PrincipalAmount { get; set; }
 
     public decimal InterestAmount { get; set; }
 
-    public decimal PaidAmount { get; set; }
+    public decimal Amount => PrincipalAmount + InterestAmount;
+
+    public decimal PaidPrincipal { get; set; }
+
+    public decimal PaidInterest { get; set; }
+
+    public decimal PaidAmount => PaidPrincipal + PaidInterest;
 
     public InstallmentStatus Status { get; set; }
 

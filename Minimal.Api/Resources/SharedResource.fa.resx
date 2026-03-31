@@ -229,12 +229,12 @@
     <value>مبلغ بزرگتر از باقیمانده موجودی است.</value>
     <comment/>
   </data>
-  <data name="transactionAmountBiggerThanRemaining" xml:space="preserve">
-    <value>مبلغ معامله بزرگتر از باقیمانده وام است.</value>
+  <data name="paymentDateIsEarlierLoanDate" xml:space="preserve">
+    <value>تاریخ پرداخت نمیتواند قبل از اعطای وام باشد.</value>
     <comment/>
   </data>
-  <data name="installmentIsDecimal" xml:space="preserve">
-    <value>مبلغ قسط نمی تواند عدد اعشاری باشد.</value>
+  <data name="paymentAmountBiggerThanRemaining" xml:space="preserve">
+    <value>مبلغ پرداختی بزرگتر از باقیمانده وام است.</value>
     <comment/>
   </data>
   <data name="invalidDocument" xml:space="preserve">

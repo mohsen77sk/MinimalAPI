@@ -1,6 +1,5 @@
 using Minimal.Api.Features.Loans.Commands;
 using Minimal.Api.Features.Loans.Models;
-using Minimal.DataAccess;
 using Minimal.Domain;
 
 namespace Minimal.Api.Features.Loans.Strategies;

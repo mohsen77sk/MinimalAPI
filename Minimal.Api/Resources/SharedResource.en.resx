@@ -229,12 +229,12 @@
     <value>Transaction amount bigger than account balance.</value>
     <comment/>
   </data>
-  <data name="transactionAmountBiggerThanRemaining" xml:space="preserve">
-    <value>Transaction amount bigger than loan remaining.</value>
+  <data name="paymentDateIsEarlierLoanDate" xml:space="preserve">
+    <value>Payment date cannot be earlier loan date.</value>
     <comment/>
   </data>
-  <data name="installmentIsDecimal" xml:space="preserve">
-    <value>The installment amount cannot be a decimal number.</value>
+  <data name="paymentAmountBiggerThanRemaining" xml:space="preserve">
+    <value>Payment amount bigger than loan remaining.</value>
     <comment/>
   </data>
   <data name="invalidDocument" xml:space="preserve">

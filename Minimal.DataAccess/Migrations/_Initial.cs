@@ -634,10 +634,10 @@ namespace Minimal.DataAccess.Migrations
                     Number = table.Column<int>(type: "int", nullable: false),
                     DueDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     PaidDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    Amount = table.Column<decimal>(type: "Money", nullable: false),
                     PrincipalAmount = table.Column<decimal>(type: "Money", nullable: false),
                     InterestAmount = table.Column<decimal>(type: "Money", nullable: false),
-                    PaidAmount = table.Column<decimal>(type: "Money", nullable: false),
+                    PaidPrincipal = table.Column<decimal>(type: "Money", nullable: false),
+                    PaidInterest = table.Column<decimal>(type: "Money", nullable: false),
                     Status = table.Column<byte>(type: "tinyint", nullable: false, defaultValue: (byte)0)
                 },
                 constraints: table =>
@@ -731,7 +731,8 @@ namespace Minimal.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PaymentId = table.Column<int>(type: "int", nullable: false),
                     InstallmentId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "Money", nullable: false)
+                    PrincipalAmount = table.Column<decimal>(type: "Money", nullable: false),
+                    InterestAmount = table.Column<decimal>(type: "Money", nullable: false)
                 },
                 constraints: table =>
                 {

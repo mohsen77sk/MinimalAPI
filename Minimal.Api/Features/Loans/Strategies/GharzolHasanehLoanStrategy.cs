@@ -62,10 +62,10 @@ public class GharzolHasanehLoanStrategy : ILoanStrategy
             {
                 Loan = loan,
                 Number = i,
-                Amount = amount,
                 PrincipalAmount = principalPart,
                 InterestAmount = interestPart,
-                PaidAmount = 0,
+                PaidPrincipal = 0,
+                PaidInterest = 0,
                 DueDate = loan.StartInstallmentPayment.AddMonths((i - 1) * loan.InstallmentInterval),
                 Status = InstallmentStatus.Pending
             });

@@ -38,6 +38,7 @@ public class CreatePaymentLoanHandler : IRequestHandler<CreatePaymentLoan, LoanP
         }
 
         var loan = await _context.Loans
+            .Include(l => l.LoanType)
             .Include(l => l.AccountDetail)
             .FirstOrDefaultAsync(l => l.Id == request.LoanId, cancellationToken);
         if (loan is null)
@@ -60,9 +61,15 @@ public class CreatePaymentLoanHandler : IRequestHandler<CreatePaymentLoan, LoanP
             .OrderBy(li => li.Number)
             .ToListAsync(cancellationToken);
 
-        if (loan.Amount - installments.Sum(i => i.PaidAmount) < request.Amount)
+        if (installments.Sum(i => i.Amount) - installments.Sum(i => i.PaidAmount) < request.Amount)
         {
             throw new ValidationException(nameof(request.Amount), _localizer.GetString("paymentAmountBiggerThanRemaining").Value);
+        }
+
+        if (installments.Sum(i => i.Amount) - installments.Sum(i => i.PaidAmount) == request.Amount)
+        {
+            loan.CloseDate = request.PaymentDate;
+            loan.IsActive = false;
         }
 
         var allocations = new List<LoanPaymentAllocation>();
@@ -82,7 +89,9 @@ public class CreatePaymentLoanHandler : IRequestHandler<CreatePaymentLoan, LoanP
 
             var alloc = new LoanPaymentAllocation
             {
-                InstallmentId = inst.Id
+                InstallmentId = inst.Id,
+                InterestAmount = 0,
+                PrincipalAmount = 0
             };
 
             if (interestRemaining > 0)
@@ -109,7 +118,7 @@ public class CreatePaymentLoanHandler : IRequestHandler<CreatePaymentLoan, LoanP
         var payInstallmentDocumentType = await _context.GetDocumentTypeByCodeAsync("22", cancellationToken);
         var bankAccountSubsid = await _context.GetBankAccountAsync(cancellationToken);
         var loanAccountSubsid = await _context.GetAccountSubsidByCodeAsync(loan.LoanType.Code, cancellationToken);
-        var loanInterestIncomeSubsid = await _context.GetAccountSubsidByCodeAsync("31", cancellationToken);
+        var loanInterestIncomeSubsid = await _context.GetAccountSubsidByCodeAsync("3101", cancellationToken);
 
         var documentToAdd = new AccountingDocumentBuilder(fiscalYear, payInstallmentDocumentType, request.PaymentDate)
             .Debit(request.Amount, bankAccountSubsid);
@@ -124,6 +133,12 @@ public class CreatePaymentLoanHandler : IRequestHandler<CreatePaymentLoan, LoanP
         }
 
         var loanDoc = documentToAdd.Build();
+        var validation = _documentValidator.ValidateDocument(loanDoc);
+        if (!validation.IsValid)
+        {
+            throw new ErrorException(validation.ErrorMessage);
+        }
+
         _context.Documents.Add(loanDoc);
 
         var payment = new LoanPayment
@@ -132,15 +147,17 @@ public class CreatePaymentLoanHandler : IRequestHandler<CreatePaymentLoan, LoanP
             PaymentDate = request.PaymentDate,
             Amount = request.Amount,
             Note = request.Note,
-            DocumentId = loanDoc.Id,
-            Allocations = allocations.Select(a => new LoanPaymentAllocation
-            {
-                InstallmentId = a.InstallmentId,
-                PrincipalAmount = a.PrincipalAmount,
-                InterestAmount = a.InterestAmount
-            }).ToList()
+            Document = loanDoc,
         };
         _context.LoanPayments.Add(payment);
+
+        _context.LoanPaymentAllocations.AddRange(allocations.Select(a => new LoanPaymentAllocation
+        {
+            Payment = payment,
+            InstallmentId = a.InstallmentId,
+            PrincipalAmount = a.PrincipalAmount,
+            InterestAmount = a.InterestAmount
+        }).ToList());
 
         foreach (var alloc in allocations)
         {
@@ -152,12 +169,15 @@ public class CreatePaymentLoanHandler : IRequestHandler<CreatePaymentLoan, LoanP
             if (inst.PaidPrincipal == inst.PrincipalAmount && inst.PaidInterest == inst.InterestAmount)
             {
                 inst.Status = InstallmentStatus.Paid;
+                inst.PaidDate = request.PaymentDate;
             }
             else if (inst.PaidPrincipal > 0 || inst.PaidInterest > 0)
             {
                 inst.Status = InstallmentStatus.PartiallyPaid;
             }
         }
+
+        await _context.SaveChangesAsync(cancellationToken);
 
         return _mapper.MapToLoanPaymentGetDto(payment);
     }

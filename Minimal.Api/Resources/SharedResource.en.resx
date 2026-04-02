@@ -165,6 +165,10 @@
     <value>Not found instalment.</value>
     <comment/>
   </data>
+  <data name="notFoundPayment" xml:space="preserve">
+    <value>Not found payment.</value>
+    <comment/>
+  </data>
   <data name="personIsNotActive" xml:space="preserve">
     <value>The selected person is disabled.</value>
     <comment/>
@@ -194,7 +198,11 @@
     <comment/>
   </data>
   <data name="transactionIsReversed" xml:space="preserve">
-    <value>The selected transaction is reversed.</value>
+    <value>Cannot reverse a reversal transaction.</value>
+    <comment/>
+  </data>
+  <data name="paymentIsReversed" xml:space="preserve">
+    <value>Cannot reverse a reversal payment.</value>
     <comment/>
   </data>
   <data name="personHasActiveAccount" xml:space="preserve">
@@ -213,16 +221,12 @@
     <value>The transaction date cannot be earlier than the opening date.</value>
     <comment/>
   </data>
-  <data name="transactionCanNotBeEdited" xml:space="preserve">
-    <value>This transaction cannot be edited.</value>
-    <comment/>
-  </data>
-  <data name="transactionCanNotBeDeleted" xml:space="preserve">
-    <value>This transaction cannot be deleted.</value>
-    <comment/>
-  </data>
   <data name="transactionCanNotBeReversed" xml:space="preserve">
     <value>This transaction cannot be reversed.</value>
+    <comment/>
+  </data>
+  <data name="paymentCanNotBeReversed" xml:space="preserve">
+    <value>This payment cannot be reversed.</value>
     <comment/>
   </data>
   <data name="transactionAmountBiggerThanBalance" xml:space="preserve">

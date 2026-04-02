@@ -6,6 +6,6 @@ public class UpdateLoanValidator : AbstractValidator<UpdateLoan>
 {
     public UpdateLoanValidator()
     {
-        RuleFor(r => r.AccountId).NotEmpty();
+        RuleFor(r => r.Id).NotEmpty();
     }
 }

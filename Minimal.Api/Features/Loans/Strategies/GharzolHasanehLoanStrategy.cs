@@ -1,3 +1,4 @@
+using DNTPersianUtils.Core;
 using Minimal.Api.Common.Accounting;
 using Minimal.Api.Features.Loans.Commands;
 using Minimal.Api.Features.Loans.Models;
@@ -21,7 +22,7 @@ public class GharzolHasanehLoanStrategy : ILoanStrategy
             InstallmentInterval = request.InstallmentInterval,
             InterestRates = request.InterestRates,
             InstallmentAmount = installmentAmount,
-            StartInstallmentPayment = request.CreateDate.AddMonths(request.InstallmentInterval),
+            StartInstallmentPayment = new DateTimeOffset(request.CreateDate.AddMonths(request.InstallmentInterval).Date, TimeSpan.Zero),
             Note = request.Note,
             IsActive = true,
         };

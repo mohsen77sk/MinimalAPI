@@ -48,6 +48,11 @@ public class LoanModule : IModule
             .Produces(404)
             .Produces(500);
 
+        loans.MapPost("/reversePayment", CreateLoanReversePaymentAsync)
+            .Produces<List<LoanPaymentsGetDto>>()
+            .Produces(404)
+            .Produces(500);
+
         return endpoints;
     }
 
@@ -91,6 +96,12 @@ public class LoanModule : IModule
     }
 
     private async Task<IResult> CreateLoanPaymentAsync(CreatePaymentLoan paymentDto, IMediator mediator, CancellationToken ct)
+    {
+        var loan = await mediator.Send(paymentDto, ct);
+        return Results.Ok(loan);
+    }
+
+    private async Task<IResult> CreateLoanReversePaymentAsync(CreateReversePaymentLoan paymentDto, IMediator mediator, CancellationToken ct)
     {
         var loan = await mediator.Send(paymentDto, ct);
         return Results.Ok(loan);

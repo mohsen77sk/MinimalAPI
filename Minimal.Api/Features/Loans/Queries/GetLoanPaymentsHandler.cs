@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Features.Loans.Models;
 using Minimal.Api.Features.Loans.Profiles;
 using Minimal.DataAccess;
+using Minimal.Domain;
 
 namespace Minimal.Api.Features.Loans.Queries;
 
@@ -27,7 +28,7 @@ public class GetLoanPaymentsHandler : IRequestHandler<GetLoanPayments, List<Loan
         var payments = await _context.LoanPayments
             .AsNoTracking()
             .Include(lp => lp.Document)
-            .Where(lp => lp.LoanId == request.LoanId)
+            .Where(lp => lp.LoanId == request.LoanId && lp.Document.Status == DocumentStatusEnum.Normal)
             .OrderBy(lp => lp.PaymentDate)
             .ToListAsync(cancellationToken);
 

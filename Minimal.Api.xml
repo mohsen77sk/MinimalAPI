@@ -11,7 +11,7 @@
         </member>
         <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetAccountSubsidByCodeAsync(Minimal.DataAccess.ApplicationDbContext,System.String,System.Threading.CancellationToken)">
             <summary>
-            Get an account detail by its code.
+            Get an account subsid by its code.
             </summary>
         </member>
         <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetAccountCategoryByCodeAsync(Minimal.DataAccess.ApplicationDbContext,System.String,System.Threading.CancellationToken)">
@@ -29,7 +29,12 @@
             Get a document type by its code.
             </summary>
         </member>
-        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetAccountBalanceAsync(Minimal.DataAccess.ApplicationDbContext,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetAccountSubsidBalanceAsync(Minimal.DataAccess.ApplicationDbContext,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Calculate the balance of an account subsid by summing its debit and credit amounts from the document articles.
+            </summary>
+        </member>
+        <member name="M:Minimal.Api.Common.Accounting.AccountingExtensions.GetAccountDetailBalanceAsync(Minimal.DataAccess.ApplicationDbContext,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Calculate the balance of an account detail by summing its debit and credit amounts from the document articles.
             </summary>

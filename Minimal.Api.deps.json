@@ -20,7 +20,6 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.12",
           "Minimal.DataAccess": "1.0.0",
           "Minimal.Domain": "1.0.0",
-          "Riok.Mapperly": "4.3.1",
           "Swashbuckle.AspNetCore": "9.0.6",
           "UAParser": "3.1.47"
         },
@@ -506,14 +505,6 @@
           }
         }
       },
-      "Riok.Mapperly/4.3.1": {
-        "runtime": {
-          "lib/netstandard2.0/Riok.Mapperly.Abstractions.dll": {
-            "assemblyVersion": "4.3.1.0",
-            "fileVersion": "4.3.1.0"
-          }
-        }
-      },
       "Swashbuckle.AspNetCore/9.0.6": {
         "dependencies": {
           "Swashbuckle.AspNetCore.Swagger": "9.0.6",
@@ -988,13 +979,6 @@
       "sha512": "sha512-hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A==",
       "path": "microsoft.win32.systemevents/6.0.0",
       "hashPath": "microsoft.win32.systemevents.6.0.0.nupkg.sha512"
-    },
-    "Riok.Mapperly/4.3.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-oSE+OVLHyiojrws0QVbQaAT2YKsYbyHqJXPdV7EhGseR/dYgeWS2x1T5qY5I4E+RJkJqMSG+FyZOq4SljWgJWQ==",
-      "path": "riok.mapperly/4.3.1",
-      "hashPath": "riok.mapperly.4.3.1.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore/9.0.6": {
       "type": "package",

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Extensions;
 using Minimal.Api.Features.AccountTransactions.Models;
-using Minimal.Api.Features.AccountTransactions.Profiles;
 using Minimal.Api.Models;
 using Minimal.DataAccess;
 
@@ -12,12 +11,10 @@ namespace Minimal.Api.Features.AccountTransactions.Queries;
 public class GetAllAccountTransactionHandler : IRequestHandler<GetAllAccountTransaction, PageList<AccountTransactionGetDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly AccountTransactionMapper _mapper;
 
-    public GetAllAccountTransactionHandler(ApplicationDbContext context, AccountTransactionMapper mapper)
+    public GetAllAccountTransactionHandler(ApplicationDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<PageList<AccountTransactionGetDto>> Handle(GetAllAccountTransaction request, CancellationToken cancellationToken)
@@ -35,10 +32,18 @@ public class GetAllAccountTransactionHandler : IRequestHandler<GetAllAccountTran
 
         var documentItems = await _context.DocumentArticles
             .AsNoTracking()
-            .Include(di => di.Document)
             .Where(di => di.AccountDetailId == accountDetailId)
+            .Select(di => new AccountTransactionGetDto
+            {
+                Id = di.Id,
+                Code = di.Document.Code,
+                Credit = di.Credit,
+                Debit = di.Debit,
+                Date = di.Document.Date,
+                Note = di.Document.Note,
+            })
             .ToPagedAsync(request.Page, request.PageSize, request.SortBy);
 
-        return _mapper.MapToPageList(documentItems);
+        return documentItems;
     }
 }

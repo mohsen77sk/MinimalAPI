@@ -5,7 +5,6 @@ using Minimal.Api.Common.Accounting;
 using Minimal.Api.Common.Accounting.Validators;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.AccountTransactions.Models;
-using Minimal.Api.Features.AccountTransactions.Profiles;
 using Minimal.DataAccess;
 using Minimal.Domain;
 
@@ -14,18 +13,15 @@ namespace Minimal.Api.Features.AccountTransactions.Commands;
 public class ReverseAccountTransactionHandler : IRequestHandler<ReverseAccountTransaction, AccountTransactionGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly AccountTransactionMapper _mapper;
     private readonly IStringLocalizer _localizer;
     private readonly DocumentValidator _documentValidator;
 
     public ReverseAccountTransactionHandler(
         ApplicationDbContext context,
-        AccountTransactionMapper mapper,
         IStringLocalizer<SharedResource> localizer,
         DocumentValidator documentValidator)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
         _documentValidator = documentValidator ?? throw new ArgumentNullException(nameof(documentValidator));
     }
@@ -72,7 +68,14 @@ public class ReverseAccountTransactionHandler : IRequestHandler<ReverseAccountTr
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        var accountDetailId = reverseDocument.DocumentItems.First(di => di.AccountDetail?.AccountId == request.AccountId).AccountDetailId;
-        return _mapper.MapToAccountTransactionGetDto(reverseDocument.DocumentItems.First(di => di.AccountDetailId == accountDetailId));
+        return new AccountTransactionGetDto
+        {
+            Id = reverseDocument.DocumentItems.First(di => di.AccountDetail?.AccountId == request.AccountId).Id,
+            Code = reverseDocument.Code,
+            Credit = reverseDocument.DocumentItems.Where(di => di.AccountDetail?.AccountId == request.AccountId).Sum(di => di.Credit),
+            Debit = reverseDocument.DocumentItems.Where(di => di.AccountDetail?.AccountId == request.AccountId).Sum(di => di.Debit),
+            Date = reverseDocument.Date,
+            Note = reverseDocument.Note,
+        };
     }
 }

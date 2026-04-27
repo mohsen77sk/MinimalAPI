@@ -5,7 +5,6 @@ using Minimal.Api.Common.Accounting;
 using Minimal.Api.Common.Accounting.Validators;
 using Minimal.Api.Exceptions;
 using Minimal.Api.Features.AccountTransactions.Models;
-using Minimal.Api.Features.AccountTransactions.Profiles;
 using Minimal.DataAccess;
 using Minimal.Domain;
 
@@ -14,18 +13,15 @@ namespace Minimal.Api.Features.AccountTransactions.Commands;
 public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTransaction, AccountTransactionGetDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly AccountTransactionMapper _mapper;
     private readonly IStringLocalizer _localizer;
     private readonly DocumentValidator _documentValidator;
 
     public CreateAccountTransactionHandler(
         ApplicationDbContext context,
-        AccountTransactionMapper mapper,
         IStringLocalizer<SharedResource> localizer,
         DocumentValidator documentValidator)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
         _documentValidator = documentValidator ?? throw new ArgumentNullException(nameof(documentValidator));
     }
@@ -135,6 +131,14 @@ public class CreateAccountTransactionHandler : IRequestHandler<CreateAccountTran
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.MapToAccountTransactionGetDto(documentToAdd.DocumentItems.First(di => di.AccountDetailId == sourceAccount.AccountDetail.Id));
+        return new AccountTransactionGetDto
+        {
+            Id = documentToAdd.DocumentItems.First(di => di.AccountDetail?.AccountId == sourceAccount.AccountDetail.Id).Id,
+            Code = documentToAdd.Code,
+            Credit = documentToAdd.DocumentItems.Where(di => di.AccountDetail?.AccountId == sourceAccount.AccountDetail.Id).Sum(di => di.Credit),
+            Debit = documentToAdd.DocumentItems.Where(di => di.AccountDetail?.AccountId == sourceAccount.AccountDetail.Id).Sum(di => di.Debit),
+            Date = documentToAdd.Date,
+            Note = documentToAdd.Note,
+        };
     }
 }

@@ -261,4 +261,24 @@
     <value>At least one item must have a value</value>
     <comment/>
   </data>
+  <data name="transactionMoneyIn" xml:space="preserve">
+    <value>Money Received</value>
+    <comment/>
+  </data>
+  <data name="transactionMoneyOut" xml:space="preserve">
+    <value>Money Paid</value>
+    <comment/>
+  </data>
+  <data name="transactionTransferIn" xml:space="preserve">
+    <value>Transfer In</value>
+    <comment/>
+  </data>
+  <data name="transactionTransferOut" xml:space="preserve">
+    <value>Transfer Out</value>
+    <comment/>
+  </data>
+  <data name="transactionDocumentReversal" xml:space="preserve">
+    <value>Reversal Document</value>
+    <comment/>
+  </data>
 </root>

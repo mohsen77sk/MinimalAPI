@@ -6,6 +6,9 @@ public class AccountTransactionGetDto
 
     public string Code { get; set; } = default!;
 
+    public string TypeCode { get; set; } = default!;
+    public string TypeTitle { get; set; } = default!;
+
     public decimal Credit { get; set; }
 
     public decimal Debit { get; set; }

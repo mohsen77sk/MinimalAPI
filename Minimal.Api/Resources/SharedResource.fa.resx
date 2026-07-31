@@ -261,4 +261,24 @@
     <value>حداقل یک مورد باید دارای مقدار باشد</value>
     <comment/>
   </data>
+  <data name="transactionMoneyIn" xml:space="preserve">
+    <value>واریز وجه</value>
+    <comment/>
+  </data>
+  <data name="transactionMoneyOut" xml:space="preserve">
+    <value>برداشت وجه</value>
+    <comment/>
+  </data>
+  <data name="transactionTransferIn" xml:space="preserve">
+    <value>دریافت وجه از حساب</value>
+    <comment/>
+  </data>
+  <data name="transactionTransferOut" xml:space="preserve">
+    <value>انتقال وجه به حساب</value>
+    <comment/>
+  </data>
+  <data name="transactionDocumentReversal" xml:space="preserve">
+    <value>برگشت سند</value>
+    <comment/>
+  </data>
 </root>

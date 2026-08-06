@@ -1,3 +1,4 @@
+using Minimal.Api.Features.Accounts.Profiles;
 using Minimal.Api.Features.Loans.Models;
 using Minimal.Api.Models;
 using Minimal.Domain;
@@ -6,13 +7,19 @@ namespace Minimal.Api.Features.Loans.Profiles;
 
 public class LoanMapper
 {
+    private readonly AccountMapper _accountMapper;
+
+    public LoanMapper(AccountMapper accountMapper)
+    {
+        _accountMapper = accountMapper;
+    }
+
     public LoanGetDto MapToLoanGetDto(Loan source) =>
         new LoanGetDto
         {
             Id = source.Id,
             Code = source.Code,
-            AccountId = source.AccountId,
-            AccountCode = source.Account?.Code ?? string.Empty,
+            Account = _accountMapper.MapToLookupDto(source.Account),
             LoanTypeId = source.LoanTypeId,
             LoanTypeName = source.LoanType?.Name ?? string.Empty,
             CreateDate = source.CreateDate,

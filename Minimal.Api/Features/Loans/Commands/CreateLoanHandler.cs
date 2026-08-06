@@ -8,7 +8,6 @@ using Minimal.Api.Features.Loans.Models;
 using Minimal.Api.Features.Loans.Profiles;
 using Minimal.Api.Features.Loans.Strategies;
 using Minimal.DataAccess;
-using Minimal.Domain;
 
 namespace Minimal.Api.Features.Loans.Commands;
 

@@ -8,9 +8,7 @@ public class LoanGetDto
 
     public string Code { get; set; } = default!;
 
-    public int AccountId { get; set; }
-
-    public string AccountCode { get; set; } = default!;
+    public LookupDto Account { get; set; } = default!;
 
     public int LoanTypeId { get; set; }
 

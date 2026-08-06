@@ -18,6 +18,8 @@ public class AccountGetDto
 
     public IList<LookupDto> Persons { get; set; } = default!;
 
+    public decimal Balance { get; set; }
+
     public string Note { get; set; } = default!;
 
     public bool IsActive { get; set; }

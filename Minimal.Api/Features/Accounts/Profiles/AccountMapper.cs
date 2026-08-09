@@ -20,7 +20,7 @@ public class AccountMapper
         {
             Id = source.Id,
             Code = source.Code,
-            Name = source == null ? string.Empty : (source.AccountType?.Name ?? "") + " - " + string.Join(", ", source.People?.Select(p => p.FullName) ?? [])
+            Name = source == null ? string.Empty : (source.AccountType?.Name ?? "") + " - " + string.Join("/", source.People?.Select(p => p.FullName) ?? [])
         };
 
     public AccountGetDto MapToAccountGetDto(Account source) =>

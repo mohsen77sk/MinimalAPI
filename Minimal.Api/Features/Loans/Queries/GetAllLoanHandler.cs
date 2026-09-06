@@ -21,7 +21,12 @@ public class GetAllLoanHandler : IRequestHandler<GetAllLoan, PageList<LoanGetDto
 
     public async Task<PageList<LoanGetDto>> Handle(GetAllLoan request, CancellationToken cancellationToken)
     {
-        var loans = _context.Loans.Include(l => l.Account).Include(l => l.LoanType).AsNoTracking();
+        var loans = _context.Loans
+            .Include(l => l.Account)
+            .Include(l => l.Account.AccountType)
+            .Include(l => l.Account.People)
+            .Include(l => l.LoanType)
+            .AsNoTracking();
 
         if (request.IsActive.HasValue)
         {

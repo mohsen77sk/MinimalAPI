@@ -31,6 +31,8 @@ public class GetLoanByIdHandler : IRequestHandler<GetLoanById, LoanGetDto>
         var loan = await _context.Loans
             .AsNoTracking()
             .Include(l => l.Account)
+            .Include(l => l.Account.AccountType)
+            .Include(l => l.Account.People)
             .Include(l => l.LoanType)
             .FirstOrDefaultAsync(a => a.Id == request.LoanId, cancellationToken);
 
